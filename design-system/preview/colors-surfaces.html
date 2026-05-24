@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Surfaces & ink alphas</title>
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <style>
+    html, body { margin: 0; padding: 0; }
+    body {
+      width: 700px;
+      padding: 24px;
+      background: var(--bg-page);
+      box-sizing: border-box;
+      font-family: var(--font-sans);
+    }
+    .row {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .tile {
+      aspect-ratio: 1.4;
+      border-radius: var(--r-md);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 10px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--brand-ink);
+      border: 1px solid var(--border-soft);
+    }
+    .tile .name { font-size: 11px; }
+    .tile .val  { font-size: 10px; color: var(--fg-3); margin-top: 2px; font-feature-settings:"tnum"; }
+    .label {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--fg-3);
+      margin: 0 0 8px 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="label">Surfaces</div>
+  <div class="row">
+    <div class="tile" style="background: var(--bg-page);">
+      <div class="name">bg-page</div><div class="val">#fff8f0</div>
+    </div>
+    <div class="tile" style="background: var(--bg-elev-1);">
+      <div class="name">bg-elev-1</div><div class="val">#ffffff</div>
+    </div>
+    <div class="tile" style="background: var(--bg-elev-2);">
+      <div class="name">bg-elev-2</div><div class="val">#ffeed9</div>
+    </div>
+    <div class="tile" style="background: var(--bg-ink); color: var(--brand-bg);">
+      <div class="name">bg-ink</div><div class="val" style="color: rgba(255,248,240,0.6)">#1a1a2e</div>
+    </div>
+    <div class="tile" style="background: var(--bg-overlay); color: white;">
+      <div class="name">overlay</div><div class="val" style="color: rgba(255,255,255,0.6)">ink / 30</div>
+    </div>
+    <div class="tile" style="background: white; border: 1px solid var(--border-soft);">
+      <div class="name">border-soft</div><div class="val">ink / 10</div>
+    </div>
+  </div>
+
+  <div class="label">Ink alphas (warm-grey ramp)</div>
+  <div class="row">
+    <div class="tile" style="background: var(--ink-95); color: white;">
+      <div class="name" style="color: white;">ink-95</div><div class="val" style="color: rgba(255,255,255,0.6)">0.95</div>
+    </div>
+    <div class="tile" style="background: var(--ink-70); color: white;">
+      <div class="name" style="color: white;">ink-70</div><div class="val" style="color: rgba(255,255,255,0.6)">0.70</div>
+    </div>
+    <div class="tile" style="background: var(--ink-50); color: white;">
+      <div class="name" style="color: white;">ink-50</div><div class="val" style="color: rgba(255,255,255,0.7)">0.50</div>
+    </div>
+    <div class="tile" style="background: var(--ink-30);">
+      <div class="name">ink-30</div><div class="val">0.30</div>
+    </div>
+    <div class="tile" style="background: var(--ink-10);">
+      <div class="name">ink-10</div><div class="val">0.10</div>
+    </div>
+    <div class="tile" style="background: var(--ink-05);">
+      <div class="name">ink-05</div><div class="val">0.05</div>
+    </div>
+  </div>
+</body>
+</html>

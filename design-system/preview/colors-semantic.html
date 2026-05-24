@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Semantic colors</title>
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <style>
+    html, body { margin: 0; padding: 0; }
+    body {
+      width: 700px;
+      padding: 24px;
+      background: var(--bg-page);
+      font-family: var(--font-sans);
+      box-sizing: border-box;
+    }
+    .grp { margin-bottom: 18px; }
+    .grp:last-child { margin-bottom: 0; }
+    .label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--fg-3);
+      margin-bottom: 8px;
+    }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: var(--r-pill);
+      border: 1px solid var(--border-soft);
+      background: var(--bg-elev-1);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .dot { width: 14px; height: 14px; border-radius: 999px; border: 1px solid var(--ink-10); }
+    .pill .var { color: var(--fg-3); font-feature-settings: "tnum"; }
+  </style>
+</head>
+<body>
+  <div class="grp">
+    <div class="label">Foreground</div>
+    <div class="row">
+      <div class="pill"><span class="dot" style="background: var(--fg-1)"></span><b>fg-1</b><span class="var">primary text</span></div>
+      <div class="pill"><span class="dot" style="background: var(--fg-2)"></span><b>fg-2</b><span class="var">secondary</span></div>
+      <div class="pill"><span class="dot" style="background: var(--fg-3)"></span><b>fg-3</b><span class="var">tertiary / captions</span></div>
+      <div class="pill"><span class="dot" style="background: var(--fg-disabled)"></span><b>fg-disabled</b></div>
+    </div>
+  </div>
+
+  <div class="grp">
+    <div class="label">Accent</div>
+    <div class="row">
+      <div class="pill"><span class="dot" style="background: var(--accent)"></span><b>accent</b><span class="var">CTAs, focus, .me</span></div>
+      <div class="pill"><span class="dot" style="background: var(--accent-hover)"></span><b>accent-hover</b></div>
+      <div class="pill"><span class="dot" style="background: var(--accent-info)"></span><b>accent-info</b><span class="var">cyan, ambient</span></div>
+      <div class="pill"><span class="dot" style="background: var(--accent-warn)"></span><b>accent-warn</b><span class="var">yellow, highlights</span></div>
+    </div>
+  </div>
+
+  <div class="grp">
+    <div class="label">Borders &amp; ring</div>
+    <div class="row">
+      <div class="pill"><span class="dot" style="background: var(--border-soft)"></span><b>border-soft</b><span class="var">cards, fields</span></div>
+      <div class="pill"><span class="dot" style="background: var(--border-divider)"></span><b>border-divider</b><span class="var">hairlines</span></div>
+      <div class="pill"><span class="dot" style="background: var(--ring-focus)"></span><b>ring-focus</b><span class="var">2px outline</span></div>
+    </div>
+  </div>
+</body>
+</html>

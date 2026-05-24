@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+@plugin "@tailwindcss/container-queries";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-brand-bg: #fff8f0;
+  --color-brand-ink: #1a1a2e;
+  --color-brand-pink: #ff3d7f;
+  --color-brand-pink-hover: #ff2670;
+  --color-brand-cyan: #5bc0eb;
+  --color-brand-cream-2: #ffeed9;
+  --color-brand-yellow: #ffd93d;
+
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --animate-carousel: carousel 60s linear infinite;
+  --animate-blob: blob 18s ease-in-out infinite;
+  --animate-marquee: marquee 25s linear infinite;
+
+  @keyframes carousel {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
+  }
+  @keyframes blob {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -20px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.95); }
+  }
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+
+  html {
+    background: var(--color-brand-bg);
+    color: var(--color-brand-ink);
+  }
+
+  body {
+    font-family: var(--font-sans);
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+}
+
+@supports (font: -apple-system-body) and (-webkit-appearance: none) {
+  img[loading="lazy"] {
+    clip-path: inset(0.6px);
+  }
+}
+
+a,
+input,
+button {
+  @apply focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg;
+}
+
+::selection {
+  background: var(--color-brand-pink);
+  color: white;
+}

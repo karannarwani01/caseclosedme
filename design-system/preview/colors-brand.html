@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Brand palette — primary</title>
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <style>
+    html, body { margin: 0; padding: 0; }
+    body {
+      width: 700px;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      background: var(--bg-page);
+      box-sizing: border-box;
+    }
+    .swatch {
+      border-radius: var(--r-lg);
+      border: 1px solid var(--border-soft);
+      overflow: hidden;
+      background: var(--bg-elev-1);
+    }
+    .swatch .chip {
+      height: 110px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      padding: 12px;
+      color: rgba(255,255,255,0.92);
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .swatch .chip.dark-text { color: var(--brand-ink); }
+    .swatch .meta {
+      padding: 10px 14px 12px;
+      font-family: var(--font-sans);
+    }
+    .swatch .name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--fg-1);
+    }
+    .swatch .hex {
+      font-size: 12px;
+      color: var(--fg-3);
+      font-feature-settings: "tnum";
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="swatch">
+    <div class="chip" style="background: var(--brand-pink);">PRIMARY</div>
+    <div class="meta"><div class="name">brand-pink</div><div class="hex">#ff3d7f</div></div>
+  </div>
+  <div class="swatch">
+    <div class="chip" style="background: var(--brand-pink-hover);">HOVER</div>
+    <div class="meta"><div class="name">brand-pink-hover</div><div class="hex">#ff2670</div></div>
+  </div>
+  <div class="swatch">
+    <div class="chip" style="background: var(--brand-ink);">INK</div>
+    <div class="meta"><div class="name">brand-ink</div><div class="hex">#1a1a2e</div></div>
+  </div>
+  <div class="swatch">
+    <div class="chip" style="background: var(--brand-cyan);">SECONDARY</div>
+    <div class="meta"><div class="name">brand-cyan</div><div class="hex">#5bc0eb</div></div>
+  </div>
+  <div class="swatch">
+    <div class="chip dark-text" style="background: var(--brand-yellow);">HIGHLIGHT</div>
+    <div class="meta"><div class="name">brand-yellow</div><div class="hex">#ffd93d</div></div>
+  </div>
+  <div class="swatch">
+    <div class="chip dark-text" style="background: var(--brand-cream-2); border-bottom: 1px solid var(--border-soft);">SURFACE 2</div>
+    <div class="meta"><div class="name">brand-cream-2</div><div class="hex">#ffeed9</div></div>
+  </div>
+</body>
+</html>

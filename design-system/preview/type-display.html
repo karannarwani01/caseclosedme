@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Display type — Bricolage Grotesque</title>
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <style>
+    html, body { margin: 0; padding: 0; }
+    body {
+      width: 700px;
+      padding: 26px 28px;
+      background: var(--bg-page);
+      box-sizing: border-box;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 70px 1fr auto;
+      align-items: baseline;
+      gap: 18px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-divider);
+    }
+    .row:last-child { border-bottom: none; }
+    .tag {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--fg-3);
+    }
+    .spec {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      color: var(--fg-3);
+      font-feature-settings: "tnum";
+      text-align: right;
+    }
+    .sample { font-family: var(--font-display); color: var(--fg-1); }
+  </style>
+</head>
+<body>
+  <div class="row">
+    <div class="tag">H1</div>
+    <div class="sample" style="font-size: 44px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.05;">Funko Pops, hand‑picked.</div>
+    <div class="spec">700 / 44 / -2%</div>
+  </div>
+  <div class="row">
+    <div class="tag">H2</div>
+    <div class="sample" style="font-size: 32px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1;">Latest arrivals this week</div>
+    <div class="spec">700 / 32 / -2%</div>
+  </div>
+  <div class="row">
+    <div class="tag">H3</div>
+    <div class="sample" style="font-size: 24px; font-weight: 600; letter-spacing: -0.015em;">Holographic Charizard, PSA 9</div>
+    <div class="spec">600 / 24 / -1.5%</div>
+  </div>
+  <div class="row">
+    <div class="tag">H4</div>
+    <div class="sample" style="font-size: 20px; font-weight: 600;">Trending categories</div>
+    <div class="spec">600 / 20 / -1%</div>
+  </div>
+</body>
+</html>

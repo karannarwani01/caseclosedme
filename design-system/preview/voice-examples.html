@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Voice & copy — anime style</title>
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <style>
+    html, body { margin: 0; padding: 0; }
+    body {
+      --anime-pink:   #ff2e93;
+      --anime-purple: #8a2be8;
+      --anime-cyan:   #1ee3ff;
+      --anime-lime:   #c4ff3d;
+      --anime-yellow: #ffd60a;
+      --anime-ink:    #0d0a1a;
+      --anime-paper:  #fff8f0;
+
+      width: 700px;
+      padding: 24px;
+      background:
+        radial-gradient(circle, rgba(13,10,26,0.07) 1.5px, transparent 2px) 0 0/14px 14px,
+        var(--anime-paper);
+      box-sizing: border-box;
+      font-family: var(--font-sans);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .label {
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--anime-ink);
+      display: inline-flex; align-items: center;
+      padding: 4px 10px;
+      background: var(--anime-lime);
+      border: 2.5px solid var(--anime-ink);
+      border-radius: 999px;
+      box-shadow: 2px 2px 0 0 var(--anime-ink);
+      margin: 0 0 10px;
+    }
+
+    /* Manga speech-bubble — toast */
+    .toast {
+      grid-column: 1 / -1;
+      position: relative;
+      padding: 16px 18px 16px 56px;
+      background: white;
+      border: 2.5px solid var(--anime-ink);
+      border-radius: 16px;
+      box-shadow: 6px 6px 0 0 var(--anime-pink);
+    }
+    .toast::before {
+      content: "";
+      position: absolute;
+      left: -14px; top: 28px;
+      width: 24px; height: 18px;
+      background: white;
+      border: 2.5px solid var(--anime-ink);
+      border-right: none;
+      border-top: none;
+      transform: skewY(20deg);
+    }
+    .toast .icon {
+      position: absolute;
+      left: 14px; top: 14px;
+      width: 32px; height: 32px;
+      background: var(--anime-yellow);
+      border: 2.5px solid var(--anime-ink);
+      border-radius: 8px;
+      display: grid; place-items: center;
+      font-size: 18px;
+      box-shadow: 2px 2px 0 0 var(--anime-ink);
+      transform: rotate(-6deg);
+    }
+    .toast .title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: 0.02em;
+      color: var(--anime-ink);
+    }
+    .toast .title .hi { background: var(--anime-cyan); padding: 0 4px; border-radius: 4px; }
+    .toast .body {
+      font-size: 13px;
+      color: var(--anime-ink);
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+    .toast .body a {
+      color: var(--anime-pink);
+      text-decoration: none;
+      font-weight: 700;
+      border-bottom: 2px solid var(--anime-pink);
+    }
+
+    /* Empty / no-result cards */
+    .empty {
+      padding: 16px 18px;
+      background: white;
+      border: 2.5px solid var(--anime-ink);
+      border-radius: 14px;
+      box-shadow: 5px 5px 0 0 var(--anime-ink);
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .empty .line {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 19px;
+      color: var(--anime-ink);
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+    }
+    .empty .line .acc {
+      background: var(--anime-pink);
+      color: white;
+      padding: 0 4px;
+      border-radius: 4px;
+      border: 2px solid var(--anime-ink);
+    }
+    .empty .sub {
+      font-size: 13px;
+      color: var(--anime-ink);
+      opacity: 0.7;
+    }
+
+    /* Two-column on/off-brand */
+    .quote {
+      grid-column: 1 / -1;
+      padding: 0;
+      background: white;
+      border: 2.5px solid var(--anime-ink);
+      border-radius: 14px;
+      box-shadow: 5px 5px 0 0 var(--anime-ink);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+    }
+    .col { padding: 16px 18px; }
+    .col + .col { border-left: 2.5px solid var(--anime-ink); }
+    .col .h {
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: inline-flex;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 2px solid var(--anime-ink);
+      box-shadow: 2px 2px 0 0 var(--anime-ink);
+    }
+    .col.yes .h { background: var(--anime-lime); }
+    .col.no .h  { background: var(--anime-pink); color: white; }
+    .col p {
+      margin: 0 0 6px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--anime-ink);
+    }
+    .col p b { background: var(--anime-yellow); padding: 0 4px; border-radius: 3px; }
+    .col.no p { text-decoration: line-through; opacity: 0.55; }
+  </style>
+</head>
+<body>
+  <div class="toast">
+    <div class="icon">★</div>
+    <div class="title"><span class="hi">New drop!</span> The crate just landed.</div>
+    <div class="body">Funkos, slabbed cards, and the figures collectors hunt. <a href="#">Start the chase →</a></div>
+  </div>
+
+  <div class="empty">
+    <div class="label">Empty cart</div>
+    <div class="line">Your <span class="acc">cart</span> is empty.</div>
+    <div class="sub">Pick something up from the floor.</div>
+  </div>
+  <div class="empty">
+    <div class="label">No results</div>
+    <div class="line">No hits for <span class="acc">"blastoise vmax"</span></div>
+    <div class="sub">Try a broader term, or browse trending.</div>
+  </div>
+
+  <div class="quote">
+    <div class="col yes">
+      <span class="h">★ on-brand</span>
+      <p>"Showing 24 hits for <b>holographic charizard</b>"</p>
+      <p>"Add to cart"</p>
+      <p>"Just dropped — limited run"</p>
+    </div>
+    <div class="col no">
+      <span class="h">✕ off-brand</span>
+      <p>"DISCOVER OUR EXCLUSIVE PREMIUM COLLECTION!!!"</p>
+      <p>"ADD TO CART NOW"</p>
+      <p>"New SKU Inventory"</p>
+    </div>
+  </div>
+</body>
+</html>

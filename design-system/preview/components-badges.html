@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Badges & price tag — anime style</title>
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <style>
+    html, body { margin: 0; padding: 0; }
+    body {
+      --anime-pink:   #ff2e93;
+      --anime-purple: #8a2be8;
+      --anime-cyan:   #1ee3ff;
+      --anime-lime:   #c4ff3d;
+      --anime-yellow: #ffd60a;
+      --anime-orange: #ff6a1f;
+      --anime-ink:    #0d0a1a;
+      --anime-paper:  #fff8f0;
+
+      width: 700px;
+      padding: 28px;
+      background:
+        radial-gradient(circle, rgba(13,10,26,0.07) 1.5px, transparent 2px) 0 0/14px 14px,
+        var(--anime-paper);
+      box-sizing: border-box;
+      font-family: var(--font-sans);
+    }
+
+    .label {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--anime-ink);
+      display: inline-flex; align-items: center;
+      padding: 4px 10px;
+      background: var(--anime-lime);
+      border: 2.5px solid var(--anime-ink);
+      border-radius: 999px;
+      box-shadow: 2px 2px 0 0 var(--anime-ink);
+      margin: 14px 0 12px;
+    }
+    .label:first-child { margin-top: 0; }
+    .row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+
+    .price {
+      display: inline-flex; align-items: center;
+      padding: 8px 16px;
+      background: var(--anime-lime);
+      color: var(--anime-ink);
+      border: 2.5px solid var(--anime-ink);
+      border-radius: 999px;
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      font-feature-settings: "tnum";
+      box-shadow: 3px 3px 0 0 var(--anime-ink);
+      transform: rotate(-2deg);
+    }
+    .price .ccy { opacity: 0.6; font-weight: 600; margin-left: 4px; font-size: 11px; }
+    .price.pink { background: var(--anime-pink); color: white; transform: rotate(2deg); }
+    .price.yellow { background: var(--anime-yellow); transform: rotate(-3deg); }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 5px 12px;
+      border: 2.5px solid var(--anime-ink);
+      border-radius: 999px;
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: 3px 3px 0 0 var(--anime-ink);
+      color: var(--anime-ink);
+    }
+    .badge-new    { background: var(--anime-yellow); transform: rotate(-3deg); }
+    .badge-sale   { background: var(--anime-pink); color: white; transform: rotate(2deg); }
+    .badge-info   { background: var(--anime-cyan); }
+    .badge-soft   { background: white; }
+    .badge-ink    { background: var(--anime-ink); color: var(--anime-lime); border-color: var(--anime-lime); box-shadow: 3px 3px 0 0 var(--anime-pink); transform: rotate(-1deg); }
+    .badge-purple { background: var(--anime-purple); color: white; transform: rotate(-2deg); }
+
+    /* Burst sticker for SALE/NEW DROP */
+    .burst {
+      position: relative;
+      width: 90px; height: 90px;
+      display: grid; place-items: center;
+      color: white;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      text-align: center;
+      line-height: 1;
+      transform: rotate(-8deg);
+    }
+    .burst::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: var(--anime-pink);
+      clip-path: polygon(
+        50% 0%, 60% 15%, 75% 5%, 78% 22%, 95% 22%,
+        88% 38%, 100% 50%, 88% 62%, 95% 78%, 78% 78%,
+        75% 95%, 60% 85%, 50% 100%, 40% 85%, 25% 95%,
+        22% 78%, 5% 78%, 12% 62%, 0% 50%, 12% 38%,
+        5% 22%, 22% 22%, 25% 5%, 40% 15%
+      );
+      border: none;
+      filter: drop-shadow(4px 4px 0 var(--anime-ink));
+    }
+    .burst span { position: relative; z-index: 1; padding: 0 6px; }
+
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px;
+      background: white;
+      border: 2.5px solid var(--anime-ink);
+      border-radius: 999px;
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--anime-ink);
+      box-shadow: 3px 3px 0 0 var(--anime-ink);
+    }
+    .chip .dot {
+      width: 10px; height: 10px; border-radius: 999px;
+      background: var(--anime-pink);
+      border: 2px solid var(--anime-ink);
+    }
+    .chip.on { background: var(--anime-cyan); }
+  </style>
+</head>
+<body>
+  <div class="label">★ Price tag</div>
+  <div class="row">
+    <span class="price">$24.00 <span class="ccy">USD</span></span>
+    <span class="price pink">$199.99</span>
+    <span class="price yellow">$1,299.00</span>
+  </div>
+
+  <div class="label">★ Status badges</div>
+  <div class="row">
+    <span class="badge badge-new">New</span>
+    <span class="badge badge-sale">−20%</span>
+    <span class="badge badge-info">PSA 9</span>
+    <span class="badge badge-soft">Pre‑order</span>
+    <span class="badge badge-ink">Just dropped</span>
+    <span class="badge badge-purple">Holo rare</span>
+  </div>
+
+  <div class="label">★ Hype burst · filter chips</div>
+  <div class="row" style="gap: 18px;">
+    <div class="burst"><span>New drop!</span></div>
+    <span class="chip on"><span class="dot"></span>Funkos</span>
+    <span class="chip">Cards</span>
+    <span class="chip">Figures</span>
+    <span class="chip">Pokémon</span>
+  </div>
+</body>
+</html>

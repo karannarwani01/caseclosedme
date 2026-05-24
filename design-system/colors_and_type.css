@@ -1,0 +1,215 @@
+/* ============================================================
+   Case Closed — Design Tokens
+   ------------------------------------------------------------
+   Imports brand fonts (Bricolage Grotesque for display, Inter
+   for body) and exposes both raw and semantic CSS variables.
+   Source of truth: caseclosedme/app/globals.css (Tailwind v4
+   @theme block) — these tokens mirror that file 1:1.
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap");
+
+:root {
+  /* ---------- Brand palette (raw) ---------- */
+  --brand-bg:           #fff8f0;   /* page background, warm cream */
+  --brand-ink:          #1a1a2e;   /* primary text, deep navy/near-black */
+  --brand-pink:         #ff3d7f;   /* primary accent, CTAs, focus rings */
+  --brand-pink-hover:   #ff2670;   /* primary accent on hover/press */
+  --brand-cyan:         #5bc0eb;   /* secondary accent, info, blobs */
+  --brand-cream-2:      #ffeed9;   /* tinted surfaces (search field, cards) */
+  --brand-yellow:       #ffd93d;   /* tertiary accent, highlights, sale tags */
+
+  /* ---------- Neutrals (derived from --brand-ink alpha) ---------- */
+  --ink-95:  rgba(26, 26, 46, 0.95);
+  --ink-70:  rgba(26, 26, 46, 0.70);
+  --ink-50:  rgba(26, 26, 46, 0.50);
+  --ink-30:  rgba(26, 26, 46, 0.30);
+  --ink-10:  rgba(26, 26, 46, 0.10);
+  --ink-05:  rgba(26, 26, 46, 0.05);
+
+  --white-90: rgba(255, 255, 255, 0.90);
+  --white-75: rgba(255, 255, 255, 0.75);
+  --white-60: rgba(255, 255, 255, 0.60);
+
+  /* ---------- Semantic colors ---------- */
+  --fg-1:        var(--brand-ink);        /* default text */
+  --fg-2:        var(--ink-70);           /* secondary text, nav links */
+  --fg-3:        var(--ink-50);           /* tertiary, captions, placeholders */
+  --fg-disabled: var(--ink-30);
+  --fg-on-pink:  #ffffff;
+  --fg-on-ink:   var(--brand-bg);
+
+  --bg-page:     var(--brand-bg);
+  --bg-elev-1:   #ffffff;                 /* cards, modals on cream */
+  --bg-elev-2:   var(--brand-cream-2);    /* tinted surfaces, fields */
+  --bg-overlay:  rgba(0, 0, 0, 0.30);     /* cart modal scrim */
+  --bg-ink:      var(--brand-ink);        /* dark logo/badge surface */
+
+  --border-soft:    var(--ink-10);
+  --border-divider: var(--ink-05);
+  --ring-focus:     var(--brand-pink);
+
+  --accent:        var(--brand-pink);
+  --accent-hover:  var(--brand-pink-hover);
+  --accent-info:   var(--brand-cyan);
+  --accent-warn:   var(--brand-yellow);
+
+  /* ---------- Type families ---------- */
+  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-sans:    "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-pixel:   "VT323", "Press Start 2P", ui-monospace, monospace; /* for the
+        physical/marketing pixel mark; kept as accent only */
+
+  /* ---------- Type scale (raw) ---------- */
+  --fs-12: 0.75rem;
+  --fs-13: 0.8125rem;
+  --fs-14: 0.875rem;
+  --fs-15: 0.9375rem;
+  --fs-16: 1rem;
+  --fs-18: 1.125rem;
+  --fs-20: 1.25rem;
+  --fs-24: 1.5rem;
+  --fs-30: 1.875rem;
+  --fs-36: 2.25rem;
+  --fs-48: 3rem;
+  --fs-60: 3.75rem;
+  --fs-72: 4.5rem;
+
+  /* ---------- Radii (rounded everything — pills are the default) ---------- */
+  --r-xs:   6px;
+  --r-sm:   10px;
+  --r-md:   14px;
+  --r-lg:   20px;
+  --r-xl:   24px;
+  --r-2xl:  28px;     /* product cards */
+  --r-3xl:  32px;
+  --r-pill: 9999px;   /* nav bar, buttons, badges, search field */
+
+  /* ---------- Spacing scale (4px base) ---------- */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-10: 40px;
+  --s-12: 48px;
+  --s-16: 64px;
+  --s-20: 80px;
+
+  /* ---------- Shadows (pink-tinted on hover; navy-tinted at rest) ---------- */
+  --shadow-card-rest:  0 4px 20px -8px rgba(26, 26, 46, 0.12);
+  --shadow-card-hover: 0 20px 40px -12px rgba(255, 61, 127, 0.25);
+  --shadow-nav:        0 8px 30px -12px rgba(26, 26, 46, 0.15);
+  --shadow-sm:         0 1px 2px rgba(26, 26, 46, 0.06);
+
+  /* ---------- Motion ---------- */
+  --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast:   150ms;
+  --dur-base:   300ms;
+  --dur-slow:   500ms;
+
+  /* ---------- Backdrop blur tokens ---------- */
+  --blur-sm: 6px;
+  --blur-md: 12px;
+  --blur-lg: 24px;
+}
+
+/* ============================================================
+   Semantic element styles — use these as a baseline; override
+   per-component as needed. Mirrors @layer base from the source.
+   ============================================================ */
+
+html, body {
+  background: var(--bg-page);
+  color: var(--fg-1);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, .h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.5rem, 5vw, 3.75rem);    /* 40–60px */
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+h2, .h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 3.5vw, 2.75rem);    /* 32–44px */
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+h3, .h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-24);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+h4, .h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-20);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+p, .p {
+  font-family: var(--font-sans);
+  font-size: var(--fs-16);
+  line-height: 1.6;
+  color: var(--fg-1);
+}
+
+.p-sm, small {
+  font-family: var(--font-sans);
+  font-size: var(--fs-14);
+  line-height: 1.5;
+  color: var(--fg-2);
+}
+
+.caption {
+  font-family: var(--font-sans);
+  font-size: var(--fs-12);
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: var(--fs-13);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+code, .code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.9em;
+  background: var(--bg-elev-2);
+  padding: 0.1em 0.4em;
+  border-radius: var(--r-xs);
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--fg-on-pink);
+}
+
+/* Default focus ring used everywhere — pink, offset against cream. */
+:where(a, button, input, textarea, select):focus-visible {
+  outline: 2px solid var(--ring-focus);
+  outline-offset: 2px;
+  border-radius: var(--r-pill);
+}

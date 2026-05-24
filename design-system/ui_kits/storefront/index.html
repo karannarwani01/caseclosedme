@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>caseclosed.me — storefront UI kit</title>
+  <link rel="stylesheet" href="../../colors_and_type.css" />
+  <style>
+    /* ============================================================
+       ANIME STYLE OVERRIDE — chunky outlines, hard offset shadows,
+       saturated cel-shaded palette. Carries the anime vocabulary
+       (set in preview/components-buttons.html, /-fields.html,
+       /-navbar.html) end-to-end across the storefront prototype.
+       ============================================================ */
+    :root {
+      --anime-pink:   #ff2e93;
+      --anime-purple: #8a2be8;
+      --anime-cyan:   #1ee3ff;
+      --anime-lime:   #c4ff3d;
+      --anime-yellow: #ffd60a;
+      --anime-ink:    #0d0a1a;
+      --anime-paper:  #fff8f0;
+
+      /* Re-route brand tokens to anime values */
+      --brand-bg:        var(--anime-paper);
+      --brand-ink:       var(--anime-ink);
+      --brand-pink:      var(--anime-pink);
+      --brand-pink-hover:#ff0a7a;
+      --brand-cyan:      var(--anime-cyan);
+      --brand-yellow:    var(--anime-yellow);
+      --brand-cream-2:   #fff1c4;
+
+      --bg-page:    var(--anime-paper);
+      --bg-elev-1:  #ffffff;
+      --bg-elev-2:  var(--anime-cyan);
+
+      --fg-1: var(--anime-ink);
+      --fg-2: rgba(13,10,26,0.78);
+      --fg-3: rgba(13,10,26,0.55);
+      --fg-disabled: rgba(13,10,26,0.30);
+
+      --accent:        var(--anime-pink);
+      --accent-hover:  #ff0a7a;
+      --accent-info:   var(--anime-cyan);
+      --accent-warn:   var(--anime-yellow);
+
+      --ink-95: rgba(13,10,26,0.95);
+      --ink-70: rgba(13,10,26,0.78);
+      --ink-50: rgba(13,10,26,0.50);
+      --ink-30: rgba(13,10,26,0.30);
+      --ink-10: var(--anime-ink);
+      --ink-05: var(--anime-ink);
+
+      --border-soft:    var(--anime-ink);
+      --border-divider: var(--anime-ink);
+      --ring-focus:     var(--anime-pink);
+
+      /* Hard offset shadows — the signature anime move */
+      --shadow-card-rest:  5px 5px 0 0 var(--anime-ink);
+      --shadow-card-hover: 9px 9px 0 0 var(--anime-pink);
+      --shadow-nav:        6px 6px 0 0 var(--anime-ink);
+      --shadow-sm:         3px 3px 0 0 var(--anime-ink);
+
+      --r-2xl:  16px;
+      --r-xl:   14px;
+      --r-pill: 999px;
+    }
+
+    /* Halftone-dot ambient backdrop */
+    body {
+      background:
+        radial-gradient(circle, rgba(13,10,26,0.06) 1px, transparent 1.5px) 0 0 / 14px 14px,
+        var(--anime-paper) !important;
+    }
+
+    /* Chunky outlined cards — applied to anything className="ck-card" */
+    .ck-card {
+      border: 2.5px solid var(--anime-ink) !important;
+      border-radius: 16px !important;
+      box-shadow: 5px 5px 0 0 var(--anime-ink) !important;
+      transition: transform 120ms var(--ease-out), box-shadow 120ms var(--ease-out) !important;
+    }
+    .ck-card:hover {
+      transform: translate(-2px, -2px) rotate(-1deg) !important;
+      box-shadow: 9px 9px 0 0 var(--anime-pink) !important;
+      outline: none !important;
+    }
+    .ck-card:hover .ck-figure { transform: scale(1.08) rotate(2deg) !important; }
+
+    /* Navbar — match the preview card */
+    nav[role="navigation"], main + footer + *, body > div > div:first-child > nav,
+    div > nav {
+      background: #fff !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      border: 2.5px solid var(--anime-ink) !important;
+      border-radius: 18px !important;
+      box-shadow: 6px 6px 0 0 var(--anime-ink) !important;
+    }
+    nav a { transition: background 120ms !important; }
+
+    /* Heading + label vibe */
+    h1, h2, h3 {
+      font-family: var(--font-display);
+      font-weight: 800 !important;
+      letter-spacing: -0.01em;
+    }
+
+    /* Primary CTA button (Add to Cart, Checkout) */
+    button[aria-label="Add to cart"],
+    button[aria-label="Please select an option"],
+    button.anime-cta {
+      background: var(--anime-pink) !important;
+      color: #fff !important;
+      border: 2.5px solid var(--anime-ink) !important;
+      border-radius: 14px !important;
+      box-shadow: 5px 5px 0 0 var(--anime-ink) !important;
+      font-family: var(--font-display) !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.08em !important;
+      text-transform: uppercase !important;
+      transition: transform 100ms, box-shadow 100ms !important;
+    }
+    button[aria-label="Add to cart"]:hover:not([disabled]),
+    button.anime-cta:hover:not([disabled]) {
+      transform: translate(-1px,-1px) !important;
+      box-shadow: 6px 6px 0 0 var(--anime-ink) !important;
+    }
+    button[aria-label="Add to cart"]:active:not([disabled]),
+    button.anime-cta:active:not([disabled]) {
+      transform: translate(3px,3px) !important;
+      box-shadow: 1px 1px 0 0 var(--anime-ink) !important;
+    }
+
+    /* Cart drawer */
+    [data-anime-drawer] {
+      background: #fff !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      border-left: 4px solid var(--anime-ink) !important;
+    }
+  </style>
+  <style>
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--bg-page);
+      color: var(--fg-1);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+    }
+    #root { min-height: 100vh; }
+    button { font-family: inherit; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script type="text/babel" src="data.jsx"></script>
+  <script type="text/babel" src="Icons.jsx"></script>
+  <script type="text/babel" src="Brand.jsx"></script>
+  <script type="text/babel" src="ProductCard.jsx"></script>
+  <script type="text/babel" src="Navbar.jsx"></script>
+  <script type="text/babel" src="HeroGrid.jsx"></script>
+  <script type="text/babel" src="Carousel.jsx"></script>
+  <script type="text/babel" src="SearchPage.jsx"></script>
+  <script type="text/babel" src="ProductPage.jsx"></script>
+  <script type="text/babel" src="CartModal.jsx"></script>
+  <script type="text/babel" src="Footer.jsx"></script>
+  <script type="text/babel" src="App.jsx"></script>
+</body>
+</html>
