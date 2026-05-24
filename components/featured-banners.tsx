@@ -1,37 +1,66 @@
 import Link from "next/link";
 
-type Brand = { name: string; href: string; bg: string };
+type Brand = {
+  name: string;
+  href: string;
+  bg: string;
+  glyph: string;
+};
 
 const BRANDS: Brand[] = [
   {
-    name: "Good Smile",
-    href: "/search/good-smile",
-    bg: "linear-gradient(135deg, var(--color-anime-orange) 0%, #ffaa00 100%)",
+    name: "Naruto",
+    href: "/search/naruto",
+    bg: "linear-gradient(135deg, #ff6a1f 0%, #ffaa00 100%)",
+    glyph: "🍥",
   },
   {
-    name: "Bandai",
-    href: "/search/bandai",
-    bg: "linear-gradient(135deg, var(--color-anime-pink) 0%, var(--color-anime-purple) 100%)",
+    name: "One Piece",
+    href: "/search/one-piece",
+    bg: "linear-gradient(135deg, #e23636 0%, #ffd60a 100%)",
+    glyph: "☠️",
   },
   {
-    name: "Funko",
-    href: "/search/funko",
-    bg: "linear-gradient(135deg, var(--color-anime-cyan) 0%, var(--color-anime-yellow) 100%)",
+    name: "DC",
+    href: "/search/dc",
+    bg: "linear-gradient(135deg, #0476f2 0%, #0d0a1a 100%)",
+    glyph: "⚡",
   },
   {
-    name: "Pop Mart",
-    href: "/search/pop-mart",
-    bg: "linear-gradient(135deg, var(--color-anime-pink) 0%, var(--color-anime-lime) 100%)",
+    name: "Barbie",
+    href: "/search/barbie",
+    bg: "linear-gradient(135deg, #ff6fa3 0%, #ff2e93 100%)",
+    glyph: "💖",
   },
   {
-    name: "Hot Toys",
-    href: "/search/hot-toys",
-    bg: "linear-gradient(135deg, var(--color-anime-ink) 0%, var(--color-anime-purple) 100%)",
+    name: "Super Mario",
+    href: "/search/super-mario",
+    bg: "linear-gradient(135deg, #e23636 0%, #1ee3ff 100%)",
+    glyph: "🍄",
   },
   {
     name: "Lego",
     href: "/search/lego",
-    bg: "linear-gradient(135deg, var(--color-anime-yellow) 0%, var(--color-anime-orange) 100%)",
+    bg: "linear-gradient(135deg, #ffd60a 0%, #e23636 100%)",
+    glyph: "🧱",
+  },
+  {
+    name: "Hot Wheels",
+    href: "/search/hot-wheels",
+    bg: "linear-gradient(135deg, #ff6a1f 0%, #e23636 100%)",
+    glyph: "🏎️",
+  },
+  {
+    name: "Pop Mart",
+    href: "/search/pop-mart",
+    bg: "linear-gradient(135deg, #ff2e93 0%, #8a2be8 100%)",
+    glyph: "🎁",
+  },
+  {
+    name: "Funko",
+    href: "/search/funko",
+    bg: "linear-gradient(135deg, #1ee3ff 0%, #ffd60a 100%)",
+    glyph: "🤖",
   },
 ];
 
@@ -46,15 +75,18 @@ export function FeaturedBrandsRow() {
           Most viewed brands
         </h2>
       </div>
-      <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-6">
+      <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-9">
         {BRANDS.map((b) => (
           <li key={b.name}>
             <Link
               href={b.href}
-              className="flex h-32 items-center justify-center rounded-2xl border-[2.5px] border-anime-ink p-4 text-center shadow-[5px_5px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[7px_7px_0_0_var(--color-anime-pink)] md:h-36"
+              className="flex h-36 flex-col items-center justify-center gap-2 rounded-2xl border-[2.5px] border-anime-ink p-3 text-center shadow-[5px_5px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[7px_7px_0_0_var(--color-anime-pink)] md:h-40"
               style={{ background: b.bg }}
             >
-              <span className="font-display text-xl font-extrabold uppercase leading-tight tracking-tight text-white drop-shadow-[3px_3px_0_rgba(13,10,26,0.6)] md:text-2xl">
+              <span className="text-4xl drop-shadow-[2px_2px_0_rgba(13,10,26,0.6)] md:text-5xl">
+                {b.glyph}
+              </span>
+              <span className="font-display text-sm font-extrabold uppercase leading-tight tracking-tight text-white drop-shadow-[2px_2px_0_rgba(13,10,26,0.7)] md:text-base">
                 {b.name}
               </span>
             </Link>
