@@ -4,7 +4,7 @@ const Prose = ({ html, className }: { html: string; className?: string }) => {
   return (
     <div
       className={clsx(
-        "prose mx-auto max-w-6xl text-base leading-7 text-black prose-headings:mt-8 prose-headings:font-semibold prose-headings:tracking-wide prose-headings:text-black prose-h1:text-5xl prose-h2:text-4xl prose-h3:text-3xl prose-h4:text-2xl prose-h5:text-xl prose-h6:text-lg prose-a:text-black prose-a:underline prose-a:hover:text-neutral-300 prose-strong:text-black prose-ol:mt-8 prose-ol:list-decimal prose-ol:pl-6 prose-ul:mt-8 prose-ul:list-disc prose-ul:pl-6 dark:text-white dark:prose-headings:text-white dark:prose-a:text-white dark:prose-strong:text-white",
+        "prose mx-auto max-w-6xl text-lg leading-relaxed text-anime-ink sm:text-xl prose-headings:mt-10 prose-headings:font-display prose-headings:font-extrabold prose-headings:uppercase prose-headings:tracking-tight prose-headings:text-anime-ink prose-h1:text-5xl prose-h2:text-4xl prose-h3:text-3xl prose-h4:text-2xl prose-h5:text-xl prose-h6:text-lg prose-a:text-anime-pink prose-a:font-semibold prose-a:underline prose-a:underline-offset-2 prose-a:hover:opacity-80 prose-strong:text-anime-ink prose-strong:font-bold prose-ol:mt-6 prose-ol:list-decimal prose-ol:pl-6 prose-ul:mt-6 prose-ul:list-disc prose-ul:pl-6 prose-li:my-1.5",
         className,
       )}
       dangerouslySetInnerHTML={{ __html: html }}

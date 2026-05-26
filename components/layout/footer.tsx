@@ -3,12 +3,15 @@ import LogoSquare from "components/logo-square";
 
 const { COMPANY_NAME, SITE_NAME } = process.env;
 
+// "My Account" leaves the storefront for Shopify's hosted customer login.
+const SHOPIFY_ACCOUNT_URL = `https://${process.env.SHOPIFY_STORE_DOMAIN || "rje5fv-8c.myshopify.com"}/account`;
+
 const customerService = [
   { title: "About", path: "/about" },
   { title: "Our Locations", path: "/locations" },
   { title: "Refund Request Form", path: "/refund-request" },
   { title: "Drop Alerts Membership", path: "/drop-alerts" },
-  { title: "My Account", path: "/account" },
+  { title: "My Account", path: SHOPIFY_ACCOUNT_URL },
 ];
 
 const terms = [
