@@ -2,9 +2,9 @@ import { getCollection, getCollectionProducts } from "lib/shopify";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import Grid from "components/grid";
-import ProductGridItems from "components/layout/product-grid-items";
+import { FeedBrowse } from "components/feed/feed-browse";
 import { defaultSort, sorting } from "lib/constants";
+import { filterDemoByCollection, USE_DEMO_PRODUCTS } from "lib/demo-products";
 
 export async function generateMetadata(props: {
   params: Promise<{ collection: string }>;
@@ -32,21 +32,16 @@ export default async function CategoryPage(props: {
   const { sort } = searchParams as { [key: string]: string };
   const { sortKey, reverse } =
     sorting.find((item) => item.slug === sort) || defaultSort;
-  const products = await getCollectionProducts({
-    collection: params.collection,
-    sortKey,
-    reverse,
-  });
 
-  return (
-    <section>
-      {products.length === 0 ? (
-        <p className="py-3 text-lg">{`No products found in this collection`}</p>
-      ) : (
-        <Grid className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          <ProductGridItems products={products} />
-        </Grid>
-      )}
-    </section>
-  );
+  const [collection, liveProducts] = await Promise.all([
+    getCollection(params.collection),
+    getCollectionProducts({ collection: params.collection, sortKey, reverse }),
+  ]);
+  const products = USE_DEMO_PRODUCTS
+    ? filterDemoByCollection(params.collection)
+    : liveProducts;
+
+  const heading = collection?.title || params.collection;
+
+  return <FeedBrowse products={products} heading={heading} />;
 }
