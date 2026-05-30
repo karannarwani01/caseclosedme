@@ -1,4 +1,4 @@
-import { UserIcon } from "@heroicons/react/24/outline";
+import { HeartIcon, UserIcon } from "@heroicons/react/24/outline";
 import CartModal from "components/cart/modal";
 import LogoSquare from "components/logo-square";
 import { getMenu } from "lib/shopify";
@@ -35,7 +35,7 @@ export async function Navbar() {
         <Link
           href="/"
           prefetch={true}
-          className="flex flex-1 items-center gap-4"
+          className="flex shrink-0 items-center gap-4"
           aria-label="caseclosed home"
         >
           <div className="flex md:hidden">
@@ -51,18 +51,28 @@ export async function Navbar() {
 
         <NavMenu links={links} />
 
-        <div className="flex flex-1 items-center justify-end gap-4">
-          <div className="hidden md:block md:w-64 lg:w-80">
+        <div className="flex flex-1 justify-center">
+          <div className="hidden w-full min-w-[200px] max-w-md md:block">
             <Suspense fallback={<SearchSkeleton />}>
               <Search />
             </Suspense>
           </div>
+        </div>
+
+        <div className="flex shrink-0 items-center gap-3">
           <Link
             href={ACCOUNT_URL}
             aria-label="Log in to your account"
             className="grid h-14 w-14 place-items-center rounded-2xl border-[2.5px] border-anime-ink bg-anime-cyan text-anime-ink shadow-[4px_4px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[5px_5px_0_0_var(--color-anime-ink)]"
           >
             <UserIcon className="h-6 w-6" strokeWidth={2.5} />
+          </Link>
+          <Link
+            href="/wishlist"
+            aria-label="Wishlist"
+            className="grid h-14 w-14 place-items-center rounded-2xl border-[2.5px] border-anime-ink bg-anime-lime text-anime-ink shadow-[4px_4px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[5px_5px_0_0_var(--color-anime-ink)]"
+          >
+            <HeartIcon className="h-6 w-6" strokeWidth={2.5} />
           </Link>
           <CartModal />
         </div>
