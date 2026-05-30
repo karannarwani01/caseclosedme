@@ -9,8 +9,8 @@ import MobileMenu from "./mobile-menu";
 import { NavMenu } from "./nav-menu";
 import Search, { SearchSkeleton } from "./search";
 
-// Shopify-hosted customer account (login / register / order history).
-const ACCOUNT_URL = `https://${process.env.SHOPIFY_STORE_DOMAIN || "rje5fv-8c.myshopify.com"}/account`;
+// Shopify-hosted new customer accounts (login / order history / account).
+const ACCOUNT_URL = "https://shopify.com/71115997383/account";
 
 export async function Navbar() {
   const menu = await getMenu("next-js-frontend-header-menu");
