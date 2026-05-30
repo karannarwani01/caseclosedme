@@ -49,12 +49,12 @@ function FieldLabel({
 }) {
   return (
     <div className="mb-2 flex items-baseline justify-between gap-3">
-      <span className="font-display text-sm font-extrabold uppercase tracking-[0.18em] text-anime-ink">
+      <span className="text-sm font-extrabold uppercase tracking-[0.18em] text-anime-ink">
         {label}
         {required && <span className="ml-1 text-anime-pink">*</span>}
       </span>
       {error && (
-        <span className="font-display text-xs font-bold uppercase tracking-wider text-anime-pink">
+        <span className="text-xs font-bold uppercase tracking-wider text-anime-pink">
           {error}
         </span>
       )}
@@ -77,8 +77,8 @@ export function RefundRequestForm() {
 
   if (state.status === "success") {
     return (
-      <div className="rounded-md border-[2.5px] border-anime-ink bg-anime-lime p-7 shadow-[6px_6px_0_0_var(--color-anime-pink)]">
-        <h2 className="font-display text-3xl font-extrabold uppercase tracking-tight text-anime-ink">
+      <div className="rounded-md border-[2.5px] border-anime-ink bg-anime-lime p-7 shadow-[6px_6px_0_0_var(--color-anime-pink)] [font-family:var(--font-spacegrotesk)]">
+        <h2 className="text-4xl uppercase tracking-wide text-anime-ink [font-family:var(--font-bangers)]">
           ★ Got it
         </h2>
         <p className="mt-3 text-base text-anime-ink sm:text-lg">{state.message}</p>
@@ -89,7 +89,11 @@ export function RefundRequestForm() {
   const err = state.fieldErrors || {};
 
   return (
-    <form action={formAction} noValidate className="flex flex-col gap-5">
+    <form
+      action={formAction}
+      noValidate
+      className="flex flex-col gap-5 [font-family:var(--font-spacegrotesk)]"
+    >
       {state.status === "error" && state.message && (
         <div className="rounded-md border-[2.5px] border-anime-ink bg-anime-yellow px-5 py-3.5 text-base font-medium text-anime-ink">
           {state.message}
@@ -339,7 +343,7 @@ export function RefundRequestForm() {
       <button
         type="submit"
         disabled={pending}
-        className="mt-3 inline-flex items-center justify-center rounded-md border-[2.5px] border-anime-ink bg-anime-lime px-8 py-4 font-display text-lg font-extrabold uppercase tracking-wider text-anime-ink shadow-[4px_4px_0_0_var(--color-anime-pink)] transition-transform hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_var(--color-anime-pink)] disabled:cursor-not-allowed disabled:opacity-50 sm:text-xl"
+        className="mt-3 inline-flex items-center justify-center rounded-md border-[2.5px] border-anime-ink bg-anime-lime px-8 py-4 text-xl uppercase tracking-wider text-anime-ink shadow-[4px_4px_0_0_var(--color-anime-pink)] transition-transform [font-family:var(--font-bangers)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_var(--color-anime-pink)] disabled:cursor-not-allowed disabled:opacity-50 sm:text-2xl"
       >
         {pending ? "Sending…" : "★ Submit refund request"}
       </button>

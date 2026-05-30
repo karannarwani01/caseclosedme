@@ -15,10 +15,10 @@ export default function RefundRequestPage() {
           <span className="inline-flex items-center rounded-md border-[2.5px] border-anime-ink bg-anime-pink px-3.5 py-1.5 font-display text-sm font-extrabold uppercase tracking-widest text-white shadow-[3px_3px_0_0_var(--color-anime-ink)]">
             ★ Returns
           </span>
-          <h1 className="mt-6 font-display text-5xl font-extrabold uppercase tracking-tight text-anime-ink sm:text-6xl">
+          <h1 className="mt-6 text-6xl uppercase tracking-wide text-anime-ink [font-family:var(--font-bangers)] sm:text-7xl">
             Refund Request Form
           </h1>
-          <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-anime-ink/70 sm:text-lg">
+          <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-anime-ink/70 [font-family:var(--font-spacegrotesk)] sm:text-lg">
             Complete this form to start a refund request for any eligible
             purchase from caseclosed. Please review our{" "}
             <a
