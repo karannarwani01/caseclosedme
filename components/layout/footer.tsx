@@ -62,14 +62,6 @@ function SocialIcon({ name }: { name: "instagram" | "facebook" | "youtube" | "ti
   );
 }
 
-function PayBadge({ label }: { label: string }) {
-  return (
-    <span className="inline-flex h-7 items-center rounded-md border-[2px] border-anime-ink bg-white px-2 font-display text-[10px] font-extrabold uppercase tracking-wider text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)]">
-      {label}
-    </span>
-  );
-}
-
 function LinkColumn({
   title,
   links,
@@ -158,16 +150,6 @@ export default async function Footer() {
           >
             ★ See our happy collectors
           </Link>
-
-          <div className="flex flex-wrap gap-1.5">
-            <PayBadge label="Visa" />
-            <PayBadge label="MC" />
-            <PayBadge label="Amex" />
-            <PayBadge label="PayPal" />
-            <PayBadge label="Apple Pay" />
-            <PayBadge label="GPay" />
-            <PayBadge label="Discover" />
-          </div>
         </div>
 
         <LinkColumn title="Customer Service" links={customerService} />
