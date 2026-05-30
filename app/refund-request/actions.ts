@@ -14,6 +14,24 @@ export type RefundFormState = {
   status: "idle" | "success" | "error";
   message?: string;
   fieldErrors?: Record<string, string>;
+  values?: {
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+    phone?: string;
+    order_number?: string;
+    purchase_date?: string;
+    purchase_platform?: string;
+    refund_types?: string[];
+    refund_other?: string;
+    item_names?: string;
+    return_method?: string;
+    return_other?: string;
+    notes?: string;
+    refund_method?: string;
+    confirm_accurate?: boolean;
+    confirm_policy?: boolean;
+  };
 };
 
 export async function submitRefundRequest(
@@ -63,6 +81,26 @@ export async function submitRefundRequest(
       status: "error",
       message: "Please fix the highlighted fields.",
       fieldErrors,
+      // Echo entered values back so the form can repopulate them (React 19
+      // resets uncontrolled fields after an action; defaultValue restores them).
+      values: {
+        first_name: fields.first_name,
+        last_name: fields.last_name,
+        email: fields.email,
+        phone: fields.phone,
+        order_number: fields.order_number,
+        purchase_date: fields.purchase_date,
+        purchase_platform: fields.purchase_platform,
+        refund_types: fields.refund_types,
+        refund_other: fields.refund_other,
+        item_names: fields.item_names,
+        return_method: fields.return_method,
+        return_other: fields.return_other,
+        notes: fields.notes,
+        refund_method: fields.refund_method,
+        confirm_accurate: fields.confirm_accurate,
+        confirm_policy: fields.confirm_policy,
+      },
     };
   }
 

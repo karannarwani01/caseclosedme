@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { type FormEvent, useActionState, useState } from "react";
 import {
   submitRefundRequest,
   type RefundFormState,
@@ -70,10 +70,34 @@ export function RefundRequestForm() {
     submitRefundRequest,
     initialState,
   );
-  const [refundTypes, setRefundTypes] = useState<string[]>([]);
-  const [returnMethod, setReturnMethod] = useState<string>("");
-  const showOther = refundTypes.includes("Other (please specify)");
-  const showReturnOther = returnMethod === "Other (please specify)";
+  const vals = state.values || {};
+  const OTHER = "Other (please specify)";
+  const [showOther, setShowOther] = useState(
+    (vals.refund_types || []).includes(OTHER),
+  );
+  const [showReturnOther, setShowReturnOther] = useState(
+    vals.return_method === OTHER,
+  );
+  const [refundTypeError, setRefundTypeError] = useState(false);
+
+  // Validate on the client so the form never submits with a missing field —
+  // that's what was wiping entries (React resets the form after the action).
+  // The browser handles required inputs natively; we only add the "at least
+  // one refund type" rule here.
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    const form = e.currentTarget;
+    const hasRefundType =
+      form.querySelectorAll('input[name="refund_type"]:checked').length > 0;
+    if (!hasRefundType) {
+      e.preventDefault();
+      setRefundTypeError(true);
+      form
+        .querySelector('input[name="refund_type"]')
+        ?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    setRefundTypeError(false);
+  }
 
   if (state.status === "success") {
     return (
@@ -91,7 +115,7 @@ export function RefundRequestForm() {
   return (
     <form
       action={formAction}
-      noValidate
+      onSubmit={handleSubmit}
       className="flex flex-col gap-5 [font-family:var(--font-spacegrotesk)]"
     >
       {state.status === "error" && state.message && (
@@ -103,17 +127,34 @@ export function RefundRequestForm() {
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <FieldLabel label="First name" required error={err.first_name} />
-          <input name="first_name" type="text" className={inputCls} required />
+          <input
+            name="first_name"
+            type="text"
+            className={inputCls}
+            defaultValue={vals.first_name || ""}
+            required
+          />
         </div>
         <div>
           <FieldLabel label="Last name" />
-          <input name="last_name" type="text" className={inputCls} />
+          <input
+            name="last_name"
+            type="text"
+            className={inputCls}
+            defaultValue={vals.last_name || ""}
+          />
         </div>
       </div>
 
       <div>
         <FieldLabel label="Email" required error={err.email} />
-        <input name="email" type="email" className={inputCls} required />
+        <input
+          name="email"
+          type="email"
+          className={inputCls}
+          defaultValue={vals.email || ""}
+          required
+        />
       </div>
 
       <div>
@@ -125,6 +166,7 @@ export function RefundRequestForm() {
             type="tel"
             className={`${inputCls} rounded-l-none`}
             placeholder="50 123 4567"
+            defaultValue={vals.phone || ""}
             required
           />
         </div>
@@ -137,6 +179,7 @@ export function RefundRequestForm() {
           type="text"
           placeholder="#1001"
           className={inputCls}
+          defaultValue={vals.order_number || ""}
           required
         />
       </div>
@@ -147,6 +190,7 @@ export function RefundRequestForm() {
           name="purchase_date"
           type="date"
           className={inputCls}
+          defaultValue={vals.purchase_date || ""}
           required
         />
       </div>
@@ -157,7 +201,12 @@ export function RefundRequestForm() {
           required
           error={err.purchase_platform}
         />
-        <select name="purchase_platform" className={inputCls} required defaultValue="">
+        <select
+          name="purchase_platform"
+          className={inputCls}
+          required
+          defaultValue={vals.purchase_platform || ""}
+        >
           <option value="" disabled>
             Select one
           </option>
@@ -173,34 +222,29 @@ export function RefundRequestForm() {
         <FieldLabel
           label="Refund type (check all that apply)"
           required
-          error={err.refund_type}
+          error={refundTypeError ? "Select at least one" : err.refund_type}
         />
         <div className="flex flex-col gap-3 rounded-md border-[2.5px] border-anime-ink bg-white p-5">
-          {REFUND_TYPES.map((opt) => {
-            const checked = refundTypes.includes(opt);
-            return (
-              <label
-                key={opt}
-                className="flex cursor-pointer items-start gap-3.5 text-base text-anime-ink sm:text-lg"
-              >
-                <input
-                  type="checkbox"
-                  name="refund_type"
-                  value={opt}
-                  checked={checked}
-                  onChange={(e) =>
-                    setRefundTypes((prev) =>
-                      e.target.checked
-                        ? [...prev, opt]
-                        : prev.filter((x) => x !== opt),
-                    )
-                  }
-                  className="mt-1 h-5 w-5 accent-anime-pink"
-                />
-                <span>{opt}</span>
-              </label>
-            );
-          })}
+          {REFUND_TYPES.map((opt) => (
+            <label
+              key={opt}
+              className="flex cursor-pointer items-start gap-3.5 text-base text-anime-ink sm:text-lg"
+            >
+              <input
+                type="checkbox"
+                name="refund_type"
+                value={opt}
+                defaultChecked={(vals.refund_types || []).includes(opt)}
+                onChange={
+                  opt === OTHER
+                    ? (e) => setShowOther(e.target.checked)
+                    : undefined
+                }
+                className="mt-1 h-5 w-5 accent-anime-pink"
+              />
+              <span>{opt}</span>
+            </label>
+          ))}
         </div>
         {showOther && (
           <input
@@ -208,6 +252,7 @@ export function RefundRequestForm() {
             type="text"
             placeholder="Tell us more"
             className={`${inputCls} mt-3`}
+            defaultValue={vals.refund_other || ""}
           />
         )}
       </div>
@@ -219,6 +264,7 @@ export function RefundRequestForm() {
           rows={2}
           placeholder="e.g. Naruto Sage Mode Funko Pop #1234"
           className={inputCls}
+          defaultValue={vals.item_names || ""}
           required
         />
       </div>
@@ -229,8 +275,8 @@ export function RefundRequestForm() {
           name="return_method"
           className={inputCls}
           required
-          value={returnMethod}
-          onChange={(e) => setReturnMethod(e.target.value)}
+          defaultValue={vals.return_method || ""}
+          onChange={(e) => setShowReturnOther(e.target.value === OTHER)}
         >
           <option value="" disabled>
             Select one
@@ -247,6 +293,7 @@ export function RefundRequestForm() {
             type="text"
             placeholder="Tell us more"
             className={`${inputCls} mt-3`}
+            defaultValue={vals.return_other || ""}
           />
         )}
       </div>
@@ -258,6 +305,7 @@ export function RefundRequestForm() {
           rows={4}
           placeholder="Anything else we should know?"
           className={inputCls}
+          defaultValue={vals.notes || ""}
         />
       </div>
 
@@ -281,7 +329,12 @@ export function RefundRequestForm() {
           required
           error={err.refund_method}
         />
-        <select name="refund_method" className={inputCls} required defaultValue="">
+        <select
+          name="refund_method"
+          className={inputCls}
+          required
+          defaultValue={vals.refund_method || ""}
+        >
           <option value="" disabled>
             Select one
           </option>
@@ -301,6 +354,7 @@ export function RefundRequestForm() {
               type="checkbox"
               name="confirm_accurate"
               className="mt-1 h-5 w-5 shrink-0 accent-anime-pink"
+              defaultChecked={!!vals.confirm_accurate}
               required
             />
             <span>
@@ -318,6 +372,7 @@ export function RefundRequestForm() {
               type="checkbox"
               name="confirm_policy"
               className="mt-1 h-5 w-5 shrink-0 accent-anime-pink"
+              defaultChecked={!!vals.confirm_policy}
               required
             />
             <span>

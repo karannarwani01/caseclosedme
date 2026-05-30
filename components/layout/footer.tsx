@@ -106,7 +106,7 @@ export default async function Footer() {
   const lastUpdated = "24/05/2026";
 
   return (
-    <footer className="mt-16 border-t-[2.5px] border-anime-ink bg-anime-ink text-white">
+    <footer className="mt-auto border-t-[2.5px] border-anime-ink bg-anime-ink text-white">
       <div className="mx-auto grid w-full max-w-[1800px] gap-10 px-6 py-14 lg:px-8 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1.2fr_1.2fr_1fr_0.8fr]">
         <div className="flex flex-col gap-5">
           <Link
