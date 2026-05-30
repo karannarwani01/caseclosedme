@@ -1,3 +1,4 @@
+import { UserIcon } from "@heroicons/react/24/outline";
 import CartModal from "components/cart/modal";
 import LogoSquare from "components/logo-square";
 import { getMenu } from "lib/shopify";
@@ -7,6 +8,9 @@ import { Suspense } from "react";
 import MobileMenu from "./mobile-menu";
 import { NavMenu } from "./nav-menu";
 import Search, { SearchSkeleton } from "./search";
+
+// Shopify-hosted customer account (login / register / order history).
+const ACCOUNT_URL = `https://${process.env.SHOPIFY_STORE_DOMAIN || "rje5fv-8c.myshopify.com"}/account`;
 
 export async function Navbar() {
   const menu = await getMenu("next-js-frontend-header-menu");
@@ -53,6 +57,16 @@ export async function Navbar() {
               <Search />
             </Suspense>
           </div>
+          <Link
+            href={ACCOUNT_URL}
+            aria-label="Log in to your account"
+            className="inline-flex h-14 items-center gap-2 rounded-2xl border-[2.5px] border-anime-ink bg-anime-cyan px-3 text-anime-ink shadow-[4px_4px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[5px_5px_0_0_var(--color-anime-ink)] sm:px-5"
+          >
+            <UserIcon className="h-6 w-6 shrink-0" strokeWidth={2.5} />
+            <span className="hidden font-display text-base font-extrabold uppercase tracking-wide sm:inline">
+              Log in
+            </span>
+          </Link>
           <CartModal />
         </div>
       </nav>
