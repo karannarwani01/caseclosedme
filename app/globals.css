@@ -127,3 +127,19 @@ button {
   margin: 0;
   padding: 0 1.25rem 1rem;
 }
+
+/* Boxed-paragraph style: each top-level paragraph/list in a card, so existing
+   Shopify policy content reads as filled boxes (no markup change needed). */
+.prose > p,
+.prose > ul,
+.prose > ol {
+  background: #fff;
+  border: 2.5px solid var(--color-anime-ink);
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  margin: 0.85rem 0;
+}
+.prose > ul,
+.prose > ol {
+  padding-left: 2.5rem;
+}
