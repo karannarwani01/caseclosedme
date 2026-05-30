@@ -87,3 +87,43 @@ button {
   background: var(--color-anime-pink);
   color: white;
 }
+
+/* FAQ-style accordion dropdowns inside Prose content (uses native <details>). */
+.prose details {
+  margin: 0.75rem 0;
+  border: 2.5px solid var(--color-anime-ink);
+  border-radius: 0.5rem;
+  background: #fff;
+  overflow: hidden;
+}
+.prose summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  font-weight: 700;
+  color: var(--color-anime-ink);
+}
+.prose summary::-webkit-details-marker {
+  display: none;
+}
+.prose summary::after {
+  content: "+";
+  font-family: var(--font-bangers), sans-serif;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--color-anime-pink);
+}
+.prose details[open] summary {
+  background: var(--color-anime-paper);
+}
+.prose details[open] summary::after {
+  content: "\2212"; /* minus sign */
+}
+.prose details > *:not(summary) {
+  margin: 0;
+  padding: 0 1.25rem 1rem;
+}
