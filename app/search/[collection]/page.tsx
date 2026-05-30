@@ -10,6 +10,17 @@ export async function generateMetadata(props: {
   params: Promise<{ collection: string }>;
 }): Promise<Metadata> {
   const params = await props.params;
+
+  // In demo mode there is no live Shopify collection to look up, so build
+  // metadata from the handle instead of 404ing the whole page.
+  if (USE_DEMO_PRODUCTS) {
+    const title = params.collection.replace(/-/g, " ");
+    return {
+      title,
+      description: `${title} products`,
+    };
+  }
+
   const collection = await getCollection(params.collection);
 
   if (!collection) return notFound();
@@ -33,13 +44,18 @@ export default async function CategoryPage(props: {
   const { sortKey, reverse } =
     sorting.find((item) => item.slug === sort) || defaultSort;
 
-  const [collection, liveProducts] = await Promise.all([
-    getCollection(params.collection),
-    getCollectionProducts({ collection: params.collection, sortKey, reverse }),
-  ]);
-  const products = USE_DEMO_PRODUCTS
-    ? filterDemoByCollection(params.collection)
-    : liveProducts;
+  // In demo mode, skip Shopify entirely — those calls throw without a
+  // configured store and crash the server render.
+  const [collection, products] = USE_DEMO_PRODUCTS
+    ? [null, filterDemoByCollection(params.collection)]
+    : await Promise.all([
+        getCollection(params.collection),
+        getCollectionProducts({
+          collection: params.collection,
+          sortKey,
+          reverse,
+        }),
+      ]);
 
   const heading = collection?.title || params.collection;
 

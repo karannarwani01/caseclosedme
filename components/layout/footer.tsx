@@ -16,7 +16,7 @@ const customerService = [
 
 const terms = [
   { title: "Shop Now, Pay Later", path: "/shop-now-pay-later" },
-  { title: "Terms & Conditions", path: "/terms" },
+  { title: "Terms & Conditions", path: "/terms-conditions" },
   { title: "Privacy Policy", path: "/privacy" },
   { title: "Shipping Policy", path: "/shipping" },
   { title: "Pre-Order Policy", path: "/pre-order" },

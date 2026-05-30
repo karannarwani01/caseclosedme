@@ -2,7 +2,12 @@ import { CartProvider } from "components/cart/cart-context";
 import { Navbar } from "components/layout/navbar";
 import { PromoStrip } from "components/promo-strip";
 import { WelcomeToast } from "components/welcome-toast";
-import { Bricolage_Grotesque, Inter } from "next/font/google";
+import {
+  Bangers,
+  Bricolage_Grotesque,
+  Inter,
+  Space_Grotesk,
+} from "next/font/google";
 import { getCart } from "lib/shopify";
 import { ReactNode } from "react";
 import { Toaster } from "sonner";
@@ -12,6 +17,21 @@ import { baseUrl } from "lib/utils";
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
   variable: "--font-bricolage",
+  display: "swap",
+});
+
+// Quirky comic/anime display font, used for content-page headings.
+const bangers = Bangers({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-bangers",
+  display: "swap",
+});
+
+// Body font for content pages.
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-spacegrotesk",
   display: "swap",
 });
 
@@ -45,13 +65,13 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${bricolage.variable} ${inter.variable}`}
+      className={`${bricolage.variable} ${inter.variable} ${bangers.variable} ${spaceGrotesk.variable}`}
     >
-      <body className="bg-brand-bg text-brand-ink antialiased">
+      <body className="flex min-h-screen flex-col bg-brand-bg text-brand-ink antialiased">
         <CartProvider cartPromise={cart}>
           <PromoStrip />
           <Navbar />
-          <main>
+          <main className="flex flex-1 flex-col">
             {children}
             <Toaster closeButton />
             <WelcomeToast />

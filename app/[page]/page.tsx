@@ -33,23 +33,13 @@ export default async function Page(props: {
 
   return (
     <>
-      <h1 className="mb-10 font-display text-5xl font-extrabold uppercase tracking-tight text-anime-ink sm:text-6xl">
+      <h1 className="mb-10 text-6xl uppercase tracking-wide text-anime-ink [font-family:var(--font-bangers)] sm:text-7xl">
         {page.title}
       </h1>
       <Prose
-        className="mb-10 text-base leading-relaxed text-anime-ink sm:text-lg"
+        className="!text-xl leading-relaxed text-anime-ink [font-family:var(--font-spacegrotesk)] sm:!text-2xl prose-headings:!text-anime-pink prose-headings:!tracking-wide prose-headings:[font-family:var(--font-bangers)]"
         html={page.body}
       />
-      <p className="text-sm italic text-anime-ink/60 sm:text-base">
-        {`This document was last updated on ${new Intl.DateTimeFormat(
-          undefined,
-          {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          },
-        ).format(new Date(page.updatedAt))}.`}
-      </p>
     </>
   );
 }
