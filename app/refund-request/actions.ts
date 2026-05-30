@@ -3,6 +3,7 @@
 import {
   createRefundRequestRecord,
   isAdminConfigured,
+  uploadImageToShopify,
 } from "lib/shopify-admin";
 
 const FORM_ENDPOINT =
@@ -117,11 +118,29 @@ export async function submitRefundRequest(
         .filter(Boolean)
         .join("\n");
 
-      await createRefundRequestRecord({
-        summary: `Order ${fields.order_number} — ${customerName}`,
-        status: "New",
-        details,
-      });
+      // Upload any attached photos to Shopify Files (max 5).
+      const photoFiles = formData
+        .getAll("photos")
+        .filter((f): f is File => f instanceof File && f.size > 0)
+        .slice(0, 5);
+      const photoIds: string[] = [];
+      for (const f of photoFiles) {
+        try {
+          const id = await uploadImageToShopify(f);
+          if (id) photoIds.push(id);
+        } catch (e) {
+          console.error("Photo upload failed:", e);
+        }
+      }
+
+      await createRefundRequestRecord(
+        {
+          summary: `Order ${fields.order_number} — ${customerName}`,
+          status: "New",
+          details,
+        },
+        photoIds,
+      );
     } catch (e) {
       console.error("Failed to write refund request to Shopify admin:", e);
     }

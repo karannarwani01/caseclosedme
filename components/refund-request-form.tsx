@@ -252,9 +252,23 @@ export function RefundRequestForm() {
         <textarea
           name="notes"
           rows={4}
-          placeholder="Anything else we should know? (Photos: please reply to our confirmation email with attachments.)"
+          placeholder="Anything else we should know?"
           className={inputCls}
         />
+      </div>
+
+      <div>
+        <FieldLabel label="Photos (optional)" />
+        <input
+          name="photos"
+          type="file"
+          accept="image/*"
+          multiple
+          className="block w-full rounded-md border-[2.5px] border-anime-ink bg-white px-4 py-3 text-base text-anime-ink file:mr-4 file:rounded-md file:border-[2px] file:border-anime-ink file:bg-anime-lime file:px-4 file:py-2 file:font-display file:text-sm file:font-extrabold file:uppercase file:tracking-wider file:text-anime-ink hover:file:cursor-pointer"
+        />
+        <p className="mt-2 text-sm text-anime-ink/60 sm:text-base">
+          Attach photos of the item or packaging (up to 5).
+        </p>
       </div>
 
       <div>
@@ -331,8 +345,7 @@ export function RefundRequestForm() {
       </button>
 
       <p className="text-sm text-anime-ink/60 sm:text-base">
-        We reply to all requests within 1 business day. Photos can be attached
-        when you reply to our confirmation email.
+        We reply to all requests within 1 business day.
       </p>
     </form>
   );
