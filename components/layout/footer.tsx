@@ -19,7 +19,7 @@ const terms = [
   { title: "Terms & Conditions", path: "/terms-conditions" },
   { title: "Privacy Policy", path: "/privacy-policy" },
   { title: "Shipping Policy", path: "/shipping-policy" },
-  { title: "Pre-Order Policy", path: "/pre-order" },
+  { title: "Pre-Order Policy", path: "/pre-order-policy" },
   { title: "Cancellation Policy", path: "/cancellation" },
   { title: "Returns / Refunds / Exchange Policy", path: "/returns" },
 ];
