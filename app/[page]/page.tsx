@@ -33,7 +33,7 @@ export default async function Page(props: {
 
   return (
     <>
-      <h1 className="mb-10 text-6xl uppercase tracking-wide text-anime-ink [font-family:var(--font-bangers)] sm:text-7xl">
+      <h1 className="mb-10 text-3xl uppercase tracking-wide text-anime-ink text-balance [font-family:var(--font-bangers)] sm:text-5xl">
         {page.title}
       </h1>
       <Prose
