@@ -1,5 +1,10 @@
 "use server";
 
+import {
+  createRefundRequestRecord,
+  isAdminConfigured,
+} from "lib/shopify-admin";
+
 const FORM_ENDPOINT =
   process.env.REFUND_FORM_ENDPOINT ||
   "https://formsubmit.co/ajax/hello@caseclosedme.com";
@@ -19,6 +24,7 @@ export async function submitRefundRequest(
     last_name: String(formData.get("last_name") || "").trim(),
     email: String(formData.get("email") || "").trim(),
     phone: String(formData.get("phone") || "").trim(),
+    phone_country: String(formData.get("phone_country") || "").trim(),
     order_number: String(formData.get("order_number") || "").trim(),
     purchase_date: String(formData.get("purchase_date") || "").trim(),
     purchase_platform: String(formData.get("purchase_platform") || "").trim(),
@@ -65,7 +71,7 @@ export async function submitRefundRequest(
     _captcha: "false",
     Name: `${fields.first_name} ${fields.last_name}`.trim(),
     Email: fields.email,
-    Phone: fields.phone,
+    Phone: `${fields.phone_country} ${fields.phone}`.trim(),
     "Order Number": fields.order_number,
     "Date of Purchase": fields.purchase_date,
     "Purchase Platform": fields.purchase_platform,
@@ -79,6 +85,47 @@ export async function submitRefundRequest(
     "Accuracy Confirmed": fields.confirm_accurate ? "Yes" : "No",
     "Policy Agreed": fields.confirm_policy ? "Yes" : "No",
   };
+
+  // Write the request into the Shopify admin (best-effort — never block the
+  // customer's submission on it; email below is the backup).
+  if (isAdminConfigured()) {
+    try {
+      const customerName = `${fields.first_name} ${fields.last_name}`.trim();
+      const refundType = [
+        ...fields.refund_types,
+        fields.refund_other ? `Other: ${fields.refund_other}` : "",
+      ]
+        .filter(Boolean)
+        .join(", ");
+      const returnMethod = fields.return_other
+        ? `${fields.return_method} (${fields.return_other})`
+        : fields.return_method;
+      const details = [
+        `Name: ${customerName}`,
+        `Email: ${fields.email}`,
+        `Phone: ${fields.phone_country} ${fields.phone}`.trim(),
+        `Order number: ${fields.order_number}`,
+        `Date of purchase: ${fields.purchase_date}`,
+        `Purchase platform: ${fields.purchase_platform}`,
+        `Refund type: ${refundType}`,
+        `Item(s): ${fields.item_names}`,
+        `Return method: ${returnMethod}`,
+        `Preferred refund method: ${fields.refund_method}`,
+        fields.notes ? `Additional details: ${fields.notes}` : "",
+        `Submitted: ${new Date().toISOString()}`,
+      ]
+        .filter(Boolean)
+        .join("\n");
+
+      await createRefundRequestRecord({
+        summary: `Order ${fields.order_number} — ${customerName}`,
+        status: "New",
+        details,
+      });
+    } catch (e) {
+      console.error("Failed to write refund request to Shopify admin:", e);
+    }
+  }
 
   try {
     const res = await fetch(FORM_ENDPOINT, {

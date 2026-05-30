@@ -5,6 +5,7 @@ import {
   submitRefundRequest,
   type RefundFormState,
 } from "app/refund-request/actions";
+import { PhoneCountrySelect } from "components/phone-country-select";
 
 const initialState: RefundFormState = { status: "idle" };
 
@@ -114,9 +115,7 @@ export function RefundRequestForm() {
       <div>
         <FieldLabel label="Phone" required error={err.phone} />
         <div className="flex">
-          <span className="inline-flex items-center rounded-l-md border-[2.5px] border-r-0 border-anime-ink bg-anime-paper px-4 font-display text-base font-bold text-anime-ink">
-            🇦🇪 +971
-          </span>
+          <PhoneCountrySelect />
           <input
             name="phone"
             type="tel"
