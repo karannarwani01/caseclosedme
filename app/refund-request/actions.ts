@@ -125,8 +125,10 @@ export async function submitRefundRequest(
     "Policy Agreed": fields.confirm_policy ? "Yes" : "No",
   };
 
-  // Write the request into the Shopify admin (best-effort — never block the
-  // customer's submission on it; email below is the backup).
+  // Write the request into the Shopify admin. This is the primary, app-owned
+  // record (metaobject "$app:refund_request"); if it succeeds the request is
+  // safely captured even when the email notification below can't be delivered.
+  let savedToAdmin = false;
   if (isAdminConfigured()) {
     try {
       const customerName = `${fields.first_name} ${fields.last_name}`.trim();
@@ -179,11 +181,16 @@ export async function submitRefundRequest(
         },
         photoIds,
       );
+      savedToAdmin = true;
     } catch (e) {
       console.error("Failed to write refund request to Shopify admin:", e);
     }
   }
 
+  // Best-effort email notification via FormSubmit. This is never the source of
+  // truth — their service can be unreachable (e.g. HTTP 521) while the admin
+  // record above succeeds, so a failure here must not fail the submission.
+  let emailSent = false;
   try {
     const res = await fetch(FORM_ENDPOINT, {
       method: "POST",
@@ -193,25 +200,23 @@ export async function submitRefundRequest(
       },
       body: JSON.stringify(payload),
     });
+    emailSent = res.ok;
+  } catch (e) {
+    console.error("FormSubmit notification failed:", e);
+  }
 
-    if (!res.ok) {
-      return {
-        status: "error",
-        message:
-          "We couldn't send your request. Please email hello@caseclosedme.com directly.",
-      };
-    }
-
+  // The request is captured as long as either path landed it.
+  if (savedToAdmin || emailSent) {
     return {
       status: "success",
       message:
-        "Refund request sent. We'll reply within 1 business day to hello@caseclosedme.com.",
-    };
-  } catch {
-    return {
-      status: "error",
-      message:
-        "We couldn't reach the form service. Please email hello@caseclosedme.com directly.",
+        "Refund request received. We'll reply within 1 business day to hello@caseclosedme.com.",
     };
   }
+
+  return {
+    status: "error",
+    message:
+      "We couldn't send your request. Please email hello@caseclosedme.com directly.",
+  };
 }

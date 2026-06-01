@@ -1,6 +1,7 @@
 import { GridTileImage } from "components/grid/tile";
 import { getCollectionProducts } from "lib/shopify";
 import type { Product } from "lib/shopify/types";
+import Image from "next/image";
 import Link from "next/link";
 import { ReactNode } from "react";
 
@@ -64,38 +65,65 @@ export async function TopTenSection() {
   return (
     <SectionShell
       eyebrow="♛ Collector's choice"
-      title="Top 10 picks"
+      title="Top 10 Picks"
       ctaText="See full chart →"
       ctaHref="/search"
     >
-      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-10">
+      <ul className="grid grid-cols-2 gap-x-3 gap-y-10 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-10 lg:gap-x-2">
         {products.slice(0, 10).map((p, i) => (
-          <li
-            key={p.handle}
-            className="relative aspect-square min-h-[180px]"
-          >
+          <li key={p.handle} className="flex flex-col">
             <Link
               href={`/product/${p.handle}`}
-              className="relative block h-full w-full"
+              className="group flex flex-col items-center"
             >
-              <GridTileImage
-                src={p.featuredImage?.url || undefined}
-                fill
-                sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, 50vw"
-                alt={p.title}
-                swatch={p.swatch}
-                label={{
-                  title: p.title,
-                  amount: p.priceRange.maxVariantPrice.amount,
-                  currencyCode: p.priceRange.maxVariantPrice.currencyCode,
-                }}
-              />
-              <RankBadge rank={i + 1} />
+              <div className="relative w-full px-1">
+                {/* Rank medallion floats above the card */}
+                <div className="absolute -top-4 left-1/2 z-20 -translate-x-1/2">
+                  <RankBadge rank={i + 1} />
+                </div>
+                {/* Red collector card */}
+                <div
+                  className="relative mt-3 flex aspect-square w-full items-center justify-center overflow-hidden rounded-xl border-[2.5px] border-anime-ink shadow-[4px_4px_0_0_var(--color-anime-ink)] transition-all group-hover:-translate-y-[3px] group-hover:shadow-[6px_6px_0_0_var(--color-anime-pink)]"
+                  style={{
+                    background:
+                      "radial-gradient(circle at 50% 32%, #e23b3b 0%, #a01414 70%, #7d0f0f 100%)",
+                  }}
+                >
+                  {p.featuredImage?.url ? (
+                    <Image
+                      src={p.featuredImage.url}
+                      alt={p.title}
+                      fill
+                      sizes="(min-width: 1024px) 10vw, (min-width: 640px) 22vw, 45vw"
+                      className="object-contain p-3 transition-transform duration-300 group-hover:scale-105"
+                    />
+                  ) : (
+                    <ProductOrb swatch={p.swatch} />
+                  )}
+                </div>
+              </div>
+              <span className="mt-3 line-clamp-2 px-1 text-center font-display text-xs font-bold leading-snug text-anime-ink md:text-sm">
+                {p.title}
+              </span>
             </Link>
           </li>
         ))}
       </ul>
     </SectionShell>
+  );
+}
+
+// Demo fallback when a product has no image: a glossy colored orb from its swatch.
+function ProductOrb({ swatch }: { swatch?: [string, string] }) {
+  const [a, b] = swatch ?? ["#ffffff", "#dddddd"];
+  return (
+    <div
+      className="h-[62%] w-[62%] rounded-full border-[2.5px] border-anime-ink"
+      style={{
+        background: `radial-gradient(circle at 38% 30%, ${a} 0%, ${b} 78%)`,
+        boxShadow: "3px 3px 0 0 rgba(13,10,26,0.55)",
+      }}
+    />
   );
 }
 
@@ -179,19 +207,56 @@ function SectionShell({
 }
 
 function RankBadge({ rank }: { rank: number }) {
-  const isCrown = rank <= 3;
+  if (rank <= 3) {
+    const palette = {
+      1: { from: "#ffd84d", to: "#e3a400" }, // gold
+      2: { from: "#e6e6e6", to: "#a9a9a9" }, // silver
+      3: { from: "#eaa46a", to: "#bf7330" }, // bronze
+    }[rank]!;
+    return <CrownBadge rank={rank} from={palette.from} to={palette.to} />;
+  }
   return (
-    <div
-      className={
-        "absolute -left-1.5 -top-1.5 z-30 flex h-8 w-8 -rotate-6 items-center justify-center rounded-full border-[2px] border-anime-ink font-display text-[13px] font-extrabold text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)] " +
-        (isCrown
-          ? "bg-anime-yellow"
-          : rank <= 6
-            ? "bg-anime-pink text-white"
-            : "bg-white")
-      }
-    >
-      {isCrown ? `♛${rank}` : rank}
+    <span className="flex h-7 w-7 items-center justify-center rounded-md border-[2.5px] border-anime-ink bg-[#d32020] font-display text-sm font-extrabold text-white shadow-[2px_2px_0_0_var(--color-anime-ink)] md:h-8 md:w-8 md:text-base">
+      {rank}
+    </span>
+  );
+}
+
+function CrownBadge({
+  rank,
+  from,
+  to,
+}: {
+  rank: number;
+  from: string;
+  to: string;
+}) {
+  const id = `crown-grad-${rank}`;
+  return (
+    <div className="relative flex h-9 w-11 items-center justify-center md:h-10 md:w-12">
+      <svg
+        viewBox="0 0 48 40"
+        className="absolute inset-0 h-full w-full"
+        style={{ filter: "drop-shadow(2px 2px 0 #0d0a1a)" }}
+        aria-hidden
+      >
+        <defs>
+          <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={from} />
+            <stop offset="100%" stopColor={to} />
+          </linearGradient>
+        </defs>
+        <path
+          d="M4 13 L14 21 L24 6 L34 21 L44 13 L40 35 L8 35 Z"
+          fill={`url(#${id})`}
+          stroke="#0d0a1a"
+          strokeWidth="2.5"
+          strokeLinejoin="round"
+        />
+      </svg>
+      <span className="relative z-10 mt-1 font-display text-xs font-extrabold text-anime-ink md:text-sm">
+        {rank}
+      </span>
     </div>
   );
 }

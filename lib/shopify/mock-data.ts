@@ -177,3 +177,7 @@ export function getMockProductsForCollection(collection: string): MockProduct[] 
   }
   return MOCK_PRODUCTS;
 }
+
+export function getMockProductByHandle(handle: string): MockProduct | undefined {
+  return MOCK_PRODUCTS.find((p) => p.handle === handle);
+}

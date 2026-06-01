@@ -1,30 +1,25 @@
-import clsx from "clsx";
+import { DirhamSign } from "./dirham-sign";
 
+// Pricing across the store is constant in AED, displayed with the Dirham
+// symbol. `currencyCode`/`currencyCodeClassName` are accepted for backward
+// compatibility with existing call sites but no longer affect the output.
 const Price = ({
   amount,
   className,
-  currencyCode = "USD",
-  currencyCodeClassName,
 }: {
   amount: string;
   className?: string;
-  currencyCode: string;
+  currencyCode?: string;
   currencyCodeClassName?: string;
 } & React.ComponentProps<"p">) => {
-  const formatted = new Intl.NumberFormat(undefined, {
-    style: "currency",
-    currency: currencyCode,
-    currencyDisplay: "narrowSymbol",
+  const value = new Intl.NumberFormat("en-AE", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(parseFloat(amount));
-  const hasCodeInFormatted = formatted.includes(currencyCode);
   return (
     <p suppressHydrationWarning={true} className={className}>
-      {formatted}
-      {!hasCodeInFormatted && (
-        <span className={clsx("ml-1 inline", currencyCodeClassName)}>
-          {currencyCode}
-        </span>
-      )}
+      <DirhamSign className="mr-1" />
+      {value}
     </p>
   );
 };

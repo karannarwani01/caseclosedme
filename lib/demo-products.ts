@@ -9,7 +9,8 @@ import type { Product } from "lib/shopify/types";
 // Each product's tags carry: one CATEGORY tag, one SERIES tag, and optional
 // badge tags (new | vault | preorder | sale). Facets/filters read these.
 // ─────────────────────────────────────────────────────────────────────────
-export const USE_DEMO_PRODUCTS = true; // ← set to false for live Shopify data
+// Single source of truth: the USE_DEMO_PRODUCTS env var (see .env.local).
+export const USE_DEMO_PRODUCTS = process.env.USE_DEMO_PRODUCTS === "true";
 
 const CURRENCY = "AED";
 

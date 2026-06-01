@@ -5,7 +5,10 @@ import {
 } from "lib/constants";
 import { isShopifyError } from "lib/type-guards";
 import { ensureStartsWith } from "lib/utils";
-import { getMockProductsForCollection } from "./mock-data";
+import {
+  getMockProductByHandle,
+  getMockProductsForCollection,
+} from "./mock-data";
 import {
   unstable_cacheLife as cacheLife,
   unstable_cacheTag as cacheTag,
@@ -64,6 +67,10 @@ const domain = process.env.SHOPIFY_STORE_DOMAIN
   : "";
 const endpoint = domain ? `${domain}${SHOPIFY_GRAPHQL_API_ENDPOINT}` : "";
 const key = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN!;
+
+// When false, the storefront shows only real Shopify products (no demo/mock
+// fill-ins). Flip to "true" in .env.local to repopulate the demo catalogue.
+const USE_DEMO_PRODUCTS = process.env.USE_DEMO_PRODUCTS === "true";
 
 type ExtractVariables<T> = T extends { variables: object }
   ? T["variables"]
@@ -353,7 +360,7 @@ export async function getCollectionProducts({
   cacheLife("days");
 
   if (!endpoint) {
-    return getMockProductsForCollection(collection);
+    return USE_DEMO_PRODUCTS ? getMockProductsForCollection(collection) : [];
   }
 
   const res = await shopifyFetch<ShopifyCollectionProductsOperation>({
@@ -365,14 +372,17 @@ export async function getCollectionProducts({
     },
   });
 
+  // When the collection is missing, fall back to mock products only in demo
+  // mode; otherwise return an empty set so the row simply doesn't render.
   if (!res.body.data.collection) {
-    console.log(`No collection found for \`${collection}\``);
-    return [];
+    return USE_DEMO_PRODUCTS ? getMockProductsForCollection(collection) : [];
   }
 
-  return reshapeProducts(
+  const products = reshapeProducts(
     removeEdgesAndNodes(res.body.data.collection.products)
   );
+  if (products.length) return products;
+  return USE_DEMO_PRODUCTS ? getMockProductsForCollection(collection) : [];
 }
 
 export async function getCollections(): Promise<Collection[]> {
@@ -474,18 +484,26 @@ export async function getProduct(handle: string): Promise<Product | undefined> {
   cacheLife("days");
 
   if (!endpoint) {
-    console.log(`Skipping getProduct for '${handle}' - Shopify not configured`);
-    return undefined;
+    return USE_DEMO_PRODUCTS ? getMockProductByHandle(handle) : undefined;
   }
 
-  const res = await shopifyFetch<ShopifyProductOperation>({
-    query: getProductQuery,
-    variables: {
-      handle,
-    },
-  });
+  // Look up the real product. Stay resilient (never 500 on a bad/missing
+  // handle); fall back to a mock product only in demo mode, otherwise return
+  // undefined so the route renders a proper 404.
+  try {
+    const res = await shopifyFetch<ShopifyProductOperation>({
+      query: getProductQuery,
+      variables: {
+        handle,
+      },
+    });
+    const product = reshapeProduct(res.body.data.product, false);
+    if (product) return product;
+  } catch (e) {
+    console.error(`getProduct('${handle}') Shopify lookup failed:`, e);
+  }
 
-  return reshapeProduct(res.body.data.product, false);
+  return USE_DEMO_PRODUCTS ? getMockProductByHandle(handle) : undefined;
 }
 
 export async function getProductRecommendations(
@@ -495,14 +513,20 @@ export async function getProductRecommendations(
   cacheTag(TAGS.products);
   cacheLife("days");
 
-  const res = await shopifyFetch<ShopifyProductRecommendationsOperation>({
-    query: getProductRecommendationsQuery,
-    variables: {
-      productId,
-    },
-  });
-
-  return reshapeProducts(res.body.data.productRecommendations);
+  // Mock products (id "mock/…") and demo stores won't resolve recommendations;
+  // never let that 500 the product page — just show no related row.
+  try {
+    const res = await shopifyFetch<ShopifyProductRecommendationsOperation>({
+      query: getProductRecommendationsQuery,
+      variables: {
+        productId,
+      },
+    });
+    return reshapeProducts(res.body.data.productRecommendations);
+  } catch (e) {
+    console.error(`getProductRecommendations('${productId}') failed:`, e);
+    return [];
+  }
 }
 
 export async function getProducts({

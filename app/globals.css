@@ -143,3 +143,32 @@ button {
 .prose > ol {
   padding-left: 2.5rem;
 }
+
+/* Single-card variant (product descriptions): the whole description sits in
+   ONE box instead of a box per paragraph. Scoped so content pages keep their
+   boxed-paragraph look. */
+.prose.prose-onebox {
+  background: #fff;
+  border: 2.5px solid var(--color-anime-ink);
+  border-radius: 0.75rem;
+  padding: 1.25rem 1.5rem;
+}
+.prose.prose-onebox > p,
+.prose.prose-onebox > ul,
+.prose.prose-onebox > ol {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  margin: 0.6rem 0;
+}
+.prose.prose-onebox > ul,
+.prose.prose-onebox > ol {
+  padding-left: 1.5rem;
+}
+.prose.prose-onebox > :first-child {
+  margin-top: 0;
+}
+.prose.prose-onebox > :last-child {
+  margin-bottom: 0;
+}

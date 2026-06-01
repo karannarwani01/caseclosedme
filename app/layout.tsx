@@ -1,7 +1,6 @@
 import { CartProvider } from "components/cart/cart-context";
 import { Navbar } from "components/layout/navbar";
 import { PromoStrip } from "components/promo-strip";
-import { WelcomeToast } from "components/welcome-toast";
 import {
   Bangers,
   Bricolage_Grotesque,
@@ -75,7 +74,6 @@ export default async function RootLayout({
           <main className="flex flex-1 flex-col">
             {children}
             <Toaster closeButton />
-            <WelcomeToast />
           </main>
         </CartProvider>
       </body>

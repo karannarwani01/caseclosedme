@@ -1,8 +1,5 @@
 import { CategoryCircles } from "components/category-circles";
-import {
-  FeaturedBrandsRow,
-  PromoBannersRow,
-} from "components/featured-banners";
+import { PromoBannersRow } from "components/featured-banners";
 import { HeroCarousel } from "components/hero-carousel";
 import Footer from "components/layout/footer";
 import { JustArrivedRow, TopTenSection } from "components/section-row";
@@ -20,10 +17,9 @@ export default function HomePage() {
     <>
       <HeroCarousel />
       <CategoryCircles />
-      <FeaturedBrandsRow />
+      <TopTenSection />
       <JustArrivedRow />
       <PromoBannersRow />
-      <TopTenSection />
       <Footer />
     </>
   );
