@@ -67,7 +67,7 @@ export default async function RootLayout({
       lang="en"
       className={`${bricolage.variable} ${inter.variable} ${bangers.variable} ${spaceGrotesk.variable}`}
     >
-      <body className="flex min-h-screen flex-col bg-brand-bg text-brand-ink antialiased">
+      <body className="flex min-h-screen flex-col overflow-x-clip bg-brand-bg text-brand-ink antialiased">
         <CartProvider cartPromise={cart}>
           <PromoStrip />
           <Navbar />

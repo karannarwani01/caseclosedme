@@ -72,6 +72,37 @@ const key = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN!;
 // fill-ins). Flip to "true" in .env.local to repopulate the demo catalogue.
 const USE_DEMO_PRODUCTS = process.env.USE_DEMO_PRODUCTS === "true";
 
+// Network resilience for calls to Shopify. A single request is capped at
+// SHOPIFY_FETCH_TIMEOUT_MS; transient network failures (e.g. read ETIMEDOUT,
+// dropped sockets) are retried with exponential backoff. GraphQL-level errors
+// (body.errors) are NOT retried — retrying a bad query never helps.
+const SHOPIFY_FETCH_TIMEOUT_MS = 10_000;
+const SHOPIFY_FETCH_MAX_RETRIES = 2;
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const isTransientNetworkError = (e: unknown): boolean => {
+  if (!e || typeof e !== "object") return false;
+  const err = e as {
+    name?: string;
+    code?: string;
+    message?: string;
+    cause?: unknown;
+  };
+  // AbortSignal.timeout() rejects with a TimeoutError/AbortError.
+  if (err.name === "AbortError" || err.name === "TimeoutError") return true;
+  const cause =
+    err.cause && typeof err.cause === "object"
+      ? (err.cause as { code?: string; message?: string })
+      : {};
+  const haystack =
+    `${err.code ?? ""} ${err.message ?? ""} ` +
+    `${cause.code ?? ""} ${cause.message ?? ""} ${typeof err.cause === "string" ? err.cause : ""}`;
+  return /fetch failed|ETIMEDOUT|ECONNRESET|ECONNREFUSED|EPIPE|EAI_AGAIN|UND_ERR|socket hang up/i.test(
+    haystack,
+  );
+};
+
 type ExtractVariables<T> = T extends { variables: object }
   ? T["variables"]
   : never;
@@ -90,29 +121,50 @@ export async function shopifyFetch<T>({
       throw new Error("SHOPIFY_STORE_DOMAIN environment variable is not set");
     }
 
-    const result = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Shopify-Storefront-Access-Token": key,
-        ...headers,
-      },
-      body: JSON.stringify({
-        ...(query && { query }),
-        ...(variables && { variables }),
-      }),
+    const requestBody = JSON.stringify({
+      ...(query && { query }),
+      ...(variables && { variables }),
     });
 
-    const body = await result.json();
+    let lastError: unknown;
+    for (let attempt = 0; attempt <= SHOPIFY_FETCH_MAX_RETRIES; attempt++) {
+      try {
+        const result = await fetch(endpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Shopify-Storefront-Access-Token": key,
+            ...headers,
+          },
+          body: requestBody,
+          signal: AbortSignal.timeout(SHOPIFY_FETCH_TIMEOUT_MS),
+        });
 
-    if (body.errors) {
-      throw body.errors[0];
+        const body = await result.json();
+
+        if (body.errors) {
+          throw body.errors[0];
+        }
+
+        return {
+          status: result.status,
+          body,
+        };
+      } catch (e) {
+        lastError = e;
+        // Only transient network blips are worth retrying; GraphQL errors and
+        // anything non-transient bubble straight out to the shaping below.
+        if (attempt < SHOPIFY_FETCH_MAX_RETRIES && isTransientNetworkError(e)) {
+          await sleep(250 * 2 ** attempt); // 250ms, then 500ms
+          continue;
+        }
+        throw e;
+      }
     }
 
-    return {
-      status: result.status,
-      body,
-    };
+    // Unreachable in practice (loop either returns or throws), but satisfies
+    // the type checker and guards against a misconfigured retry count.
+    throw lastError;
   } catch (e) {
     if (isShopifyError(e)) {
       throw {
@@ -149,7 +201,7 @@ const reshapeCart = (cart: ShopifyCart): Cart => {
 };
 
 const reshapeCollection = (
-  collection: ShopifyCollection
+  collection: ShopifyCollection,
 ): Collection | undefined => {
   if (!collection) {
     return undefined;
@@ -191,7 +243,7 @@ const reshapeImages = (images: Connection<Image>, productTitle: string) => {
 
 const reshapeProduct = (
   product: ShopifyProduct,
-  filterHiddenProducts: boolean = true
+  filterHiddenProducts: boolean = true,
 ) => {
   if (
     !product ||
@@ -251,7 +303,7 @@ export async function createCart(): Promise<Cart> {
 }
 
 export async function addToCart(
-  lines: { merchandiseId: string; quantity: number }[]
+  lines: { merchandiseId: string; quantity: number }[],
 ): Promise<Cart> {
   if (!endpoint) {
     return emptyMockCart();
@@ -284,7 +336,7 @@ export async function removeFromCart(lineIds: string[]): Promise<Cart> {
 }
 
 export async function updateCart(
-  lines: { id: string; merchandiseId: string; quantity: number }[]
+  lines: { id: string; merchandiseId: string; quantity: number }[],
 ): Promise<Cart> {
   if (!endpoint) {
     return emptyMockCart();
@@ -330,7 +382,7 @@ export async function getCart(): Promise<Cart | undefined> {
 }
 
 export async function getCollection(
-  handle: string
+  handle: string,
 ): Promise<Collection | undefined> {
   "use cache";
   cacheTag(TAGS.collections);
@@ -379,7 +431,7 @@ export async function getCollectionProducts({
   }
 
   const products = reshapeProducts(
-    removeEdgesAndNodes(res.body.data.collection.products)
+    removeEdgesAndNodes(res.body.data.collection.products),
   );
   if (products.length) return products;
   return USE_DEMO_PRODUCTS ? getMockProductsForCollection(collection) : [];
@@ -426,7 +478,7 @@ export async function getCollections(): Promise<Collection[]> {
     // Filter out the `hidden` collections.
     // Collections that start with `hidden-*` need to be hidden on the search page.
     ...reshapeCollections(shopifyCollections).filter(
-      (collection) => !collection.handle.startsWith("hidden")
+      (collection) => !collection.handle.startsWith("hidden"),
     ),
   ];
 
@@ -507,7 +559,7 @@ export async function getProduct(handle: string): Promise<Product | undefined> {
 }
 
 export async function getProductRecommendations(
-  productId: string
+  productId: string,
 ): Promise<Product[]> {
   "use cache";
   cacheTag(TAGS.products);

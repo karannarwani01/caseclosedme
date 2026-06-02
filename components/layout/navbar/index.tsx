@@ -38,9 +38,9 @@ export async function Navbar() {
           className="flex shrink-0 items-center gap-4"
           aria-label="caseclosed home"
         >
-          <div className="flex md:hidden">
+          <div className="flex min-[1800px]:hidden">
             <Suspense fallback={null}>
-              <MobileMenu menu={menu} />
+              <MobileMenu menu={links} />
             </Suspense>
           </div>
           <LogoSquare />

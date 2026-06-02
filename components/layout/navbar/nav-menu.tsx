@@ -474,13 +474,10 @@ export function NavMenu({ links }: { links: LinkItem[] }) {
     <>
       <ul
         onMouseLeave={scheduleClose}
-        className="hidden shrink-0 items-center justify-center gap-4 font-display text-base font-extrabold uppercase tracking-[0.02em] md:flex lg:gap-6 lg:text-lg"
+        className="hidden shrink-0 items-center justify-center gap-4 font-display text-base font-extrabold uppercase tracking-[0.02em] lg:gap-6 lg:text-lg min-[1800px]:flex"
       >
         {links.map((l) => (
-          <li
-            key={l.title}
-            onMouseEnter={() => openMenu(l.title)}
-          >
+          <li key={l.title} onMouseEnter={() => openMenu(l.title)}>
             <Link
               href={l.path}
               prefetch={true}
