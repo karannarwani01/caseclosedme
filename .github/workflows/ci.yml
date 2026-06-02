@@ -1,0 +1,49 @@
+name: CI
+
+# Runs on every push to any branch, and on pull requests.
+on:
+  push:
+  pull_request:
+
+# Cancel an in-progress run if the same ref is pushed again.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Type-check & Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Blocking gate. Catches type errors that `next dev` does not, but that
+      # break `next build` / Vercel deploys (e.g. the carousel src type bug).
+      - name: Type check
+        run: pnpm exec tsc --noEmit
+
+      # Non-blocking: the repo has pre-existing style warnings. This surfaces
+      # them without failing the run. Run `pnpm prettier` locally to fix.
+      - name: Format check
+        run: pnpm prettier:check
+        continue-on-error: true
+
+# NOTE: a full `next build` is intentionally not run here. The storefront
+# fetches Shopify data while prerendering, so building in CI would require real
+# Shopify Storefront/Admin secrets as GitHub Actions secrets. If you want that,
+# add a second job that injects the secrets and runs `pnpm build`.
