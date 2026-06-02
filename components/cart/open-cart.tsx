@@ -9,9 +9,9 @@ export default function OpenCart({
   quantity?: number;
 }) {
   return (
-    <div className="relative grid h-14 w-14 place-items-center rounded-2xl border-[2.5px] border-anime-ink bg-anime-pink text-white shadow-[4px_4px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[5px_5px_0_0_var(--color-anime-ink)]">
+    <div className="relative grid h-11 w-11 place-items-center rounded-2xl border-[2.5px] border-anime-ink bg-anime-pink text-white shadow-[3px_3px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[4px_4px_0_0_var(--color-anime-ink)] lg:h-12 lg:w-12">
       <ShoppingCartIcon
-        className={clsx("h-6 w-6", className)}
+        className={clsx("h-5 w-5", className)}
         strokeWidth={2.5}
       />
       {quantity ? (

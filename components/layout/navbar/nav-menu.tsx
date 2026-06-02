@@ -474,7 +474,7 @@ export function NavMenu({ links }: { links: LinkItem[] }) {
     <>
       <ul
         onMouseLeave={scheduleClose}
-        className="hidden shrink-0 items-center justify-center gap-4 font-display text-base font-extrabold uppercase tracking-[0.02em] lg:gap-6 lg:text-lg min-[1800px]:flex"
+        className="hidden shrink-0 items-center justify-center font-display font-extrabold uppercase tracking-[0.02em] xl:flex xl:gap-3 xl:text-sm 2xl:gap-5 2xl:text-base"
       >
         {links.map((l) => (
           <li key={l.title} onMouseEnter={() => openMenu(l.title)}>

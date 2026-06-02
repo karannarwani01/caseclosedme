@@ -31,20 +31,20 @@ export async function Navbar() {
 
   return (
     <div className="relative z-30 w-full border-b-[2.5px] border-anime-ink bg-white">
-      <nav className="mx-auto flex w-full max-w-[1800px] items-center gap-6 px-6 py-6 lg:gap-8 lg:px-8">
+      <nav className="mx-auto flex w-full max-w-[1800px] items-center gap-2 px-4 py-6 lg:gap-4 lg:px-6">
         <Link
           href="/"
           prefetch={true}
-          className="flex shrink-0 items-center gap-4"
+          className="flex shrink-0 items-center gap-2"
           aria-label="caseclosed home"
         >
-          <div className="flex min-[1800px]:hidden">
+          <div className="flex xl:hidden">
             <Suspense fallback={null}>
               <MobileMenu menu={links} />
             </Suspense>
           </div>
           <LogoSquare />
-          <span className="hidden font-display text-[40px] font-extrabold leading-none tracking-[-0.02em] text-anime-ink md:inline">
+          <span className="hidden font-display text-2xl font-extrabold leading-none tracking-[-0.02em] text-anime-ink md:inline 2xl:text-[32px]">
             caseclosed
           </span>
         </Link>
@@ -52,27 +52,27 @@ export async function Navbar() {
         <NavMenu links={links} />
 
         <div className="flex flex-1 justify-center">
-          <div className="hidden w-full min-w-[200px] max-w-md md:block">
+          <div className="hidden w-full min-w-[140px] max-w-xs md:block">
             <Suspense fallback={<SearchSkeleton />}>
               <Search />
             </Suspense>
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-3">
+        <div className="flex shrink-0 items-center gap-2">
           <Link
             href={ACCOUNT_URL}
             aria-label="Log in to your account"
-            className="grid h-14 w-14 place-items-center rounded-2xl border-[2.5px] border-anime-ink bg-anime-cyan text-anime-ink shadow-[4px_4px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[5px_5px_0_0_var(--color-anime-ink)]"
+            className="grid h-11 w-11 place-items-center rounded-2xl border-[2.5px] border-anime-ink bg-anime-cyan text-anime-ink shadow-[3px_3px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[4px_4px_0_0_var(--color-anime-ink)] lg:h-12 lg:w-12"
           >
-            <UserIcon className="h-6 w-6" strokeWidth={2.5} />
+            <UserIcon className="h-5 w-5" strokeWidth={2.5} />
           </Link>
           <Link
             href="/wishlist"
             aria-label="Wishlist"
-            className="grid h-14 w-14 place-items-center rounded-2xl border-[2.5px] border-anime-ink bg-anime-lime text-anime-ink shadow-[4px_4px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[5px_5px_0_0_var(--color-anime-ink)]"
+            className="grid h-11 w-11 place-items-center rounded-2xl border-[2.5px] border-anime-ink bg-anime-lime text-anime-ink shadow-[3px_3px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[4px_4px_0_0_var(--color-anime-ink)] lg:h-12 lg:w-12"
           >
-            <HeartIcon className="h-6 w-6" strokeWidth={2.5} />
+            <HeartIcon className="h-5 w-5" strokeWidth={2.5} />
           </Link>
           <CartModal />
         </div>
