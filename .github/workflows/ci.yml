@@ -21,7 +21,9 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          # Must be 10+ to understand pnpm-workspace.yaml's `allowBuilds:` key
+          # (matches the local pnpm 11). pnpm 9 errors on `store path`.
+          version: 11
 
       - name: Setup Node
         uses: actions/setup-node@v4
