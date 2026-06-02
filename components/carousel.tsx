@@ -37,7 +37,7 @@ export async function Carousel() {
                   amount: product.priceRange.maxVariantPrice.amount,
                   currencyCode: product.priceRange.maxVariantPrice.currencyCode,
                 }}
-                src={product.featuredImage?.url || undefined}
+                src={product.featuredImage?.url ?? ""}
                 swatch={product.swatch}
                 badge={product.badge}
                 fill

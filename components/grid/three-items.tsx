@@ -31,7 +31,7 @@ function ThreeItemGridItem({
         prefetch={true}
       >
         <GridTileImage
-          src={item.featuredImage?.url || undefined}
+          src={item.featuredImage?.url ?? ""}
           fill
           sizes={
             size === "full"
