@@ -155,7 +155,9 @@ export const MOCK_PRODUCTS: MockProduct[] = [
   }),
 ];
 
-export function getMockProductsForCollection(collection: string): MockProduct[] {
+export function getMockProductsForCollection(
+  collection: string,
+): MockProduct[] {
   if (collection === "hidden-homepage-featured-items") {
     return MOCK_PRODUCTS.slice(0, 3);
   }
@@ -178,6 +180,8 @@ export function getMockProductsForCollection(collection: string): MockProduct[] 
   return MOCK_PRODUCTS;
 }
 
-export function getMockProductByHandle(handle: string): MockProduct | undefined {
+export function getMockProductByHandle(
+  handle: string,
+): MockProduct | undefined {
   return MOCK_PRODUCTS.find((p) => p.handle === handle);
 }

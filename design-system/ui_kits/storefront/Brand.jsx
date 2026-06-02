@@ -53,14 +53,18 @@ function Wordmark({ size = 18, color }) {
       }}
     >
       caseclosed
-      <span style={{
-        background: "var(--anime-pink, var(--accent))",
-        color: "#fff",
-        padding: "0 6px",
-        borderRadius: 6,
-        border: "2px solid var(--anime-ink, var(--brand-ink))",
-        marginLeft: 3,
-      }}>.me</span>
+      <span
+        style={{
+          background: "var(--anime-pink, var(--accent))",
+          color: "#fff",
+          padding: "0 6px",
+          borderRadius: 6,
+          border: "2px solid var(--anime-ink, var(--brand-ink))",
+          marginLeft: 3,
+        }}
+      >
+        .me
+      </span>
     </span>
   );
 }

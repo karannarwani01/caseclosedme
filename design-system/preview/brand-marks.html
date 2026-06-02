@@ -1,157 +1,205 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Brand marks — anime style</title>
-  <link rel="stylesheet" href="../colors_and_type.css" />
-  <style>
-    html, body { margin: 0; padding: 0; }
-    body {
-      --anime-pink:   #ff2e93;
-      --anime-purple: #8a2be8;
-      --anime-cyan:   #1ee3ff;
-      --anime-lime:   #c4ff3d;
-      --anime-yellow: #ffd60a;
-      --anime-ink:    #0d0a1a;
-      --anime-paper:  #fff8f0;
+  <head>
+    <meta charset="utf-8" />
+    <title>Brand marks — anime style</title>
+    <link rel="stylesheet" href="../colors_and_type.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        --anime-pink: #ff2e93;
+        --anime-purple: #8a2be8;
+        --anime-cyan: #1ee3ff;
+        --anime-lime: #c4ff3d;
+        --anime-yellow: #ffd60a;
+        --anime-ink: #0d0a1a;
+        --anime-paper: #fff8f0;
 
-      width: 700px;
-      box-sizing: border-box;
-      font-family: var(--font-sans);
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      background: var(--anime-paper);
-    }
+        width: 700px;
+        box-sizing: border-box;
+        font-family: var(--font-sans);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        background: var(--anime-paper);
+      }
 
-    .panel {
-      position: relative;
-      padding: 24px;
-      display: flex; flex-direction: column; gap: 16px;
-      align-items: flex-start;
-      min-height: 240px;
-      box-sizing: border-box;
-      overflow: hidden;
-    }
-    .panel.light {
-      background:
-        radial-gradient(circle, rgba(13,10,26,0.10) 1.5px, transparent 2px) 0 0/12px 12px,
-        var(--anime-paper);
-      border-right: 2.5px solid var(--anime-ink);
-    }
-    .panel.dark {
-      background:
-        repeating-linear-gradient(135deg,
+      .panel {
+        position: relative;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+        min-height: 240px;
+        box-sizing: border-box;
+        overflow: hidden;
+      }
+      .panel.light {
+        background:
+          radial-gradient(circle, rgba(13, 10, 26, 0.1) 1.5px, transparent 2px)
+            0 0/12px 12px,
+          var(--anime-paper);
+        border-right: 2.5px solid var(--anime-ink);
+      }
+      .panel.dark {
+        background: repeating-linear-gradient(
+          135deg,
           var(--anime-ink) 0 14px,
-          #1a1730 14px 28px);
-      color: white;
-    }
-    .panel.dark::before {
-      content: "";
-      position: absolute;
-      top: -40px; right: -40px;
-      width: 220px; height: 220px;
-      background: radial-gradient(circle, var(--anime-yellow) 0 30%, transparent 31%),
-        repeating-conic-gradient(from 0deg at center,
-          var(--anime-yellow) 0 6deg,
-          transparent 6deg 12deg);
-      mask-image: radial-gradient(circle, black 0 35%, transparent 70%);
-      -webkit-mask-image: radial-gradient(circle, black 0 35%, transparent 70%);
-      opacity: 0.55;
-    }
+          #1a1730 14px 28px
+        );
+        color: white;
+      }
+      .panel.dark::before {
+        content: "";
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 220px;
+        height: 220px;
+        background:
+          radial-gradient(circle, var(--anime-yellow) 0 30%, transparent 31%),
+          repeating-conic-gradient(
+            from 0deg at center,
+            var(--anime-yellow) 0 6deg,
+            transparent 6deg 12deg
+          );
+        mask-image: radial-gradient(circle, black 0 35%, transparent 70%);
+        -webkit-mask-image: radial-gradient(
+          circle,
+          black 0 35%,
+          transparent 70%
+        );
+        opacity: 0.55;
+      }
 
-    .caption {
-      font-family: var(--font-display);
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--anime-ink);
-      padding: 5px 10px;
-      background: var(--anime-lime);
-      border: 2px solid var(--anime-ink);
-      border-radius: 999px;
-      box-shadow: 2px 2px 0 0 var(--anime-ink);
-      position: relative;
-      z-index: 1;
-    }
-    .panel.dark .caption {
-      background: var(--anime-pink);
-      color: white;
-      border-color: white;
-      box-shadow: 2px 2px 0 0 white;
-    }
+      .caption {
+        font-family: var(--font-display);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--anime-ink);
+        padding: 5px 10px;
+        background: var(--anime-lime);
+        border: 2px solid var(--anime-ink);
+        border-radius: 999px;
+        box-shadow: 2px 2px 0 0 var(--anime-ink);
+        position: relative;
+        z-index: 1;
+      }
+      .panel.dark .caption {
+        background: var(--anime-pink);
+        color: white;
+        border-color: white;
+        box-shadow: 2px 2px 0 0 white;
+      }
 
-    .marks-row {
-      display: flex; align-items: flex-end; gap: 14px;
-      position: relative; z-index: 1;
-    }
-    .cube {
-      background: var(--anime-ink);
-      border: 2.5px solid var(--anime-ink);
-      border-radius: 14px;
-      padding: 7px;
-      box-shadow: 4px 4px 0 0 var(--anime-pink);
-      display: grid; place-items: center;
-      transform: rotate(-3deg);
-    }
-    .cube img {
-      display: block;
-      object-fit: contain;
-      image-rendering: pixelated;
-    }
-    .cube.xl { width: 80px; height: 80px; }
-    .cube.lg { width: 56px; height: 56px; padding: 6px; box-shadow: 3px 3px 0 0 var(--anime-pink); }
-    .cube.md { width: 40px; height: 40px; padding: 4px; border-radius: 10px; box-shadow: 2px 2px 0 0 var(--anime-pink); }
-    .cube img { width: 100%; height: 100%; }
+      .marks-row {
+        display: flex;
+        align-items: flex-end;
+        gap: 14px;
+        position: relative;
+        z-index: 1;
+      }
+      .cube {
+        background: var(--anime-ink);
+        border: 2.5px solid var(--anime-ink);
+        border-radius: 14px;
+        padding: 7px;
+        box-shadow: 4px 4px 0 0 var(--anime-pink);
+        display: grid;
+        place-items: center;
+        transform: rotate(-3deg);
+      }
+      .cube img {
+        display: block;
+        object-fit: contain;
+        image-rendering: pixelated;
+      }
+      .cube.xl {
+        width: 80px;
+        height: 80px;
+      }
+      .cube.lg {
+        width: 56px;
+        height: 56px;
+        padding: 6px;
+        box-shadow: 3px 3px 0 0 var(--anime-pink);
+      }
+      .cube.md {
+        width: 40px;
+        height: 40px;
+        padding: 4px;
+        border-radius: 10px;
+        box-shadow: 2px 2px 0 0 var(--anime-pink);
+      }
+      .cube img {
+        width: 100%;
+        height: 100%;
+      }
 
-    .wordmark {
-      font-family: var(--font-display);
-      font-weight: 800;
-      font-size: 30px;
-      letter-spacing: -0.01em;
-      color: var(--anime-ink);
-      line-height: 1;
-      display: inline-flex;
-      align-items: center;
-      position: relative;
-      z-index: 1;
-    }
-    .wordmark .me {
-      background: var(--anime-pink);
-      color: white;
-      padding: 0 8px;
-      border-radius: 8px;
-      border: 2.5px solid var(--anime-ink);
-      margin-left: 4px;
-      box-shadow: 3px 3px 0 0 var(--anime-ink);
-    }
+      .wordmark {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 30px;
+        letter-spacing: -0.01em;
+        color: var(--anime-ink);
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+      }
+      .wordmark .me {
+        background: var(--anime-pink);
+        color: white;
+        padding: 0 8px;
+        border-radius: 8px;
+        border: 2.5px solid var(--anime-ink);
+        margin-left: 4px;
+        box-shadow: 3px 3px 0 0 var(--anime-ink);
+      }
 
-    .pixel-mark {
-      width: 100%;
-      max-width: 260px;
-      border: 3px solid white;
-      border-radius: 14px;
-      box-shadow: 6px 6px 0 0 var(--anime-pink);
-      display: block;
-      transform: rotate(-2deg);
-      position: relative;
-      z-index: 1;
-    }
-  </style>
-</head>
-<body>
-  <div class="panel light">
-    <span class="caption">UI · digital mark</span>
-    <div class="marks-row">
-      <div class="cube xl"><img src="../assets/case-closed-cube-white.png" alt="" /></div>
-      <div class="cube lg"><img src="../assets/case-closed-cube-white.png" alt="" /></div>
-      <div class="cube md"><img src="../assets/case-closed-cube-white.png" alt="" /></div>
+      .pixel-mark {
+        width: 100%;
+        max-width: 260px;
+        border: 3px solid white;
+        border-radius: 14px;
+        box-shadow: 6px 6px 0 0 var(--anime-pink);
+        display: block;
+        transform: rotate(-2deg);
+        position: relative;
+        z-index: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="panel light">
+      <span class="caption">UI · digital mark</span>
+      <div class="marks-row">
+        <div class="cube xl">
+          <img src="../assets/case-closed-cube-white.png" alt="" />
+        </div>
+        <div class="cube lg">
+          <img src="../assets/case-closed-cube-white.png" alt="" />
+        </div>
+        <div class="cube md">
+          <img src="../assets/case-closed-cube-white.png" alt="" />
+        </div>
+      </div>
+      <div class="wordmark">caseclosed<span class="me">.me</span></div>
     </div>
-    <div class="wordmark">caseclosed<span class="me">.me</span></div>
-  </div>
-  <div class="panel dark">
-    <span class="caption">Marketing · the boxdrop</span>
-    <img src="../assets/case-closed-pixel-logo.jpeg" alt="Case Closed pixel-art logo" class="pixel-mark" />
-  </div>
-</body>
+    <div class="panel dark">
+      <span class="caption">Marketing · the boxdrop</span>
+      <img
+        src="../assets/case-closed-pixel-logo.jpeg"
+        alt="Case Closed pixel-art logo"
+        class="pixel-mark"
+      />
+    </div>
+  </body>
 </html>

@@ -145,7 +145,8 @@ function PromoSlide({ promo, eager }: { promo: Promo; eager: boolean }) {
             "radial-gradient(circle, rgba(0,0,0,0.5) 1px, transparent 1.5px)",
           backgroundSize: "12px 12px",
           maskImage: "linear-gradient(to right, transparent 45%, black 82%)",
-          WebkitMaskImage: "linear-gradient(to right, transparent 45%, black 82%)",
+          WebkitMaskImage:
+            "linear-gradient(to right, transparent 45%, black 82%)",
         }}
       />
 

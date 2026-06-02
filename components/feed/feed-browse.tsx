@@ -47,9 +47,14 @@ export function FeedBrowse({
       if (series.size > 0 && !p.tags.some((t) => series.has(t))) return false;
       if (stockOnly && !p.availableForSale) return false;
       if (quick) {
-        if (quick.kind === "badge" && !p.tags.includes(quick.value)) return false;
-        if (quick.kind === "category" && !p.tags.includes(quick.value)) return false;
-        if (quick.kind === "categories" && !quick.value.some((c) => p.tags.includes(c)))
+        if (quick.kind === "badge" && !p.tags.includes(quick.value))
+          return false;
+        if (quick.kind === "category" && !p.tags.includes(quick.value))
+          return false;
+        if (
+          quick.kind === "categories" &&
+          !quick.value.some((c) => p.tags.includes(c))
+        )
           return false;
       }
       return true;
@@ -138,7 +143,11 @@ export function FeedBrowse({
                 stroke="currentColor"
                 strokeWidth="2.5"
               >
-                <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                <path
+                  d="M6 9l6 6 6-6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </label>
           </header>

@@ -1,138 +1,215 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Iconography — anime style</title>
-  <link rel="stylesheet" href="../colors_and_type.css" />
-  <style>
-    html, body { margin: 0; padding: 0; }
-    body {
-      --anime-pink:   #ff2e93;
-      --anime-purple: #8a2be8;
-      --anime-cyan:   #1ee3ff;
-      --anime-lime:   #c4ff3d;
-      --anime-yellow: #ffd60a;
-      --anime-orange: #ff6a1f;
-      --anime-ink:    #0d0a1a;
-      --anime-paper:  #fff8f0;
+  <head>
+    <meta charset="utf-8" />
+    <title>Iconography — anime style</title>
+    <link rel="stylesheet" href="../colors_and_type.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        --anime-pink: #ff2e93;
+        --anime-purple: #8a2be8;
+        --anime-cyan: #1ee3ff;
+        --anime-lime: #c4ff3d;
+        --anime-yellow: #ffd60a;
+        --anime-orange: #ff6a1f;
+        --anime-ink: #0d0a1a;
+        --anime-paper: #fff8f0;
 
-      width: 700px;
-      padding: 26px;
-      background:
-        radial-gradient(circle, rgba(13,10,26,0.07) 1.5px, transparent 2px) 0 0/14px 14px,
-        var(--anime-paper);
-      box-sizing: border-box;
-      font-family: var(--font-sans);
-    }
+        width: 700px;
+        padding: 26px;
+        background:
+          radial-gradient(circle, rgba(13, 10, 26, 0.07) 1.5px, transparent 2px)
+            0 0/14px 14px,
+          var(--anime-paper);
+        box-sizing: border-box;
+        font-family: var(--font-sans);
+      }
 
-    .label {
-      font-family: var(--font-display);
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--anime-ink);
-      margin: 0 0 14px;
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 5px 12px;
-      background: var(--anime-lime);
-      border: 2.5px solid var(--anime-ink);
-      border-radius: 999px;
-      box-shadow: 3px 3px 0 0 var(--anime-ink);
-    }
+      .label {
+        font-family: var(--font-display);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--anime-ink);
+        margin: 0 0 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 5px 12px;
+        background: var(--anime-lime);
+        border: 2.5px solid var(--anime-ink);
+        border-radius: 999px;
+        box-shadow: 3px 3px 0 0 var(--anime-ink);
+      }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 14px;
-    }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 14px;
+      }
 
-    .tile {
-      display: flex; flex-direction: column; align-items: center; gap: 8px;
-      padding: 14px 6px 10px;
-      background: white;
-      border: 2.5px solid var(--anime-ink);
-      border-radius: 14px;
-      box-shadow: 4px 4px 0 0 var(--anime-ink);
-      transition: transform 100ms var(--ease-out), box-shadow 100ms var(--ease-out);
-    }
-    .tile:hover {
-      transform: translate(-2px, -2px);
-      box-shadow: 6px 6px 0 0 var(--anime-pink);
-    }
-    .tile .ico {
-      width: 44px; height: 44px;
-      border-radius: 10px;
-      border: 2.5px solid var(--anime-ink);
-      display: grid; place-items: center;
-      color: var(--anime-ink);
-    }
-    .tile .ico svg { width: 22px; height: 22px; stroke-width: 2.5; }
-    .tile .n {
-      font-family: var(--font-display);
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--anime-ink);
-      text-align: center;
-    }
+      .tile {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 6px 10px;
+        background: white;
+        border: 2.5px solid var(--anime-ink);
+        border-radius: 14px;
+        box-shadow: 4px 4px 0 0 var(--anime-ink);
+        transition:
+          transform 100ms var(--ease-out),
+          box-shadow 100ms var(--ease-out);
+      }
+      .tile:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 6px 6px 0 0 var(--anime-pink);
+      }
+      .tile .ico {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        border: 2.5px solid var(--anime-ink);
+        display: grid;
+        place-items: center;
+        color: var(--anime-ink);
+      }
+      .tile .ico svg {
+        width: 22px;
+        height: 22px;
+        stroke-width: 2.5;
+      }
+      .tile .n {
+        font-family: var(--font-display);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--anime-ink);
+        text-align: center;
+      }
 
-    .pink   { background: var(--anime-pink);   color: white; }
-    .cyan   { background: var(--anime-cyan); }
-    .lime   { background: var(--anime-lime); }
-    .yellow { background: var(--anime-yellow); }
-    .purple { background: var(--anime-purple); color: white; }
-    .orange { background: var(--anime-orange); color: white; }
+      .pink {
+        background: var(--anime-pink);
+        color: white;
+      }
+      .cyan {
+        background: var(--anime-cyan);
+      }
+      .lime {
+        background: var(--anime-lime);
+      }
+      .yellow {
+        background: var(--anime-yellow);
+      }
+      .purple {
+        background: var(--anime-purple);
+        color: white;
+      }
+      .orange {
+        background: var(--anime-orange);
+        color: white;
+      }
 
-    .note {
-      font-family: var(--font-sans);
-      font-size: 13px;
-      color: var(--anime-ink);
-      line-height: 1.55;
-      margin: 18px 0 0;
-      padding: 12px 14px;
-      background: white;
-      border: 2.5px solid var(--anime-ink);
-      border-radius: 12px;
-      box-shadow: 4px 4px 0 0 var(--anime-ink);
-    }
-    .note b {
-      background: var(--anime-yellow);
-      padding: 0 4px;
-      border-radius: 4px;
-    }
-  </style>
-</head>
-<body>
-  <div class="label">★ Heroicons · outline · 2.5 stroke ★</div>
-  <div class="grid">
-    <div class="tile">
-      <div class="ico pink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7" stroke-linecap="round"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg></div>
-      <div class="n">search</div>
+      .note {
+        font-family: var(--font-sans);
+        font-size: 13px;
+        color: var(--anime-ink);
+        line-height: 1.55;
+        margin: 18px 0 0;
+        padding: 12px 14px;
+        background: white;
+        border: 2.5px solid var(--anime-ink);
+        border-radius: 12px;
+        box-shadow: 4px 4px 0 0 var(--anime-ink);
+      }
+      .note b {
+        background: var(--anime-yellow);
+        padding: 0 4px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="label">★ Heroicons · outline · 2.5 stroke ★</div>
+    <div class="grid">
+      <div class="tile">
+        <div class="ico pink">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="11" cy="11" r="7" stroke-linecap="round" />
+            <path d="M21 21l-4.3-4.3" stroke-linecap="round" />
+          </svg>
+        </div>
+        <div class="n">search</div>
+      </div>
+      <div class="tile">
+        <div class="ico cyan">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path
+              d="M3 4h2l2.4 12.4a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.6L21 8H6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <circle cx="9" cy="20" r="1.4" />
+            <circle cx="18" cy="20" r="1.4" />
+          </svg>
+        </div>
+        <div class="n">cart</div>
+      </div>
+      <div class="tile">
+        <div class="ico lime">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round" />
+          </svg>
+        </div>
+        <div class="n">close</div>
+      </div>
+      <div class="tile">
+        <div class="ico yellow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+          </svg>
+        </div>
+        <div class="n">plus</div>
+      </div>
+      <div class="tile">
+        <div class="ico purple">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path
+              d="M14 7l-5 5 5 5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+        <div class="n">prev</div>
+      </div>
+      <div class="tile">
+        <div class="ico orange">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path
+              d="M10 7l5 5-5 5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+        <div class="n">next</div>
+      </div>
     </div>
-    <div class="tile">
-      <div class="ico cyan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 4h2l2.4 12.4a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.6L21 8H6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/></svg></div>
-      <div class="n">cart</div>
-    </div>
-    <div class="tile">
-      <div class="ico lime"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg></div>
-      <div class="n">close</div>
-    </div>
-    <div class="tile">
-      <div class="ico yellow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg></div>
-      <div class="n">plus</div>
-    </div>
-    <div class="tile">
-      <div class="ico purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 7l-5 5 5 5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <div class="n">prev</div>
-    </div>
-    <div class="tile">
-      <div class="ico orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 7l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <div class="n">next</div>
-    </div>
-  </div>
 
-  <p class="note">Outlines stay <b>thick</b>: 2.5px stroke on the glyph, 2.5px on the chunky border around its color chip. Each icon sits on a saturated swatch so the system reads cel-shaded. <b>Stroke-linecap: round</b>. No emoji used as iconography.</p>
-</body>
+    <p class="note">
+      Outlines stay <b>thick</b>: 2.5px stroke on the glyph, 2.5px on the chunky
+      border around its color chip. Each icon sits on a saturated swatch so the
+      system reads cel-shaded. <b>Stroke-linecap: round</b>. No emoji used as
+      iconography.
+    </p>
+  </body>
 </html>

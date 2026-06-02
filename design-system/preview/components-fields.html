@@ -1,218 +1,269 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Form fields — anime style</title>
-  <link rel="stylesheet" href="../colors_and_type.css" />
-  <style>
-    html, body { margin: 0; padding: 0; }
-    body {
-      --anime-pink:   #ff2e93;
-      --anime-purple: #8a2be8;
-      --anime-cyan:   #1ee3ff;
-      --anime-lime:   #c4ff3d;
-      --anime-yellow: #ffd60a;
-      --anime-ink:    #0d0a1a;
-      --anime-paper:  #fff8f0;
+  <head>
+    <meta charset="utf-8" />
+    <title>Form fields — anime style</title>
+    <link rel="stylesheet" href="../colors_and_type.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        --anime-pink: #ff2e93;
+        --anime-purple: #8a2be8;
+        --anime-cyan: #1ee3ff;
+        --anime-lime: #c4ff3d;
+        --anime-yellow: #ffd60a;
+        --anime-ink: #0d0a1a;
+        --anime-paper: #fff8f0;
 
-      width: 700px;
-      padding: 26px;
-      background: var(--anime-paper);
-      box-sizing: border-box;
-      font-family: var(--font-sans);
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      align-items: start;
-    }
-    .label {
-      grid-column: 1 / -1;
-      font-family: var(--font-display);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--anime-ink);
-      margin: 6px 0 -6px;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .label::before {
-      content: "";
-      width: 14px; height: 14px;
-      background: var(--anime-pink);
-      border: 2px solid var(--anime-ink);
-      border-radius: 4px;
-    }
+        width: 700px;
+        padding: 26px;
+        background: var(--anime-paper);
+        box-sizing: border-box;
+        font-family: var(--font-sans);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+        align-items: start;
+      }
+      .label {
+        grid-column: 1 / -1;
+        font-family: var(--font-display);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--anime-ink);
+        margin: 6px 0 -6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .label::before {
+        content: "";
+        width: 14px;
+        height: 14px;
+        background: var(--anime-pink);
+        border: 2px solid var(--anime-ink);
+        border-radius: 4px;
+      }
 
-    /* Search field — chunky outlined input with hard offset shadow */
-    .search {
-      grid-column: 1 / -1;
-      position: relative;
-    }
-    .search input {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 14px 56px 14px 18px;
-      background: white;
-      border: 2.5px solid var(--anime-ink);
-      border-radius: 14px;
-      color: var(--anime-ink);
-      font-size: 15px;
-      font-weight: 500;
-      font-family: var(--font-sans);
-      box-shadow: 5px 5px 0 0 var(--anime-ink);
-      transition: transform 100ms var(--ease-out), box-shadow 100ms var(--ease-out), background 100ms;
-      outline: none;
-    }
-    .search input::placeholder { color: rgba(13,10,26,0.4); font-weight: 500; }
-    .search input:focus {
-      background: var(--anime-cyan);
-      transform: translate(-1px,-1px);
-      box-shadow: 6px 6px 0 0 var(--anime-ink);
-    }
-    .search input.charged {
-      background: var(--anime-cyan);
-    }
-    .search .submit {
-      position: absolute;
-      right: 8px; top: 50%;
-      transform: translateY(-50%);
-      width: 38px; height: 38px;
-      background: var(--anime-pink);
-      border: 2.5px solid var(--anime-ink);
-      border-radius: 10px;
-      box-shadow: 3px 3px 0 0 var(--anime-ink);
-      display: grid; place-items: center;
-      cursor: pointer;
-      color: white;
-      transition: transform 100ms var(--ease-out), box-shadow 100ms;
-    }
-    .search .submit:hover { transform: translate(-1px, calc(-50% - 1px)); box-shadow: 4px 4px 0 0 var(--anime-ink); }
-    .search .submit svg { width: 16px; height: 16px; stroke-width: 2.5; }
+      /* Search field — chunky outlined input with hard offset shadow */
+      .search {
+        grid-column: 1 / -1;
+        position: relative;
+      }
+      .search input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 14px 56px 14px 18px;
+        background: white;
+        border: 2.5px solid var(--anime-ink);
+        border-radius: 14px;
+        color: var(--anime-ink);
+        font-size: 15px;
+        font-weight: 500;
+        font-family: var(--font-sans);
+        box-shadow: 5px 5px 0 0 var(--anime-ink);
+        transition:
+          transform 100ms var(--ease-out),
+          box-shadow 100ms var(--ease-out),
+          background 100ms;
+        outline: none;
+      }
+      .search input::placeholder {
+        color: rgba(13, 10, 26, 0.4);
+        font-weight: 500;
+      }
+      .search input:focus {
+        background: var(--anime-cyan);
+        transform: translate(-1px, -1px);
+        box-shadow: 6px 6px 0 0 var(--anime-ink);
+      }
+      .search input.charged {
+        background: var(--anime-cyan);
+      }
+      .search .submit {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 38px;
+        height: 38px;
+        background: var(--anime-pink);
+        border: 2.5px solid var(--anime-ink);
+        border-radius: 10px;
+        box-shadow: 3px 3px 0 0 var(--anime-ink);
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        color: white;
+        transition:
+          transform 100ms var(--ease-out),
+          box-shadow 100ms;
+      }
+      .search .submit:hover {
+        transform: translate(-1px, calc(-50% - 1px));
+        box-shadow: 4px 4px 0 0 var(--anime-ink);
+      }
+      .search .submit svg {
+        width: 16px;
+        height: 16px;
+        stroke-width: 2.5;
+      }
 
-    /* Variant chips — cel-shaded chunky badges */
-    .variant-row {
-      grid-column: 1 / -1;
-      display: flex; flex-wrap: wrap; gap: 10px;
-    }
-    .variant {
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: 13px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      padding: 9px 16px;
-      border: 2.5px solid var(--anime-ink);
-      background: white;
-      color: var(--anime-ink);
-      border-radius: 999px;
-      cursor: pointer;
-      box-shadow: 3px 3px 0 0 var(--anime-ink);
-      transition: transform 100ms var(--ease-out), box-shadow 100ms, background 100ms;
-    }
-    .variant:hover {
-      background: var(--anime-yellow);
-      transform: translate(-1px, -1px);
-      box-shadow: 4px 4px 0 0 var(--anime-ink);
-    }
-    .variant.active {
-      background: var(--anime-lime);
-      transform: translate(2px, 2px);
-      box-shadow: 1px 1px 0 0 var(--anime-ink);
-    }
-    .variant.disabled {
-      color: rgba(13,10,26,0.35);
-      background: repeating-linear-gradient(
-        45deg,
-        white 0 6px,
-        rgba(13,10,26,0.06) 6px 10px
-      );
-      cursor: not-allowed;
-      box-shadow: 3px 3px 0 0 rgba(13,10,26,0.4);
-    }
+      /* Variant chips — cel-shaded chunky badges */
+      .variant-row {
+        grid-column: 1 / -1;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .variant {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 13px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 9px 16px;
+        border: 2.5px solid var(--anime-ink);
+        background: white;
+        color: var(--anime-ink);
+        border-radius: 999px;
+        cursor: pointer;
+        box-shadow: 3px 3px 0 0 var(--anime-ink);
+        transition:
+          transform 100ms var(--ease-out),
+          box-shadow 100ms,
+          background 100ms;
+      }
+      .variant:hover {
+        background: var(--anime-yellow);
+        transform: translate(-1px, -1px);
+        box-shadow: 4px 4px 0 0 var(--anime-ink);
+      }
+      .variant.active {
+        background: var(--anime-lime);
+        transform: translate(2px, 2px);
+        box-shadow: 1px 1px 0 0 var(--anime-ink);
+      }
+      .variant.disabled {
+        color: rgba(13, 10, 26, 0.35);
+        background: repeating-linear-gradient(
+          45deg,
+          white 0 6px,
+          rgba(13, 10, 26, 0.06) 6px 10px
+        );
+        cursor: not-allowed;
+        box-shadow: 3px 3px 0 0 rgba(13, 10, 26, 0.4);
+      }
 
-    /* Select-style dropdown trigger */
-    .select {
-      display: inline-flex; align-items: center; justify-content: space-between;
-      gap: 12px;
-      padding: 12px 16px;
-      width: 100%;
-      box-sizing: border-box;
-      background: var(--anime-purple);
-      color: white;
-      border: 2.5px solid var(--anime-ink);
-      border-radius: 14px;
-      box-shadow: 4px 4px 0 0 var(--anime-ink);
-      cursor: pointer;
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: 14px;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-    .select svg { width: 16px; height: 16px; stroke-width: 3; }
+      /* Select-style dropdown trigger */
+      .select {
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 16px;
+        width: 100%;
+        box-sizing: border-box;
+        background: var(--anime-purple);
+        color: white;
+        border: 2.5px solid var(--anime-ink);
+        border-radius: 14px;
+        box-shadow: 4px 4px 0 0 var(--anime-ink);
+        cursor: pointer;
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 14px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .select svg {
+        width: 16px;
+        height: 16px;
+        stroke-width: 3;
+      }
 
-    .checkbox {
-      display: inline-flex; align-items: center; gap: 10px;
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: 13px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--anime-ink);
-      cursor: pointer;
-    }
-    .checkbox .box {
-      width: 22px; height: 22px;
-      border: 2.5px solid var(--anime-ink);
-      background: white;
-      border-radius: 6px;
-      box-shadow: 2px 2px 0 0 var(--anime-ink);
-      display: grid; place-items: center;
-    }
-    .checkbox.on .box { background: var(--anime-pink); }
-    .checkbox.on .box::after {
-      content: "";
-      width: 11px; height: 6px;
-      border-left: 3px solid white;
-      border-bottom: 3px solid white;
-      transform: rotate(-45deg) translate(1px, -1px);
-    }
-  </style>
-</head>
-<body>
-  <div class="label">Search · rest</div>
-  <div class="search">
-    <input placeholder="Search products..." />
-    <button class="submit" aria-label="search">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
-    </button>
-  </div>
+      .checkbox {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 13px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--anime-ink);
+        cursor: pointer;
+      }
+      .checkbox .box {
+        width: 22px;
+        height: 22px;
+        border: 2.5px solid var(--anime-ink);
+        background: white;
+        border-radius: 6px;
+        box-shadow: 2px 2px 0 0 var(--anime-ink);
+        display: grid;
+        place-items: center;
+      }
+      .checkbox.on .box {
+        background: var(--anime-pink);
+      }
+      .checkbox.on .box::after {
+        content: "";
+        width: 11px;
+        height: 6px;
+        border-left: 3px solid white;
+        border-bottom: 3px solid white;
+        transform: rotate(-45deg) translate(1px, -1px);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="label">Search · rest</div>
+    <div class="search">
+      <input placeholder="Search products..." />
+      <button class="submit" aria-label="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <circle cx="11" cy="11" r="7" />
+          <path d="M21 21l-4.3-4.3" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
 
-  <div class="label">Search · focus</div>
-  <div class="search">
-    <input class="charged" value="holographic charizard" />
-    <button class="submit" aria-label="search">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
-    </button>
-  </div>
+    <div class="label">Search · focus</div>
+    <div class="search">
+      <input class="charged" value="holographic charizard" />
+      <button class="submit" aria-label="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <circle cx="11" cy="11" r="7" />
+          <path d="M21 21l-4.3-4.3" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
 
-  <div class="label">Variant chips · condition</div>
-  <div class="variant-row">
-    <button class="variant">Sealed</button>
-    <button class="variant active">Mint</button>
-    <button class="variant">Near mint</button>
-    <button class="variant disabled" disabled>Played</button>
-  </div>
+    <div class="label">Variant chips · condition</div>
+    <div class="variant-row">
+      <button class="variant">Sealed</button>
+      <button class="variant active">Mint</button>
+      <button class="variant">Near mint</button>
+      <button class="variant disabled" disabled>Played</button>
+    </div>
 
-  <div class="label">Select · checkbox</div>
-  <div class="select">
-    <span>Sort: Latest arrivals</span>
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-  </div>
-  <label class="checkbox on">
-    <span class="box"></span>
-    In stock only
-  </label>
-</body>
+    <div class="label">Select · checkbox</div>
+    <div class="select">
+      <span>Sort: Latest arrivals</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </div>
+    <label class="checkbox on">
+      <span class="box"></span>
+      In stock only
+    </label>
+  </body>
 </html>

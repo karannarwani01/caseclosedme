@@ -1,46 +1,75 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Shadows & elevation</title>
-  <link rel="stylesheet" href="../colors_and_type.css" />
-  <style>
-    html, body { margin: 0; padding: 0; }
-    body {
-      width: 700px;
-      padding: 36px 24px 32px;
-      background: var(--bg-page);
-      box-sizing: border-box;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 22px;
-      font-family: var(--font-sans);
-    }
-    .tile {
-      background: white;
-      border-radius: var(--r-2xl);
-      height: 130px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 14px 16px;
-    }
-    .name { font-family: var(--font-display); font-weight: 600; font-size: 15px; color: var(--fg-1); }
-    .val { font-size: 11px; color: var(--fg-3); margin-top: 2px; font-feature-settings:"tnum"; }
-  </style>
-</head>
-<body>
-  <div class="tile" style="box-shadow: var(--shadow-card-rest);">
-    <div class="name">card · rest</div>
-    <div class="val">0 4px 20px -8px ink/12</div>
-  </div>
-  <div class="tile" style="box-shadow: var(--shadow-card-hover); transform: translateY(-4px) rotate(-0.5deg); border: 2px solid var(--accent);">
-    <div class="name">card · hover</div>
-    <div class="val">0 20px 40px -12px pink/25</div>
-  </div>
-  <div class="tile" style="box-shadow: var(--shadow-nav); border-radius: var(--r-pill); height: 80px; margin: 25px 0;">
-    <div class="name">floating nav</div>
-    <div class="val">0 8px 30px -12px ink/15</div>
-  </div>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>Shadows & elevation</title>
+    <link rel="stylesheet" href="../colors_and_type.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        width: 700px;
+        padding: 36px 24px 32px;
+        background: var(--bg-page);
+        box-sizing: border-box;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px;
+        font-family: var(--font-sans);
+      }
+      .tile {
+        background: white;
+        border-radius: var(--r-2xl);
+        height: 130px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 14px 16px;
+      }
+      .name {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 15px;
+        color: var(--fg-1);
+      }
+      .val {
+        font-size: 11px;
+        color: var(--fg-3);
+        margin-top: 2px;
+        font-feature-settings: "tnum";
+      }
+    </style>
+  </head>
+  <body>
+    <div class="tile" style="box-shadow: var(--shadow-card-rest)">
+      <div class="name">card · rest</div>
+      <div class="val">0 4px 20px -8px ink/12</div>
+    </div>
+    <div
+      class="tile"
+      style="
+        box-shadow: var(--shadow-card-hover);
+        transform: translateY(-4px) rotate(-0.5deg);
+        border: 2px solid var(--accent);
+      "
+    >
+      <div class="name">card · hover</div>
+      <div class="val">0 20px 40px -12px pink/25</div>
+    </div>
+    <div
+      class="tile"
+      style="
+        box-shadow: var(--shadow-nav);
+        border-radius: var(--r-pill);
+        height: 80px;
+        margin: 25px 0;
+      "
+    >
+      <div class="name">floating nav</div>
+      <div class="val">0 8px 30px -12px ink/15</div>
+    </div>
+  </body>
 </html>

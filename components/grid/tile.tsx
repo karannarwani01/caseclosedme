@@ -113,8 +113,7 @@ function Badge({ text }: { text: string }) {
   const isNew = text.toLowerCase().includes("new");
   const isPreOrder = text.toLowerCase().includes("pre");
 
-  let palette =
-    "bg-anime-yellow text-anime-ink"; /* default: NEW yellow */
+  let palette = "bg-anime-yellow text-anime-ink"; /* default: NEW yellow */
   let rotate = "rotate-[-3deg]";
 
   if (isDiscount) {

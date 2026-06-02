@@ -61,6 +61,12 @@ const IconTrash = (p) => (
 );
 
 Object.assign(window, {
-  IconSearch, IconCart, IconClose, IconPlus, IconMinus,
-  IconArrowLeft, IconArrowRight, IconTrash,
+  IconSearch,
+  IconCart,
+  IconClose,
+  IconPlus,
+  IconMinus,
+  IconArrowLeft,
+  IconArrowRight,
+  IconTrash,
 });

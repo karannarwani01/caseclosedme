@@ -17,7 +17,8 @@ const PLACEHOLDER_COLORS = [
 
 function colorForHandle(handle: string) {
   let h = 0;
-  for (let i = 0; i < handle.length; i++) h = (h * 31 + handle.charCodeAt(i)) >>> 0;
+  for (let i = 0; i < handle.length; i++)
+    h = (h * 31 + handle.charCodeAt(i)) >>> 0;
   return PLACEHOLDER_COLORS[h % PLACEHOLDER_COLORS.length];
 }
 
@@ -32,7 +33,11 @@ export function FeedCard({ product }: { product: Product }) {
   return (
     <article className="group relative flex flex-col">
       {soldOut ? (
-        <StarburstBadge label="Sold Out" bg="var(--color-anime-ink)" color="#fff" />
+        <StarburstBadge
+          label="Sold Out"
+          bg="var(--color-anime-ink)"
+          color="#fff"
+        />
       ) : badge ? (
         <StarburstBadge label={badge.label} bg={badge.bg} color={badge.color} />
       ) : null}
@@ -61,8 +66,10 @@ export function FeedCard({ product }: { product: Product }) {
             }}
           >
             <span className="font-display text-5xl font-extrabold text-anime-ink/85">
-              {product.title.replace(/[^a-zA-Z0-9]/g, "").charAt(0).toUpperCase() ||
-                "?"}
+              {product.title
+                .replace(/[^a-zA-Z0-9]/g, "")
+                .charAt(0)
+                .toUpperCase() || "?"}
             </span>
           </div>
         )}
@@ -72,8 +79,17 @@ export function FeedCard({ product }: { product: Product }) {
           aria-hidden
           className="absolute left-3 top-3 grid h-8 w-8 place-items-center rounded-full border border-black/10 bg-white/90 text-anime-ink/55 backdrop-blur-sm transition-colors group-hover:text-anime-pink"
         >
-          <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M12 21s-7.5-4.6-10-9.2C.7 9 1.8 5.5 5 5c2-.3 3.4 1 4 2 .6-1 2-2.3 4-2 3.2.5 4.3 4 3 6.8C19.5 16.4 12 21 12 21z" strokeLinejoin="round" />
+          <svg
+            viewBox="0 0 24 24"
+            className="h-3.5 w-3.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path
+              d="M12 21s-7.5-4.6-10-9.2C.7 9 1.8 5.5 5 5c2-.3 3.4 1 4 2 .6-1 2-2.3 4-2 3.2.5 4.3 4 3 6.8C19.5 16.4 12 21 12 21z"
+              strokeLinejoin="round"
+            />
           </svg>
         </span>
       </Link>

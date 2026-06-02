@@ -13,6 +13,7 @@ If working on production code, you can copy assets and read the rules here to be
 If the user invokes this skill without any other guidance, ask them what they want to build or design, ask some questions (audience, surface, fidelity, options), and act as an expert designer who outputs HTML artifacts _or_ production code, depending on the need.
 
 Key brand reminders:
+
 - **Voice:** plain, warm, collector-to-collector. Sentence case. Second person. No emoji in UI.
 - **Palette:** cream `#fff8f0` page, navy `#1a1a2e` ink, pink `#ff3d7f` primary, cyan `#5bc0eb` secondary, cream-2 `#ffeed9` tinted surfaces, yellow `#ffd93d` highlights.
 - **Type:** Bricolage Grotesque (display) + Inter (body). Tightened tracking on big headings.

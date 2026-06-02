@@ -1,74 +1,132 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Body type — Inter</title>
-  <link rel="stylesheet" href="../colors_and_type.css" />
-  <style>
-    html, body { margin: 0; padding: 0; }
-    body {
-      width: 700px;
-      padding: 26px 28px;
-      background: var(--bg-page);
-      box-sizing: border-box;
-    }
-    .row {
-      display: grid;
-      grid-template-columns: 100px 1fr auto;
-      align-items: baseline;
-      gap: 16px;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border-divider);
-    }
-    .row:last-child { border-bottom: none; }
-    .tag {
-      font-family: var(--font-sans);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--fg-3);
-    }
-    .spec {
-      font-family: var(--font-sans);
-      font-size: 11px;
-      color: var(--fg-3);
-      font-feature-settings: "tnum";
-      text-align: right;
-    }
-    .sample { font-family: var(--font-sans); color: var(--fg-1); }
-  </style>
-</head>
-<body>
-  <div class="row">
-    <div class="tag">Body</div>
-    <div class="sample" style="font-size: 16px; font-weight: 400; line-height: 1.6;">A high‑performance, SSR storefront powered by Shopify, Next.js, and Vercel.</div>
-    <div class="spec">400 / 16 / 1.6</div>
-  </div>
-  <div class="row">
-    <div class="tag">Small</div>
-    <div class="sample" style="font-size: 14px; font-weight: 400; line-height: 1.5; color: var(--fg-2);">Showing 24 results for "holographic charizard"</div>
-    <div class="spec">400 / 14 / 1.5</div>
-  </div>
-  <div class="row">
-    <div class="tag">Caption</div>
-    <div class="sample" style="font-size: 12px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: var(--fg-3);">Latest arrivals</div>
-    <div class="spec">500 / 12 / +4%</div>
-  </div>
-  <div class="row">
-    <div class="tag">Eyebrow</div>
-    <div class="sample" style="font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);">Just dropped</div>
-    <div class="spec">600 / 13 / +8%</div>
-  </div>
-  <div class="row">
-    <div class="tag">Button</div>
-    <div class="sample" style="font-size: 14px; font-weight: 600;">Add to cart</div>
-    <div class="spec">600 / 14</div>
-  </div>
-  <div class="row">
-    <div class="tag">Price</div>
-    <div class="sample" style="font-size: 14px; font-weight: 600; font-feature-settings: 'tnum';">$24.00 <span style="color: var(--fg-3); font-weight: 400;">USD</span></div>
-    <div class="spec">tnum / 14</div>
-  </div>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>Body type — Inter</title>
+    <link rel="stylesheet" href="../colors_and_type.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        width: 700px;
+        padding: 26px 28px;
+        background: var(--bg-page);
+        box-sizing: border-box;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 100px 1fr auto;
+        align-items: baseline;
+        gap: 16px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border-divider);
+      }
+      .row:last-child {
+        border-bottom: none;
+      }
+      .tag {
+        font-family: var(--font-sans);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--fg-3);
+      }
+      .spec {
+        font-family: var(--font-sans);
+        font-size: 11px;
+        color: var(--fg-3);
+        font-feature-settings: "tnum";
+        text-align: right;
+      }
+      .sample {
+        font-family: var(--font-sans);
+        color: var(--fg-1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="row">
+      <div class="tag">Body</div>
+      <div
+        class="sample"
+        style="font-size: 16px; font-weight: 400; line-height: 1.6"
+      >
+        A high‑performance, SSR storefront powered by Shopify, Next.js, and
+        Vercel.
+      </div>
+      <div class="spec">400 / 16 / 1.6</div>
+    </div>
+    <div class="row">
+      <div class="tag">Small</div>
+      <div
+        class="sample"
+        style="
+          font-size: 14px;
+          font-weight: 400;
+          line-height: 1.5;
+          color: var(--fg-2);
+        "
+      >
+        Showing 24 results for "holographic charizard"
+      </div>
+      <div class="spec">400 / 14 / 1.5</div>
+    </div>
+    <div class="row">
+      <div class="tag">Caption</div>
+      <div
+        class="sample"
+        style="
+          font-size: 12px;
+          font-weight: 500;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          color: var(--fg-3);
+        "
+      >
+        Latest arrivals
+      </div>
+      <div class="spec">500 / 12 / +4%</div>
+    </div>
+    <div class="row">
+      <div class="tag">Eyebrow</div>
+      <div
+        class="sample"
+        style="
+          font-size: 13px;
+          font-weight: 600;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: var(--accent);
+        "
+      >
+        Just dropped
+      </div>
+      <div class="spec">600 / 13 / +8%</div>
+    </div>
+    <div class="row">
+      <div class="tag">Button</div>
+      <div class="sample" style="font-size: 14px; font-weight: 600">
+        Add to cart
+      </div>
+      <div class="spec">600 / 14</div>
+    </div>
+    <div class="row">
+      <div class="tag">Price</div>
+      <div
+        class="sample"
+        style="
+          font-size: 14px;
+          font-weight: 600;
+          font-feature-settings: &quot;tnum&quot;;
+        "
+      >
+        $24.00 <span style="color: var(--fg-3); font-weight: 400">USD</span>
+      </div>
+      <div class="spec">tnum / 14</div>
+    </div>
+  </body>
 </html>

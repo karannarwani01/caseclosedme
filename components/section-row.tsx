@@ -26,10 +26,7 @@ export async function JustArrivedRow() {
     >
       <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 lg:gap-5">
         {products.map((p) => (
-          <li
-            key={p.handle}
-            className="relative aspect-square"
-          >
+          <li key={p.handle} className="relative aspect-square">
             <Link
               href={`/product/${p.handle}`}
               className="relative block h-full w-full"
@@ -143,10 +140,7 @@ export async function ShopAllGrid() {
     >
       <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
         {products.map((p) => (
-          <li
-            key={p.handle}
-            className="relative aspect-square min-h-[200px]"
-          >
+          <li key={p.handle} className="relative aspect-square min-h-[200px]">
             <Link
               href={`/product/${p.handle}`}
               className="relative block h-full w-full"

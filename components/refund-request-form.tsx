@@ -18,17 +18,9 @@ const REFUND_TYPES = [
   "Other (please specify)",
 ];
 
-const PLATFORMS = [
-  "caseclosedme.com",
-  "Instagram DM",
-  "WhatsApp",
-  "Other",
-];
+const PLATFORMS = ["caseclosedme.com", "Instagram DM", "WhatsApp", "Other"];
 
-const REFUND_METHODS = [
-  "Original payment method",
-  "Store credit",
-];
+const REFUND_METHODS = ["Original payment method", "Store credit"];
 
 const RETURN_METHODS = [
   "I will ship it back via courier",
@@ -105,7 +97,9 @@ export function RefundRequestForm() {
         <h2 className="text-4xl uppercase tracking-wide text-anime-ink [font-family:var(--font-bangers)]">
           ★ Got it
         </h2>
-        <p className="mt-3 text-base text-anime-ink sm:text-lg">{state.message}</p>
+        <p className="mt-3 text-base text-anime-ink sm:text-lg">
+          {state.message}
+        </p>
       </div>
     );
   }
@@ -185,7 +179,11 @@ export function RefundRequestForm() {
       </div>
 
       <div>
-        <FieldLabel label="Date of purchase" required error={err.purchase_date} />
+        <FieldLabel
+          label="Date of purchase"
+          required
+          error={err.purchase_date}
+        />
         <input
           name="purchase_date"
           type="date"

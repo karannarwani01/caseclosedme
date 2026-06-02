@@ -39,12 +39,10 @@ jobs:
       - name: Type check
         run: pnpm exec tsc --noEmit
 
-      # Non-blocking: the repo has pre-existing style warnings. This surfaces
-      # them without failing the run. Run `pnpm prettier` locally to fix.
+      # Blocking: the codebase is fully formatted, so this keeps it that way.
+      # Run `pnpm prettier` locally to fix any style issues before pushing.
       - name: Format check
         run: pnpm prettier:check
-        continue-on-error: true
-
 # NOTE: a full `next build` is intentionally not run here. The storefront
 # fetches Shopify data while prerendering, so building in CI would require real
 # Shopify Storefront/Admin secrets as GitHub Actions secrets. If you want that,

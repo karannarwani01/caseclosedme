@@ -1,205 +1,290 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Floating navbar — anime style</title>
-  <link rel="stylesheet" href="../colors_and_type.css" />
-  <style>
-    html, body { margin: 0; padding: 0; }
-    body {
-      --anime-pink:   #ff2e93;
-      --anime-purple: #8a2be8;
-      --anime-cyan:   #1ee3ff;
-      --anime-lime:   #c4ff3d;
-      --anime-yellow: #ffd60a;
-      --anime-ink:    #0d0a1a;
-      --anime-paper:  #fff8f0;
+  <head>
+    <meta charset="utf-8" />
+    <title>Floating navbar — anime style</title>
+    <link rel="stylesheet" href="../colors_and_type.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        --anime-pink: #ff2e93;
+        --anime-purple: #8a2be8;
+        --anime-cyan: #1ee3ff;
+        --anime-lime: #c4ff3d;
+        --anime-yellow: #ffd60a;
+        --anime-ink: #0d0a1a;
+        --anime-paper: #fff8f0;
 
-      width: 700px;
-      padding: 28px 18px 36px;
-      background: var(--anime-paper);
-      box-sizing: border-box;
-      font-family: var(--font-sans);
-      position: relative;
-    }
+        width: 700px;
+        padding: 28px 18px 36px;
+        background: var(--anime-paper);
+        box-sizing: border-box;
+        font-family: var(--font-sans);
+        position: relative;
+      }
 
-    /* Action lines + halftone backdrop — pure anime */
-    body::before {
-      content: "";
-      position: absolute; inset: 0;
-      background:
-        radial-gradient(circle at 50% 36%, transparent 40%, var(--anime-yellow) 40.5%, var(--anime-yellow) 41%, transparent 41.5%),
-        radial-gradient(circle at 50% 36%, transparent 28%, var(--anime-pink) 28.5%, var(--anime-pink) 29%, transparent 29.5%),
-        repeating-conic-gradient(from 0deg at 50% 36%,
-          var(--anime-yellow) 0deg 6deg,
-          transparent 6deg 12deg);
-      mask-image: radial-gradient(circle at 50% 36%, black 30%, transparent 65%);
-      -webkit-mask-image: radial-gradient(circle at 50% 36%, black 30%, transparent 65%);
-      opacity: 0.55;
-      z-index: 0;
-    }
-    body::after {
-      content: "";
-      position: absolute; inset: 0;
-      background-image: radial-gradient(circle, var(--anime-ink) 1px, transparent 1.5px);
-      background-size: 8px 8px;
-      mask-image: linear-gradient(to right, black, transparent 35%, transparent 65%, black);
-      -webkit-mask-image: linear-gradient(to right, black, transparent 35%, transparent 65%, black);
-      opacity: 0.18;
-      z-index: 0;
-    }
+      /* Action lines + halftone backdrop — pure anime */
+      body::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(
+            circle at 50% 36%,
+            transparent 40%,
+            var(--anime-yellow) 40.5%,
+            var(--anime-yellow) 41%,
+            transparent 41.5%
+          ),
+          radial-gradient(
+            circle at 50% 36%,
+            transparent 28%,
+            var(--anime-pink) 28.5%,
+            var(--anime-pink) 29%,
+            transparent 29.5%
+          ),
+          repeating-conic-gradient(
+            from 0deg at 50% 36%,
+            var(--anime-yellow) 0deg 6deg,
+            transparent 6deg 12deg
+          );
+        mask-image: radial-gradient(
+          circle at 50% 36%,
+          black 30%,
+          transparent 65%
+        );
+        -webkit-mask-image: radial-gradient(
+          circle at 50% 36%,
+          black 30%,
+          transparent 65%
+        );
+        opacity: 0.55;
+        z-index: 0;
+      }
+      body::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(
+          circle,
+          var(--anime-ink) 1px,
+          transparent 1.5px
+        );
+        background-size: 8px 8px;
+        mask-image: linear-gradient(
+          to right,
+          black,
+          transparent 35%,
+          transparent 65%,
+          black
+        );
+        -webkit-mask-image: linear-gradient(
+          to right,
+          black,
+          transparent 35%,
+          transparent 65%,
+          black
+        );
+        opacity: 0.18;
+        z-index: 0;
+      }
 
-    .nav {
-      position: relative; z-index: 2;
-      display: grid;
-      grid-template-columns: auto 1fr auto auto;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 12px 10px 10px;
-      background: white;
-      border: 2.5px solid var(--anime-ink);
-      border-radius: 18px;
-      box-shadow: 6px 6px 0 0 var(--anime-ink);
-    }
+      .nav {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: auto 1fr auto auto;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px 10px 10px;
+        background: white;
+        border: 2.5px solid var(--anime-ink);
+        border-radius: 18px;
+        box-shadow: 6px 6px 0 0 var(--anime-ink);
+      }
 
-    .brand {
-      display: flex; align-items: center; gap: 10px;
-      text-decoration: none;
-    }
-    .logo {
-      width: 44px; height: 44px;
-      background: var(--anime-ink);
-      border: 2.5px solid var(--anime-ink);
-      border-radius: 12px;
-      padding: 5px;
-      box-sizing: border-box;
-      flex-shrink: 0;
-      box-shadow: 3px 3px 0 0 var(--anime-pink);
-      display: grid; place-items: center;
-    }
-    .logo img {
-      width: 100%; height: 100%;
-      object-fit: contain;
-      image-rendering: pixelated;
-      display: block;
-    }
-    .wordmark {
-      font-family: var(--font-display);
-      font-weight: 800;
-      font-size: 22px;
-      letter-spacing: -0.01em;
-      color: var(--anime-ink);
-      line-height: 1;
-    }
-    .wordmark .me {
-      background: var(--anime-pink);
-      color: white;
-      padding: 0 6px;
-      border-radius: 6px;
-      border: 2px solid var(--anime-ink);
-      margin-left: 2px;
-    }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+      }
+      .logo {
+        width: 44px;
+        height: 44px;
+        background: var(--anime-ink);
+        border: 2.5px solid var(--anime-ink);
+        border-radius: 12px;
+        padding: 5px;
+        box-sizing: border-box;
+        flex-shrink: 0;
+        box-shadow: 3px 3px 0 0 var(--anime-pink);
+        display: grid;
+        place-items: center;
+      }
+      .logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        image-rendering: pixelated;
+        display: block;
+      }
+      .wordmark {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 22px;
+        letter-spacing: -0.01em;
+        color: var(--anime-ink);
+        line-height: 1;
+      }
+      .wordmark .me {
+        background: var(--anime-pink);
+        color: white;
+        padding: 0 6px;
+        border-radius: 6px;
+        border: 2px solid var(--anime-ink);
+        margin-left: 2px;
+      }
 
-    .links {
-      display: flex; align-items: center; gap: 10px;
-      list-style: none; margin: 0; padding: 0 0 0 18px;
-      font-family: var(--font-display);
-      font-weight: 800;
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-    .links a {
-      color: var(--anime-ink);
-      text-decoration: none;
-      padding: 6px 12px;
-      border: 2px solid transparent;
-      border-radius: 999px;
-      transition: background 100ms;
-    }
-    .links a:hover { background: var(--anime-yellow); border-color: var(--anime-ink); }
-    .links a.active {
-      background: var(--anime-lime);
-      border-color: var(--anime-ink);
-      box-shadow: 2px 2px 0 0 var(--anime-ink);
-    }
+      .links {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        list-style: none;
+        margin: 0;
+        padding: 0 0 0 18px;
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .links a {
+        color: var(--anime-ink);
+        text-decoration: none;
+        padding: 6px 12px;
+        border: 2px solid transparent;
+        border-radius: 999px;
+        transition: background 100ms;
+      }
+      .links a:hover {
+        background: var(--anime-yellow);
+        border-color: var(--anime-ink);
+      }
+      .links a.active {
+        background: var(--anime-lime);
+        border-color: var(--anime-ink);
+        box-shadow: 2px 2px 0 0 var(--anime-ink);
+      }
 
-    .search {
-      position: relative;
-      width: 200px;
-    }
-    .search input {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 9px 36px 9px 14px;
-      background: var(--anime-cyan);
-      border: 2.5px solid var(--anime-ink);
-      border-radius: 12px;
-      font-size: 13px;
-      font-family: var(--font-sans);
-      font-weight: 500;
-      color: var(--anime-ink);
-      box-shadow: 3px 3px 0 0 var(--anime-ink);
-      outline: none;
-    }
-    .search input::placeholder { color: rgba(13,10,26,0.55); font-weight: 500; }
-    .search svg {
-      position: absolute; right: 12px; top: 50%;
-      transform: translateY(-50%);
-      width: 14px; height: 14px;
-      color: var(--anime-ink);
-      stroke-width: 2.75;
-    }
+      .search {
+        position: relative;
+        width: 200px;
+      }
+      .search input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 9px 36px 9px 14px;
+        background: var(--anime-cyan);
+        border: 2.5px solid var(--anime-ink);
+        border-radius: 12px;
+        font-size: 13px;
+        font-family: var(--font-sans);
+        font-weight: 500;
+        color: var(--anime-ink);
+        box-shadow: 3px 3px 0 0 var(--anime-ink);
+        outline: none;
+      }
+      .search input::placeholder {
+        color: rgba(13, 10, 26, 0.55);
+        font-weight: 500;
+      }
+      .search svg {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 14px;
+        height: 14px;
+        color: var(--anime-ink);
+        stroke-width: 2.75;
+      }
 
-    .cart {
-      position: relative;
-      width: 44px; height: 44px;
-      background: var(--anime-pink);
-      border: 2.5px solid var(--anime-ink);
-      border-radius: 12px;
-      box-shadow: 3px 3px 0 0 var(--anime-ink);
-      display: grid; place-items: center;
-      color: white;
-      cursor: pointer;
-    }
-    .cart svg { width: 20px; height: 20px; stroke-width: 2.5; }
-    .cart .count {
-      position: absolute;
-      top: -8px; right: -8px;
-      min-width: 22px; height: 22px;
-      padding: 0 5px;
-      background: var(--anime-lime);
-      color: var(--anime-ink);
-      border: 2px solid var(--anime-ink);
-      border-radius: 999px;
-      font-family: var(--font-display);
-      font-size: 12px;
-      font-weight: 800;
-      display: grid; place-items: center;
-      font-feature-settings: "tnum";
-    }
-  </style>
-</head>
-<body>
-  <nav class="nav">
-    <a class="brand">
-      <div class="logo"><img src="../assets/case-closed-cube-white.png" alt="" /></div>
-      <span class="wordmark">caseclosed<span class="me">.me</span></span>
-    </a>
-    <ul class="links">
-      <li><a href="#" class="active">Shop</a></li>
-      <li><a href="#">Funkos</a></li>
-      <li><a href="#">Cards</a></li>
-      <li><a href="#">Figures</a></li>
-    </ul>
-    <div class="search">
-      <input placeholder="Search drops..." />
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
-    </div>
-    <button class="cart" aria-label="cart">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 4h2l2.4 12.4a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.6L21 8H6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/></svg>
-      <span class="count">3</span>
-    </button>
-  </nav>
-</body>
+      .cart {
+        position: relative;
+        width: 44px;
+        height: 44px;
+        background: var(--anime-pink);
+        border: 2.5px solid var(--anime-ink);
+        border-radius: 12px;
+        box-shadow: 3px 3px 0 0 var(--anime-ink);
+        display: grid;
+        place-items: center;
+        color: white;
+        cursor: pointer;
+      }
+      .cart svg {
+        width: 20px;
+        height: 20px;
+        stroke-width: 2.5;
+      }
+      .cart .count {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        min-width: 22px;
+        height: 22px;
+        padding: 0 5px;
+        background: var(--anime-lime);
+        color: var(--anime-ink);
+        border: 2px solid var(--anime-ink);
+        border-radius: 999px;
+        font-family: var(--font-display);
+        font-size: 12px;
+        font-weight: 800;
+        display: grid;
+        place-items: center;
+        font-feature-settings: "tnum";
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="nav">
+      <a class="brand">
+        <div class="logo">
+          <img src="../assets/case-closed-cube-white.png" alt="" />
+        </div>
+        <span class="wordmark">caseclosed<span class="me">.me</span></span>
+      </a>
+      <ul class="links">
+        <li><a href="#" class="active">Shop</a></li>
+        <li><a href="#">Funkos</a></li>
+        <li><a href="#">Cards</a></li>
+        <li><a href="#">Figures</a></li>
+      </ul>
+      <div class="search">
+        <input placeholder="Search drops..." />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <circle cx="11" cy="11" r="7" />
+          <path d="M21 21l-4.3-4.3" stroke-linecap="round" />
+        </svg>
+      </div>
+      <button class="cart" aria-label="cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path
+            d="M3 4h2l2.4 12.4a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.6L21 8H6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <circle cx="9" cy="20" r="1.4" />
+          <circle cx="18" cy="20" r="1.4" />
+        </svg>
+        <span class="count">3</span>
+      </button>
+    </nav>
+  </body>
 </html>

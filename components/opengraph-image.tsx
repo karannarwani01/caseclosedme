@@ -47,7 +47,12 @@ export default async function OpengraphImage(
           </div>
         </div>
         <div
-          style={{ marginTop: 56, fontSize: 96, fontWeight: 800, color: "#0d0a1a" }}
+          style={{
+            marginTop: 56,
+            fontSize: 96,
+            fontWeight: 800,
+            color: "#0d0a1a",
+          }}
         >
           caseclosed
         </div>

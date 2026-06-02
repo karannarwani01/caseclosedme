@@ -41,7 +41,10 @@ const DEPARTMENTS: Record<string, Department> = {
   },
 };
 
-export function departmentFor(handle: string, fallbackTitle?: string): Department {
+export function departmentFor(
+  handle: string,
+  fallbackTitle?: string,
+): Department {
   return (
     DEPARTMENTS[handle] ?? {
       eyebrow: "Department",

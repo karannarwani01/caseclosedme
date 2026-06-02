@@ -5,11 +5,13 @@ saved to the customer's Shopify account, synced across devices. Build it once th
 prerequisites below are met — not during demo mode.
 
 ## Prerequisites (must be true before building)
+
 1. **Real products in Shopify** and `USE_DEMO_PRODUCTS = false` (lib/demo-products.ts).
 2. **Site deployed** to the production domain (OAuth needs a real callback URL).
 3. **New Customer Accounts enabled** in Shopify: Settings → Customer accounts → New customer accounts.
 
 ## Shopify setup (Customer Account API)
+
 1. Enable New Customer Accounts.
 2. Configure a **Customer Account API** client (Hydrogen / Headless channel, or app config). Collect:
    - Client ID
@@ -19,6 +21,7 @@ prerequisites below are met — not during demo mode.
 4. Put the values in env: `CUSTOMER_ACCOUNT_API_CLIENT_ID`, `SHOPIFY_CUSTOMER_ACCOUNT_*` endpoints, etc.
 
 ## App build
+
 1. **OAuth login flow** (OAuth 2.0 + PKCE):
    - `GET /api/auth/login` → redirect to Shopify authorize (with PKCE + state).
    - `GET /api/auth/callback` → exchange code for a customer access token; store in a secure httpOnly cookie/session; handle token refresh.
@@ -32,6 +35,7 @@ prerequisites below are met — not during demo mode.
 5. **`/wishlist` page** — loads the saved products (Storefront API by id) with remove buttons; empty + logged-out states.
 
 ## Notes
+
 - Until this is built, the header **heart icon links to `/wishlist` (404)** — either build this, or repoint/hide the heart in `components/layout/navbar/index.tsx`.
 - Customer access tokens are short-lived → implement refresh.
-- This is what makes login a *real* integration (vs. the current link to Shopify's hosted account). Doing it also upgrades the "login" feature to a full in-app session.
+- This is what makes login a _real_ integration (vs. the current link to Shopify's hosted account). Doing it also upgrades the "login" feature to a full in-app session.

@@ -3,7 +3,8 @@
 // uploads to Shopify Files. Server-only; never import into a client component.
 
 const ADMIN_API_VERSION = "2026-04";
-const STORE_DOMAIN = process.env.SHOPIFY_STORE_DOMAIN || "rje5fv-8c.myshopify.com";
+const STORE_DOMAIN =
+  process.env.SHOPIFY_STORE_DOMAIN || "rje5fv-8c.myshopify.com";
 const ADMIN_TOKEN = process.env.SHOPIFY_ADMIN_ACCESS_TOKEN || "";
 
 const REFUND_TYPE = "$app:refund_request";

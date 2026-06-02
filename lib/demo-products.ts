@@ -42,28 +42,109 @@ function mk(
 }
 
 export const DEMO_PRODUCTS: Product[] = [
-  mk("charizard-holo-psa9", "Charizard — Holographic, PSA 9", 1499, ["Trading Cards", "Pokémon", "vault"]),
-  mk("luffy-gear-5-1525", "Luffy Gear 5 — Funko Pop #1525", 89, ["Funko Pops", "Anime", "new"]),
-  mk("spiderman-glow-chase", "Spider-Man — Glow Chase", 145, ["Funko Pops", "Marvel", "new"]),
-  mk("naruto-sage-figure", "Naruto Sage Mode — 1/7 Figure", 420, ["Figures", "Anime", "preorder"]),
-  mk("pikachu-vmax-box", "Pikachu VMAX — Sealed Box", 320, ["Trading Cards", "Pokémon", "sale"]),
-  mk("goku-ui-statue", "Goku Ultra Instinct — Statue", 760, ["Figures", "Anime", "vault"]),
-  mk("demon-slayer-blindbox", "Demon Slayer — Blind Box", 39, ["Blind Box", "Anime", "new"]),
-  mk("batman-1989-retro", "Batman 1989 — Retro Pop", 65, ["Funko Pops", "DC", "sale"]),
-  mk("eevee-evolutions-slabs", "Eevee Evolutions — Slab Set", 980, ["Trading Cards", "Pokémon", "vault"]),
-  mk("gundam-rx78-model", "Gundam RX-78-2 — Master Grade", 210, ["Figures", "Anime"]),
-  mk("pochita-plush", "Pochita — Collector Plush", 55, ["Novelty", "Anime"], false),
-  mk("gojo-satoru-figure", "Gojo Satoru — Limited Figure", 540, ["Figures", "Anime", "preorder"]),
-  mk("snow-white-diorama", "Snow White — Deluxe Diorama", 1399, ["Figures", "Disney", "new"]),
-  mk("stormtrooper-bust", "Stormtrooper — 1/4 Scale Bust", 349, ["Figures", "Star Wars"]),
-  mk("grogu-flocked-470", "Grogu — Flocked Pop! #470", 95, ["Funko Pops", "Star Wars", "new"]),
+  mk("charizard-holo-psa9", "Charizard — Holographic, PSA 9", 1499, [
+    "Trading Cards",
+    "Pokémon",
+    "vault",
+  ]),
+  mk("luffy-gear-5-1525", "Luffy Gear 5 — Funko Pop #1525", 89, [
+    "Funko Pops",
+    "Anime",
+    "new",
+  ]),
+  mk("spiderman-glow-chase", "Spider-Man — Glow Chase", 145, [
+    "Funko Pops",
+    "Marvel",
+    "new",
+  ]),
+  mk("naruto-sage-figure", "Naruto Sage Mode — 1/7 Figure", 420, [
+    "Figures",
+    "Anime",
+    "preorder",
+  ]),
+  mk("pikachu-vmax-box", "Pikachu VMAX — Sealed Box", 320, [
+    "Trading Cards",
+    "Pokémon",
+    "sale",
+  ]),
+  mk("goku-ui-statue", "Goku Ultra Instinct — Statue", 760, [
+    "Figures",
+    "Anime",
+    "vault",
+  ]),
+  mk("demon-slayer-blindbox", "Demon Slayer — Blind Box", 39, [
+    "Blind Box",
+    "Anime",
+    "new",
+  ]),
+  mk("batman-1989-retro", "Batman 1989 — Retro Pop", 65, [
+    "Funko Pops",
+    "DC",
+    "sale",
+  ]),
+  mk("eevee-evolutions-slabs", "Eevee Evolutions — Slab Set", 980, [
+    "Trading Cards",
+    "Pokémon",
+    "vault",
+  ]),
+  mk("gundam-rx78-model", "Gundam RX-78-2 — Master Grade", 210, [
+    "Figures",
+    "Anime",
+  ]),
+  mk(
+    "pochita-plush",
+    "Pochita — Collector Plush",
+    55,
+    ["Novelty", "Anime"],
+    false,
+  ),
+  mk("gojo-satoru-figure", "Gojo Satoru — Limited Figure", 540, [
+    "Figures",
+    "Anime",
+    "preorder",
+  ]),
+  mk("snow-white-diorama", "Snow White — Deluxe Diorama", 1399, [
+    "Figures",
+    "Disney",
+    "new",
+  ]),
+  mk("stormtrooper-bust", "Stormtrooper — 1/4 Scale Bust", 349, [
+    "Figures",
+    "Star Wars",
+  ]),
+  mk("grogu-flocked-470", "Grogu — Flocked Pop! #470", 95, [
+    "Funko Pops",
+    "Star Wars",
+    "new",
+  ]),
   mk("joker-statue", "Joker — 1/6 Statue", 525, ["Figures", "DC", "vault"]),
-  mk("topps-chrome-marvel", "Topps Chrome — Marvel Box", 189, ["Trading Cards", "Marvel"]),
-  mk("nba-prizm-2024", "NBA Prizm 2024 — Retail Pack", 27, ["Trading Cards", "Sports", "sale"]),
-  mk("iron-man-mk85", "Iron Man Mark 85 — Diecast", 430, ["Figures", "Marvel", "preorder"]),
-  mk("darth-vader-pop", "Darth Vader — Glow Pop! #157", 72, ["Funko Pops", "Star Wars"]),
-  mk("monchicchi-pouch", "Monchicchi — Plush Pouch", 119, ["Novelty", "Disney", "new"]),
-  mk("one-piece-zoro-pop", "Zoro — Funko Pop! #1290", 79, ["Funko Pops", "Anime"]),
+  mk("topps-chrome-marvel", "Topps Chrome — Marvel Box", 189, [
+    "Trading Cards",
+    "Marvel",
+  ]),
+  mk("nba-prizm-2024", "NBA Prizm 2024 — Retail Pack", 27, [
+    "Trading Cards",
+    "Sports",
+    "sale",
+  ]),
+  mk("iron-man-mk85", "Iron Man Mark 85 — Diecast", 430, [
+    "Figures",
+    "Marvel",
+    "preorder",
+  ]),
+  mk("darth-vader-pop", "Darth Vader — Glow Pop! #157", 72, [
+    "Funko Pops",
+    "Star Wars",
+  ]),
+  mk("monchicchi-pouch", "Monchicchi — Plush Pouch", 119, [
+    "Novelty",
+    "Disney",
+    "new",
+  ]),
+  mk("one-piece-zoro-pop", "Zoro — Funko Pop! #1290", 79, [
+    "Funko Pops",
+    "Anime",
+  ]),
 ];
 
 // Match a collection handle to demo products by category tag, so collection

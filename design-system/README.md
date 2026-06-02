@@ -23,22 +23,22 @@ This dual identity is intentional: the playful pastel layer is the storefront UX
   - `components/welcome-toast.tsx` — voice example.
 - **Uploaded assets**
   - `uploads/WhatsApp Image 2026-05-24 at 5.51.22 PM.jpeg` — the pixel‑mark logo; preserved as `assets/case-closed-pixel-logo.jpeg`.
-  - `uploads/logo.ai` was listed but **not present in the upload payload** — see *Caveats*.
+  - `uploads/logo.ai` was listed but **not present in the upload payload** — see _Caveats_.
 
 ---
 
 ## Index — what lives at the root
 
-| File / folder              | What it is                                                                  |
-| -------------------------- | --------------------------------------------------------------------------- |
-| `README.md`                | This file. Brand context, content + visual foundations, iconography, index. |
-| `SKILL.md`                 | Agent‑skill entrypoint — load this in a Claude Code skill.                  |
-| `colors_and_type.css`      | All CSS custom properties: raw palette, semantic tokens, type scale, radii, shadows, motion. |
-| `fonts/`                   | Local font files (Inter‑Bold.ttf). Bricolage Grotesque is loaded from Google Fonts — **see Caveats**. |
-| `assets/`                  | Logos, brand marks, raw imagery.                                            |
-| `preview/`                 | Self‑contained HTML cards rendered in the Design System tab.                |
-| `ui_kits/storefront/`      | Pixel‑close recreation of the Case Closed storefront (homepage, PDP, cart, search). |
-| `reference/`               | Copies of source files used while building this system. Not for distribution. |
+| File / folder         | What it is                                                                                            |
+| --------------------- | ----------------------------------------------------------------------------------------------------- |
+| `README.md`           | This file. Brand context, content + visual foundations, iconography, index.                           |
+| `SKILL.md`            | Agent‑skill entrypoint — load this in a Claude Code skill.                                            |
+| `colors_and_type.css` | All CSS custom properties: raw palette, semantic tokens, type scale, radii, shadows, motion.          |
+| `fonts/`              | Local font files (Inter‑Bold.ttf). Bricolage Grotesque is loaded from Google Fonts — **see Caveats**. |
+| `assets/`             | Logos, brand marks, raw imagery.                                                                      |
+| `preview/`            | Self‑contained HTML cards rendered in the Design System tab.                                          |
+| `ui_kits/storefront/` | Pixel‑close recreation of the Case Closed storefront (homepage, PDP, cart, search).                   |
+| `reference/`          | Copies of source files used while building this system. Not for distribution.                         |
 
 There is no `slides/` folder — no deck templates were provided.
 
@@ -64,6 +64,7 @@ The storefront's voice is **plain, warm, collector‑to‑collector**. The site 
 - **Marketing copy** can lean a little playful — the welcome toast describes the storefront in one sentence and then offers a clear next action. Keep it under two sentences.
 
 **Examples that ARE on‑brand**
+
 > 🛍️ Welcome to Next.js Commerce!
 > This is a high‑performance, SSR storefront powered by Shopify, Next.js, and Vercel. [Deploy your own](#).
 
@@ -72,6 +73,7 @@ The storefront's voice is **plain, warm, collector‑to‑collector**. The site 
 > Your cart is empty.
 
 **Examples that ARE NOT on‑brand**
+
 > 🚀✨ DISCOVER OUR EXCLUSIVE COLLECTION OF PREMIUM COLLECTIBLES!!! ✨🚀
 > Dear Valued Customer, please be advised that your basket currently contains zero (0) items.
 
@@ -80,6 +82,7 @@ The storefront's voice is **plain, warm, collector‑to‑collector**. The site 
 ## Visual foundations
 
 ### Palette
+
 A cream base, deep‑navy ink, and two pop accents.
 
 - `--brand-bg` **#fff8f0** — the page colour. Warm cream, not white. Everything sits on this.
@@ -93,6 +96,7 @@ A cream base, deep‑navy ink, and two pop accents.
 Neutrals are derived as **alphas of `--brand-ink`** (`--ink-70`, `--ink-50`, `--ink-30`, `--ink-10`, `--ink-05`). This keeps every "grey" warm against cream. **Do not introduce a separate grey scale.**
 
 ### Type
+
 Two faces, both variable, both with explicit roles.
 
 - **Bricolage Grotesque** — display. Headings (`h1–h4`), product titles, hero copy, the site logo wordmark. Loaded as `--font-display` (variable, weights 400–800). Tracking is tightened by `-0.02em` on `h1/h2` for poster‑ish energy.
@@ -102,12 +106,14 @@ Two faces, both variable, both with explicit roles.
 Scale lives in `colors_and_type.css` as `--fs-12` through `--fs-72`. Display headlines use `clamp()` so they scale fluidly.
 
 ### Spacing, layout, rhythm
+
 - 4px base; tokens `--s-1` (4) through `--s-20` (80).
 - The site is **center‑aligned on a soft canvas**. Max widths are wide (`max-w-6xl` / `--breakpoint-2xl`), but content always sits on the cream — there are no full‑width dark sections.
 - Layout containers use generous `gap-4`/`gap-8`; the homepage hero is a **CSS Grid mosaic** (6 cols × 2 rows on md+, one "full" tile spans 4×2 and two "half" tiles span 2×1).
 - Navbar is **fixed/sticky** at `top-3 md:top-5`, **floating** (not edge‑to‑edge): a pill with `bg-white/75` and `backdrop-blur-xl` over the cream. Footer is plain — no dark band.
 
 ### Radii — pills first, then 28px
+
 - Buttons, chips, badges, nav, search field, price tag: **`--r-pill`** (`9999px`).
 - Product cards, dialog panels: **`--r-2xl`** (28px).
 - Form fields: pill.
@@ -115,6 +121,7 @@ Scale lives in `colors_and_type.css` as `--fs-12` through `--fs-72`. Display hea
 - **Do not use small radii (≤8px)** except on the inline `code` token.
 
 ### Shadows
+
 Two real shadows; everything else is a hairline border.
 
 - `--shadow-card-rest` — `0 4px 20px -8px rgba(26,26,46,0.12)`. Used at rest on every card.
@@ -124,13 +131,15 @@ Two real shadows; everything else is a hairline border.
 Inner shadows are not used. Borders are hairline `1px solid var(--ink-10)` or `var(--ink-05)`.
 
 ### Hover, press, focus
+
 - **Hover on a product card**: `-translate-y-1` lift + `rotate(-0.5deg)` micro‑tilt + swap rest shadow → hover shadow + `ring-2 ring-brand-pink`. Image inside scales to 1.05 over 500ms. This compound motion is the brand's most distinctive interaction.
 - **Hover on a nav link**: `color: var(--accent)` only. No underline, no scale.
-- **Hover on a primary button**: opacity 0.9 → 1.0 *or* bg → `--brand-pink-hover`. No translate. No shadow on the button itself.
+- **Hover on a primary button**: opacity 0.9 → 1.0 _or_ bg → `--brand-pink-hover`. No translate. No shadow on the button itself.
 - **Press** is implicit (the opacity/colour shift carries it). No `:active` scale‑down.
 - **Focus** is universal: `outline: 2px solid var(--brand-pink); outline-offset: 2px;`. Pink ring on cream is the brand. Don't replace it with the OS default.
 
 ### Motion
+
 Three named animations in `globals.css`:
 
 - `--animate-carousel` — 60s linear infinite translate, used to belt featured products across the homepage. Decorative, not informative.
@@ -140,12 +149,14 @@ Three named animations in `globals.css`:
 Transitions use **`--ease-out`** (`cubic-bezier(0.16, 1, 0.3, 1)`) for everything UI‑initiated, **`--dur-base` 300ms** for card lifts, **`--dur-fast` 150ms** for colour/opacity swaps. No bounces, no springs.
 
 ### Backdrops, transparency, blur
+
 - The floating navbar is `bg-white/75` + `backdrop-blur-xl`.
 - Product card labels are `bg-white/90` + `backdrop-blur-md`, sitting on top of the product image.
 - The cart modal uses `bg-white/80` + `backdrop-blur-xl`; the underlying scrim is `bg-black/30` plus a tiny `backdrop-blur-[0.5px]` haze on enter.
 - Transparency + blur is **always over imagery or the cream page**, never over arbitrary brand colour. Don't blur over pink.
 
 ### Imagery
+
 The catalog is **product‑on‑white shots** (Funko Pops, slabbed trading cards, action figures). The tile component renders them with `object-contain p-4` on a `bg-white` card — i.e. the product floats inside the card with breathing room; we don't bleed product photos to the edge.
 
 There is **no full‑bleed photography, no gradients used as hero backgrounds, no hand‑drawn illustration, no pattern fills**. The only "ambient" art is the cyan blob animation. Imagery vibe is warm + clean + collector‑catalogue, never moody or grainy.
@@ -153,6 +164,7 @@ There is **no full‑bleed photography, no gradients used as hero backgrounds, n
 If you need a placeholder, use a cream‑bg + `--brand-ink` outlined icon box with the pixel mark centered. Do not generate a hero photograph.
 
 ### Cards
+
 The canonical card is the product tile:
 
 - `rounded-3xl` (28px), `bg-white`, `shadow-card-rest`.
@@ -162,6 +174,7 @@ The canonical card is the product tile:
 Reuse this anatomy for any browse/collection surface.
 
 ### What we don't do
+
 - No bluish‑purple gradients.
 - No emoji as iconography (see Iconography below).
 - No left‑border‑accent cards.
@@ -176,6 +189,7 @@ Reuse this anatomy for any browse/collection surface.
 The codebase uses two icon systems and one brand mark:
 
 1. **Heroicons (outline, 24px)** — via `@heroicons/react/24/outline`. The shipped usages are:
+
    - `MagnifyingGlassIcon` — navbar search.
    - `ShoppingCartIcon` — cart open / empty state.
    - `XMarkIcon` — cart close button.

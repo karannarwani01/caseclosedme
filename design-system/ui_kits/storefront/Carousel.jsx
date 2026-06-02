@@ -18,8 +18,10 @@ function Carousel({ products, onSelect }) {
     <div style={{ width: "100%", overflow: "hidden", padding: "8px 0 24px" }}>
       <ul
         style={{
-          display: "flex", gap: 16,
-          margin: 0, padding: "4px 0",
+          display: "flex",
+          gap: 16,
+          margin: 0,
+          padding: "4px 0",
           listStyle: "none",
           animation: "ck-carousel 60s linear infinite",
           width: "max-content",

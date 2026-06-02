@@ -76,7 +76,9 @@ export default function CartModal() {
           >
             <Dialog.Panel className="fixed bottom-0 right-0 top-0 flex h-full w-full flex-col border-l-[2.5px] border-anime-ink bg-anime-paper p-6 text-anime-ink md:w-[420px]">
               <div className="flex items-center justify-between">
-                <p className="font-display text-2xl font-extrabold tracking-tight">Your cart</p>
+                <p className="font-display text-2xl font-extrabold tracking-tight">
+                  Your cart
+                </p>
                 <button aria-label="Close cart" onClick={closeCart}>
                   <CloseCart />
                 </button>
@@ -85,7 +87,10 @@ export default function CartModal() {
               {!cart || cart.lines.length === 0 ? (
                 <div className="mt-16 flex w-full flex-col items-center justify-center">
                   <div className="flex h-20 w-20 items-center justify-center rounded-full border-[2.5px] border-anime-ink bg-anime-yellow shadow-[4px_4px_0_0_var(--color-anime-ink)]">
-                    <ShoppingCartIcon className="h-9 w-9 text-anime-ink" strokeWidth={2.5} />
+                    <ShoppingCartIcon
+                      className="h-9 w-9 text-anime-ink"
+                      strokeWidth={2.5}
+                    />
                   </div>
                   <p className="mt-6 text-center font-display text-2xl font-extrabold leading-tight">
                     Your{" "}
@@ -240,10 +245,7 @@ export default function CartModal() {
 function CloseCart({ className }: { className?: string }) {
   return (
     <div className="relative flex h-10 w-10 items-center justify-center rounded-full border-[2.5px] border-anime-ink bg-white text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)] transition-all hover:bg-anime-pink hover:text-white">
-      <XMarkIcon
-        className={clsx("h-5", className)}
-        strokeWidth={2.5}
-      />
+      <XMarkIcon className={clsx("h-5", className)} strokeWidth={2.5} />
     </div>
   );
 }

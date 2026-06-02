@@ -21,6 +21,7 @@ direct `git push` to it will be rejected.
    ```
 
    Use a prefix so it's obvious whose branch it is:
+
    - `karan/...`, `<collaborator>/...`
    - or by type: `feat/...`, `fix/...`, `chore/...`
 

@@ -1,72 +1,108 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Radii</title>
-  <link rel="stylesheet" href="../colors_and_type.css" />
-  <style>
-    html, body { margin: 0; padding: 0; }
-    body {
-      width: 700px;
-      padding: 24px;
-      background: var(--bg-page);
-      box-sizing: border-box;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-      font-family: var(--font-sans);
-    }
-    .tile {
-      background: var(--bg-elev-1);
-      border: 1px solid var(--border-soft);
-      padding: 16px 14px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      align-items: flex-start;
-    }
-    .demo {
-      width: 100%;
-      height: 56px;
-      background: var(--bg-elev-2);
-      border: 1px solid var(--border-soft);
-    }
-    .name { font-size: 13px; font-weight: 600; color: var(--fg-1); }
-    .val { font-size: 11px; color: var(--fg-3); font-feature-settings: "tnum"; }
-  </style>
-</head>
-<body>
-  <div class="tile" style="border-radius: var(--r-xs);">
-    <div class="demo" style="border-radius: var(--r-xs);"></div>
-    <div><div class="name">--r-xs</div><div class="val">6px · inline code</div></div>
-  </div>
-  <div class="tile" style="border-radius: var(--r-sm);">
-    <div class="demo" style="border-radius: var(--r-sm);"></div>
-    <div><div class="name">--r-sm</div><div class="val">10px</div></div>
-  </div>
-  <div class="tile" style="border-radius: var(--r-md);">
-    <div class="demo" style="border-radius: var(--r-md);"></div>
-    <div><div class="name">--r-md</div><div class="val">14px · tiles</div></div>
-  </div>
-  <div class="tile" style="border-radius: var(--r-lg);">
-    <div class="demo" style="border-radius: var(--r-lg);"></div>
-    <div><div class="name">--r-lg</div><div class="val">20px</div></div>
-  </div>
-  <div class="tile" style="border-radius: var(--r-xl);">
-    <div class="demo" style="border-radius: var(--r-xl);"></div>
-    <div><div class="name">--r-xl</div><div class="val">24px</div></div>
-  </div>
-  <div class="tile" style="border-radius: var(--r-2xl);">
-    <div class="demo" style="border-radius: var(--r-2xl);"></div>
-    <div><div class="name">--r-2xl</div><div class="val">28px · cards</div></div>
-  </div>
-  <div class="tile" style="border-radius: var(--r-3xl);">
-    <div class="demo" style="border-radius: var(--r-3xl);"></div>
-    <div><div class="name">--r-3xl</div><div class="val">32px</div></div>
-  </div>
-  <div class="tile" style="border-radius: var(--r-pill);">
-    <div class="demo" style="border-radius: var(--r-pill);"></div>
-    <div><div class="name">--r-pill</div><div class="val">9999px · nav, btn</div></div>
-  </div>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>Radii</title>
+    <link rel="stylesheet" href="../colors_and_type.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        width: 700px;
+        padding: 24px;
+        background: var(--bg-page);
+        box-sizing: border-box;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        font-family: var(--font-sans);
+      }
+      .tile {
+        background: var(--bg-elev-1);
+        border: 1px solid var(--border-soft);
+        padding: 16px 14px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+      }
+      .demo {
+        width: 100%;
+        height: 56px;
+        background: var(--bg-elev-2);
+        border: 1px solid var(--border-soft);
+      }
+      .name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--fg-1);
+      }
+      .val {
+        font-size: 11px;
+        color: var(--fg-3);
+        font-feature-settings: "tnum";
+      }
+    </style>
+  </head>
+  <body>
+    <div class="tile" style="border-radius: var(--r-xs)">
+      <div class="demo" style="border-radius: var(--r-xs)"></div>
+      <div>
+        <div class="name">--r-xs</div>
+        <div class="val">6px · inline code</div>
+      </div>
+    </div>
+    <div class="tile" style="border-radius: var(--r-sm)">
+      <div class="demo" style="border-radius: var(--r-sm)"></div>
+      <div>
+        <div class="name">--r-sm</div>
+        <div class="val">10px</div>
+      </div>
+    </div>
+    <div class="tile" style="border-radius: var(--r-md)">
+      <div class="demo" style="border-radius: var(--r-md)"></div>
+      <div>
+        <div class="name">--r-md</div>
+        <div class="val">14px · tiles</div>
+      </div>
+    </div>
+    <div class="tile" style="border-radius: var(--r-lg)">
+      <div class="demo" style="border-radius: var(--r-lg)"></div>
+      <div>
+        <div class="name">--r-lg</div>
+        <div class="val">20px</div>
+      </div>
+    </div>
+    <div class="tile" style="border-radius: var(--r-xl)">
+      <div class="demo" style="border-radius: var(--r-xl)"></div>
+      <div>
+        <div class="name">--r-xl</div>
+        <div class="val">24px</div>
+      </div>
+    </div>
+    <div class="tile" style="border-radius: var(--r-2xl)">
+      <div class="demo" style="border-radius: var(--r-2xl)"></div>
+      <div>
+        <div class="name">--r-2xl</div>
+        <div class="val">28px · cards</div>
+      </div>
+    </div>
+    <div class="tile" style="border-radius: var(--r-3xl)">
+      <div class="demo" style="border-radius: var(--r-3xl)"></div>
+      <div>
+        <div class="name">--r-3xl</div>
+        <div class="val">32px</div>
+      </div>
+    </div>
+    <div class="tile" style="border-radius: var(--r-pill)">
+      <div class="demo" style="border-radius: var(--r-pill)"></div>
+      <div>
+        <div class="name">--r-pill</div>
+        <div class="val">9999px · nav, btn</div>
+      </div>
+    </div>
+  </body>
 </html>

@@ -38,34 +38,59 @@ function Navbar({ active, onNavigate, cartCount, onOpenCart }) {
         }}
       >
         <a
-          onClick={(e) => { e.preventDefault(); onNavigate("home"); }}
+          onClick={(e) => {
+            e.preventDefault();
+            onNavigate("home");
+          }}
           href="#"
-          style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            textDecoration: "none",
+          }}
           aria-label="caseclosedme home"
         >
           <LogoSquare />
           <Wordmark />
         </a>
 
-        <ul style={{
-          display: "flex", alignItems: "center", gap: 26,
-          listStyle: "none", margin: 0, padding: 0,
-          fontSize: 14, fontWeight: 500,
-        }}>
+        <ul
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 26,
+            listStyle: "none",
+            margin: 0,
+            padding: 0,
+            fontSize: 14,
+            fontWeight: 500,
+          }}
+        >
           {links.map((l) => {
-            const isActive = active === l.path || (active === "search" && l.path === "search");
+            const isActive =
+              active === l.path || (active === "search" && l.path === "search");
             return (
               <li key={l.path}>
                 <a
                   href="#"
-                  onClick={(e) => { e.preventDefault(); onNavigate(l.path); }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onNavigate(l.path);
+                  }}
                   style={{
                     color: isActive ? "var(--accent)" : "var(--fg-2)",
                     textDecoration: "none",
                     transition: "color var(--dur-fast) var(--ease-out)",
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "var(--accent)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = isActive ? "var(--accent)" : "var(--fg-2)")}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.color = "var(--accent)")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.color = isActive
+                      ? "var(--accent)"
+                      : "var(--fg-2)")
+                  }
                 >
                   {l.title}
                 </a>
@@ -81,29 +106,39 @@ function Navbar({ active, onNavigate, cartCount, onOpenCart }) {
           onClick={onOpenCart}
           style={{
             position: "relative",
-            width: 40, height: 40,
+            width: 40,
+            height: 40,
             border: "1px solid var(--border-soft)",
             background: "var(--bg-elev-1)",
             borderRadius: "var(--r-md)",
-            display: "grid", placeItems: "center",
+            display: "grid",
+            placeItems: "center",
             color: "var(--fg-1)",
             cursor: "pointer",
           }}
         >
           <IconCart />
           {cartCount > 0 && (
-            <span style={{
-              position: "absolute",
-              top: -4, right: -4,
-              minWidth: 18, height: 18,
-              padding: "0 5px",
-              background: "var(--accent)",
-              color: "white",
-              borderRadius: 999,
-              fontSize: 11, fontWeight: 700,
-              display: "grid", placeItems: "center",
-              fontFeatureSettings: '"tnum"',
-            }}>{cartCount}</span>
+            <span
+              style={{
+                position: "absolute",
+                top: -4,
+                right: -4,
+                minWidth: 18,
+                height: 18,
+                padding: "0 5px",
+                background: "var(--accent)",
+                color: "white",
+                borderRadius: 999,
+                fontSize: 11,
+                fontWeight: 700,
+                display: "grid",
+                placeItems: "center",
+                fontFeatureSettings: '"tnum"',
+              }}
+            >
+              {cartCount}
+            </span>
           )}
         </button>
       </nav>
@@ -115,7 +150,10 @@ function NavSearch({ onSubmit }) {
   const [v, setV] = React.useState("");
   return (
     <form
-      onSubmit={(e) => { e.preventDefault(); onSubmit(v); }}
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit(v);
+      }}
       style={{ position: "relative", width: 200 }}
     >
       <input
@@ -123,9 +161,11 @@ function NavSearch({ onSubmit }) {
         onChange={(e) => setV(e.target.value)}
         placeholder="Search products..."
         style={{
-          width: "100%", boxSizing: "border-box",
+          width: "100%",
+          boxSizing: "border-box",
           padding: "6px 30px 6px 14px",
-          background: "color-mix(in srgb, var(--brand-cream-2) 60%, transparent)",
+          background:
+            "color-mix(in srgb, var(--brand-cream-2) 60%, transparent)",
           border: "none",
           borderRadius: "var(--r-pill)",
           fontSize: 13,
@@ -135,19 +175,25 @@ function NavSearch({ onSubmit }) {
         }}
         onFocus={(e) => {
           e.target.style.background = "var(--bg-elev-1)";
-          e.target.style.boxShadow = "0 0 0 2px color-mix(in srgb, var(--accent) 40%, transparent)";
+          e.target.style.boxShadow =
+            "0 0 0 2px color-mix(in srgb, var(--accent) 40%, transparent)";
         }}
         onBlur={(e) => {
-          e.target.style.background = "color-mix(in srgb, var(--brand-cream-2) 60%, transparent)";
+          e.target.style.background =
+            "color-mix(in srgb, var(--brand-cream-2) 60%, transparent)";
           e.target.style.boxShadow = "none";
         }}
       />
-      <div style={{
-        position: "absolute", right: 10, top: "50%",
-        transform: "translateY(-50%)",
-        color: "var(--fg-3)",
-        pointerEvents: "none",
-      }}>
+      <div
+        style={{
+          position: "absolute",
+          right: 10,
+          top: "50%",
+          transform: "translateY(-50%)",
+          color: "var(--fg-3)",
+          pointerEvents: "none",
+        }}
+      >
         <IconSearch style={{ width: 14, height: 14 }} />
       </div>
     </form>

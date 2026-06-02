@@ -15,15 +15,63 @@ type Category = {
 };
 
 const CATEGORIES: Category[] = [
-  { slug: "naruto", name: "Naruto", color: "var(--color-anime-orange)", glyph: "鳴", href: "/search" },
-  { slug: "one-piece", name: "One Piece", color: "var(--color-anime-cyan)", glyph: "海", href: "/search" },
-  { slug: "jujutsu-kaisen", name: "Jujutsu Kaisen", color: "var(--color-anime-purple)", glyph: "呪", href: "/search" },
-  { slug: "demon-slayer", name: "Demon Slayer", color: "var(--color-anime-pink)", glyph: "鬼", href: "/search" },
-  { slug: "super-mario", name: "Super Mario", color: "var(--color-anime-yellow)", glyph: "★", href: "/search" },
-  { slug: "marvel", name: "Marvel", color: "#e23636", glyph: "✦", href: "/search" },
-  { slug: "harry-potter", name: "Harry Potter", color: "#4a3a1c", glyph: "⚡", href: "/search" },
+  {
+    slug: "naruto",
+    name: "Naruto",
+    color: "var(--color-anime-orange)",
+    glyph: "鳴",
+    href: "/search",
+  },
+  {
+    slug: "one-piece",
+    name: "One Piece",
+    color: "var(--color-anime-cyan)",
+    glyph: "海",
+    href: "/search",
+  },
+  {
+    slug: "jujutsu-kaisen",
+    name: "Jujutsu Kaisen",
+    color: "var(--color-anime-purple)",
+    glyph: "呪",
+    href: "/search",
+  },
+  {
+    slug: "demon-slayer",
+    name: "Demon Slayer",
+    color: "var(--color-anime-pink)",
+    glyph: "鬼",
+    href: "/search",
+  },
+  {
+    slug: "super-mario",
+    name: "Super Mario",
+    color: "var(--color-anime-yellow)",
+    glyph: "★",
+    href: "/search",
+  },
+  {
+    slug: "marvel",
+    name: "Marvel",
+    color: "#e23636",
+    glyph: "✦",
+    href: "/search",
+  },
+  {
+    slug: "harry-potter",
+    name: "Harry Potter",
+    color: "#4a3a1c",
+    glyph: "⚡",
+    href: "/search",
+  },
   { slug: "dc", name: "DC", color: "#0476f2", glyph: "◆", href: "/search" },
-  { slug: "barbie", name: "Barbie", color: "#ff6fa3", glyph: "♥", href: "/search" },
+  {
+    slug: "barbie",
+    name: "Barbie",
+    color: "#ff6fa3",
+    glyph: "♥",
+    href: "/search",
+  },
 ];
 
 // Resolve which file is the "default" (static poster) and which is the "hover" (GIF)
@@ -44,7 +92,9 @@ function resolveAssets(slug: string): { logo?: string; logoHover?: string } {
     }
   }
   const hoverPath = path.join(FRANCHISE_DIR, `${slug}.gif`);
-  const logoHover = fs.existsSync(hoverPath) ? `/franchises/${slug}.gif` : undefined;
+  const logoHover = fs.existsSync(hoverPath)
+    ? `/franchises/${slug}.gif`
+    : undefined;
   // If no static was found but a GIF exists, use the GIF for both states.
   if (!logo && logoHover) return { logo: logoHover, logoHover };
   return { logo, logoHover };

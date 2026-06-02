@@ -18,11 +18,41 @@ type Tile = {
 };
 
 const TILES: Tile[] = [
-  { id: "preorder", label: "PRE-\nORDER", sub: "Pre order", color: "#e63946", filter: { kind: "badge", value: "preorder" } },
-  { id: "new", label: "NEW\nARRIVALS", sub: "New arrivals", color: "#ff3d7f", filter: { kind: "badge", value: "new" } },
-  { id: "figures", label: "FIGURE\nTYPES", sub: "Type", color: "#ff6b3d", filter: { kind: "category", value: "Figures" } },
-  { id: "popscards", label: "POPS\n+ CARDS", sub: "License", color: "#7a3dc2", filter: { kind: "categories", value: ["Funko Pops", "Trading Cards"] } },
-  { id: "vault", label: "FROM\nTHE VAULT", sub: "Brands", color: "#1a1a2e", filter: { kind: "badge", value: "vault" } },
+  {
+    id: "preorder",
+    label: "PRE-\nORDER",
+    sub: "Pre order",
+    color: "#e63946",
+    filter: { kind: "badge", value: "preorder" },
+  },
+  {
+    id: "new",
+    label: "NEW\nARRIVALS",
+    sub: "New arrivals",
+    color: "#ff3d7f",
+    filter: { kind: "badge", value: "new" },
+  },
+  {
+    id: "figures",
+    label: "FIGURE\nTYPES",
+    sub: "Type",
+    color: "#ff6b3d",
+    filter: { kind: "category", value: "Figures" },
+  },
+  {
+    id: "popscards",
+    label: "POPS\n+ CARDS",
+    sub: "License",
+    color: "#7a3dc2",
+    filter: { kind: "categories", value: ["Funko Pops", "Trading Cards"] },
+  },
+  {
+    id: "vault",
+    label: "FROM\nTHE VAULT",
+    sub: "Brands",
+    color: "#1a1a2e",
+    filter: { kind: "badge", value: "vault" },
+  },
 ];
 
 export function BannerTiles({

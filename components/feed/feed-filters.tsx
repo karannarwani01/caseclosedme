@@ -40,7 +40,9 @@ function Group({
         {title}
         <Chevron open={open} />
       </button>
-      {open && children ? <div className="flex flex-col gap-2 pb-4">{children}</div> : null}
+      {open && children ? (
+        <div className="flex flex-col gap-2 pb-4">{children}</div>
+      ) : null}
     </div>
   );
 }
@@ -67,15 +69,32 @@ function CheckRow({
         }
       >
         {checked ? (
-          <svg viewBox="0 0 24 24" className="h-2.5 w-2.5" fill="none" stroke="currentColor" strokeWidth="4">
-            <path d="M4 12l5 5L20 6" strokeLinecap="round" strokeLinejoin="round" />
+          <svg
+            viewBox="0 0 24 24"
+            className="h-2.5 w-2.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="4"
+          >
+            <path
+              d="M4 12l5 5L20 6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         ) : null}
       </span>
-      <input type="checkbox" checked={checked} onChange={onToggle} className="hidden" />
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={onToggle}
+        className="hidden"
+      />
       <span className="flex-1">{label}</span>
       {typeof count === "number" ? (
-        <span className="font-sans text-xs tabular-nums text-anime-ink/40">({count})</span>
+        <span className="font-sans text-xs tabular-nums text-anime-ink/40">
+          ({count})
+        </span>
       ) : null}
     </label>
   );
