@@ -239,7 +239,9 @@ export function CategoryCircles() {
                           : undefined
                       }
                       className={`opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100 ${
-                        cat.hoverFit === "cover" ? "object-cover" : "object-contain"
+                        cat.hoverFit === "cover"
+                          ? "object-cover"
+                          : "object-contain"
                       }`}
                     />
                   </>
