@@ -1,6 +1,7 @@
 import { HeartIcon, UserIcon } from "@heroicons/react/24/outline";
 import CartModal from "components/cart/modal";
 import LogoLockup from "components/logo-lockup";
+import { ACCOUNT_URL } from "lib/constants";
 import { getMenu } from "lib/shopify";
 import { Menu } from "lib/shopify/types";
 import Link from "next/link";
@@ -8,9 +9,6 @@ import { Suspense } from "react";
 import MobileMenu from "./mobile-menu";
 import { NavMenu } from "./nav-menu";
 import Search, { SearchSkeleton } from "./search";
-
-// Shopify-hosted new customer accounts (login / order history / account).
-const ACCOUNT_URL = "https://shopify.com/71115997383/account";
 
 export async function Navbar() {
   const menu = await getMenu("next-js-frontend-header-menu");

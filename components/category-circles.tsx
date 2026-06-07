@@ -11,7 +11,53 @@ type Category = {
   color: string;
   /** Glyph fallback rendered when no `<slug>.png/jpg/svg` is found. */
   glyph: string;
+  /**
+   * How the hover image fills the circle. Defaults to "contain" (whole image
+   * visible). Use "cover" for wide/landscape hover art that should fill the
+   * circle and crop, rather than sit small and letterboxed.
+   */
+  hoverFit?: "contain" | "cover";
+  /**
+   * Render a flat background instead of the default radial gradient. Use when
+   * the logo art has its own solid-color box that should blend seamlessly into
+   * the circle (e.g. Marvel's red box).
+   */
+  flatBg?: boolean;
+  /**
+   * Fully custom CSS `background` value. Overrides both the radial gradient and
+   * `flatBg`. Use for bespoke backgrounds like Harry Potter's starry night sky.
+   */
+  bg?: string;
+  /**
+   * CSS `object-position` for the hover image. Only meaningful with
+   * `hoverFit: "cover"`, where it controls which part of the image stays in
+   * frame. Defaults to center. e.g. "65% 50%" pans the crop rightward so the
+   * subject sits more to the left.
+   */
+  hoverPosition?: string;
+  /**
+   * When true, the category is kept in config but not rendered. Use to park a
+   * franchise (with all its art/colors intact) for later re-enabling.
+   */
+  hidden?: boolean;
 };
+
+// Dark navy night sky with a scattering of faint stars (layered radial dots
+// over a vertical gradient). Percent-positioned so it scales with the circle.
+const NIGHT_SKY =
+  "radial-gradient(2px 2px at 22% 32%, #fff 60%, transparent)," +
+  "radial-gradient(2.5px 2.5px at 68% 22%, #eef1ff 55%, transparent)," +
+  "radial-gradient(3px 3px at 52% 58%, #fff 55%, transparent)," +
+  "radial-gradient(2px 2px at 33% 70%, #dfe3ff 60%, transparent)," +
+  "radial-gradient(2.5px 2.5px at 80% 55%, #fff 55%, transparent)," +
+  "radial-gradient(3px 3px at 44% 18%, #fff 55%, transparent)," +
+  "radial-gradient(2px 2px at 84% 80%, #eef1ff 60%, transparent)," +
+  "radial-gradient(2px 2px at 26% 86%, #fff 60%, transparent)," +
+  "radial-gradient(2.5px 2.5px at 62% 78%, #fff 55%, transparent)," +
+  "radial-gradient(2px 2px at 15% 55%, #dfe3ff 60%, transparent)," +
+  "radial-gradient(2px 2px at 90% 35%, #fff 60%, transparent)," +
+  "radial-gradient(2.5px 2.5px at 38% 44%, #fff 55%, transparent)," +
+  "linear-gradient(180deg, #181628 0%, #20203a 55%, #2a2742 100%)";
 
 const CATEGORIES: Category[] = [
   {
@@ -19,49 +65,80 @@ const CATEGORIES: Category[] = [
     name: "Naruto",
     color: "var(--color-anime-orange)",
     glyph: "鳴",
+    hoverFit: "cover",
   },
   {
     slug: "one-piece",
     name: "One Piece",
     color: "var(--color-anime-cyan)",
     glyph: "海",
+    hoverFit: "cover",
   },
   {
     slug: "bleach",
     name: "Bleach",
-    color: "var(--color-anime-purple)",
+    color: "#111111",
     glyph: "死",
+    hoverFit: "cover",
+    flatBg: true,
   },
   {
     slug: "demon-slayer",
     name: "Demon Slayer",
-    color: "var(--color-anime-pink)",
+    color: "#ffffff",
     glyph: "鬼",
+    hoverFit: "cover",
+    flatBg: true,
   },
   {
     slug: "wwe",
     name: "WWE",
-    color: "var(--color-anime-yellow)",
+    color: "#111111",
     glyph: "W",
+    hoverFit: "cover",
   },
   {
     slug: "marvel",
     name: "Marvel",
-    color: "#e23636",
+    color: "#ea2328",
     glyph: "✦",
+    hoverFit: "cover",
+    flatBg: true,
   },
   {
     slug: "harry-potter",
     name: "Harry Potter",
-    color: "#4a3a1c",
+    color: "#20203a",
     glyph: "⚡",
+    bg: NIGHT_SKY,
+    hoverFit: "cover",
   },
-  { slug: "dc", name: "DC", color: "#0476f2", glyph: "◆" },
+  {
+    slug: "dc",
+    name: "DC",
+    color: "#ffffff",
+    glyph: "◆",
+    hoverFit: "cover",
+    flatBg: true,
+  },
   {
     slug: "barbie",
     name: "Barbie",
-    color: "#ff6fa3",
+    color: "#ec4399",
     glyph: "♥",
+    hoverFit: "cover",
+    hoverPosition: "68% 50%",
+    flatBg: true,
+    // Parked for later — keep all config/art, just don't render it for now.
+    hidden: true,
+  },
+  {
+    slug: "hot-wheels",
+    name: "Hot Wheels",
+    color: "#0091d4",
+    glyph: "HW",
+    hoverFit: "cover",
+    flatBg: true,
   },
 ];
 
@@ -118,7 +195,7 @@ export function CategoryCircles() {
   return (
     <section className="mx-auto mt-14 w-full px-4 md:mt-20 md:px-8">
       <div className="flex gap-6 overflow-x-auto pb-6 md:justify-between md:gap-4 md:overflow-visible">
-        {CATEGORIES.map((cat) => {
+        {CATEGORIES.filter((cat) => !cat.hidden).map((cat) => {
           const { logo, logoHover } = resolveAssets(cat.slug);
           return (
             <Link
@@ -129,7 +206,11 @@ export function CategoryCircles() {
               <div
                 className="relative h-28 w-28 overflow-hidden rounded-full border-[2.5px] border-anime-ink shadow-[5px_5px_0_0_var(--color-anime-ink)] transition-transform duration-150 ease-out group-hover:-translate-x-[2px] group-hover:-translate-y-[2px] md:h-36 md:w-36 lg:h-44 lg:w-44 xl:h-48 xl:w-48"
                 style={{
-                  background: `radial-gradient(circle at 50% 28%, color-mix(in srgb, ${cat.color} 50%, #fff) 0%, ${cat.color} 72%)`,
+                  background: cat.bg
+                    ? cat.bg
+                    : cat.flatBg
+                      ? cat.color
+                      : `radial-gradient(circle at 50% 28%, color-mix(in srgb, ${cat.color} 50%, #fff) 0%, ${cat.color} 72%)`,
                 }}
               >
                 {logo ? (
@@ -152,7 +233,14 @@ export function CategoryCircles() {
                       fill
                       sizes="(max-width: 768px) 112px, (max-width: 1024px) 144px, (max-width: 1280px) 176px, 192px"
                       unoptimized
-                      className="object-contain opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100"
+                      style={
+                        cat.hoverPosition
+                          ? { objectPosition: cat.hoverPosition }
+                          : undefined
+                      }
+                      className={`opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100 ${
+                        cat.hoverFit === "cover" ? "object-cover" : "object-contain"
+                      }`}
                     />
                   </>
                 ) : (

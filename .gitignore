@@ -6,3 +6,10 @@ node_modules
 .DS_Store
 *.log
 *.tsbuildinfo
+
+# Local-only backups produced by scripts/compress-gifs.py
+gif-originals
+
+# Regenerable artifacts from scripts/ (font is downloaded, logos export to Downloads)
+scripts/*.ttf
+scripts/account-logo*.png

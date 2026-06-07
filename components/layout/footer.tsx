@@ -1,17 +1,15 @@
 import Link from "next/link";
 import LogoSquare from "components/logo-square";
+import { ACCOUNT_URL } from "lib/constants";
 
 const { COMPANY_NAME, SITE_NAME } = process.env;
-
-// "My Account" leaves the storefront for Shopify's hosted customer login.
-const SHOPIFY_ACCOUNT_URL = `https://${process.env.SHOPIFY_STORE_DOMAIN || "rje5fv-8c.myshopify.com"}/account`;
 
 const customerService = [
   { title: "About", path: "/about" },
   { title: "Our Locations", path: "/locations" },
   { title: "Refund Request Form", path: "/refund-request" },
   { title: "Drop Alerts Membership", path: "/drop-alerts" },
-  { title: "My Account", path: SHOPIFY_ACCOUNT_URL },
+  { title: "My Account", path: ACCOUNT_URL },
 ];
 
 const terms = [
@@ -95,7 +93,7 @@ function LinkColumn({
 }) {
   return (
     <div className="flex flex-col gap-3">
-      <h3 className="font-display text-xs font-extrabold uppercase tracking-[0.18em] text-white/90">
+      <h3 className="font-display text-sm font-extrabold uppercase tracking-[0.18em] text-white/90">
         {title}
       </h3>
       <ul className="flex flex-col gap-2.5">
@@ -104,7 +102,7 @@ function LinkColumn({
             <Link
               href={l.path}
               prefetch={true}
-              className="text-sm leading-snug text-white/70 transition-colors hover:text-anime-pink"
+              className="text-base leading-snug text-white/70 transition-colors hover:text-anime-pink"
             >
               {l.title}
             </Link>
@@ -137,7 +135,7 @@ export default async function Footer() {
               aria-label="caseclosed home"
             >
               <LogoSquare size="sm" />
-              <span className="font-display text-2xl font-extrabold tracking-tight text-white">
+              <span className="font-display text-3xl font-extrabold tracking-tight text-white">
                 caseclosed
               </span>
             </Link>
@@ -175,7 +173,7 @@ export default async function Footer() {
 
             <Link
               href="/reviews"
-              className="relative inline-flex items-center justify-center rounded-md border-[2.5px] border-anime-ink bg-anime-lime px-4 py-3 font-display text-sm font-extrabold uppercase tracking-wider text-anime-ink shadow-[4px_4px_0_0_var(--color-anime-pink)]"
+              className="relative inline-flex items-center justify-center rounded-md border-[2.5px] border-anime-ink bg-anime-lime px-5 py-3.5 font-display text-base font-extrabold uppercase tracking-wider text-anime-ink shadow-[4px_4px_0_0_var(--color-anime-pink)]"
             >
               ★ See our happy collectors
             </Link>
@@ -186,39 +184,39 @@ export default async function Footer() {
           <LinkColumn title="FAQ's" links={faqs} />
 
           <div className="flex flex-col gap-3">
-            <h3 className="font-display text-xs font-extrabold uppercase tracking-[0.18em] text-white/90">
+            <h3 className="font-display text-sm font-extrabold uppercase tracking-[0.18em] text-white/90">
               Contact Us
             </h3>
             <a
               href="tel:+18005550100"
-              className="text-sm text-white/70 transition-colors hover:text-anime-pink"
+              className="text-base text-white/70 transition-colors hover:text-anime-pink"
             >
               +1 (800) 555-0100
             </a>
             <a
               href="tel:+18005550101"
-              className="text-sm text-white/70 transition-colors hover:text-anime-pink"
+              className="text-base text-white/70 transition-colors hover:text-anime-pink"
             >
               +1 (800) 555-0101
             </a>
             <a
               href="mailto:hello@caseclosedme.com"
-              className="text-sm text-white/70 transition-colors hover:text-anime-pink"
+              className="text-base text-white/70 transition-colors hover:text-anime-pink"
             >
               hello@caseclosedme.com
             </a>
           </div>
 
           <div className="flex flex-col gap-3">
-            <h3 className="font-display text-xs font-extrabold uppercase tracking-[0.18em] text-white/90">
+            <h3 className="font-display text-sm font-extrabold uppercase tracking-[0.18em] text-white/90">
               Corporate
             </h3>
-            <p className="text-sm text-white/70">caseclosed HQ</p>
+            <p className="text-base text-white/70">caseclosed HQ</p>
           </div>
         </div>
 
         <div className="border-t-[2.5px] border-white/10">
-          <div className="mx-auto flex w-full max-w-[1800px] flex-col gap-1 px-6 py-5 text-xs text-white/60 md:flex-row md:items-center md:justify-between lg:px-8">
+          <div className="mx-auto flex w-full max-w-[1800px] flex-col gap-1 px-6 py-5 text-sm text-white/60 md:flex-row md:items-center md:justify-between lg:px-8">
             <p>Website last updated: {lastUpdated}</p>
             <p>
               &copy; {copyrightDate} {copyrightName}. All rights reserved.
