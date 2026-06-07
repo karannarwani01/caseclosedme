@@ -1,5 +1,5 @@
 import { GridTileImage } from "components/grid/tile";
-import { getCollectionProducts } from "lib/shopify";
+import { getCollectionProducts, getProducts } from "lib/shopify";
 import type { Product } from "lib/shopify/types";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,9 +11,18 @@ type MaybeMockProduct = Product & {
 };
 
 export async function JustArrivedRow() {
-  const products = (await getCollectionProducts({
+  let products = (await getCollectionProducts({
     collection: "just-arrived",
   })) as MaybeMockProduct[];
+
+  // No curated `just-arrived` collection? Fall back to the newest live products
+  // so the row still renders outside demo mode.
+  if (!products.length) {
+    products = (await getProducts({
+      sortKey: "CREATED_AT",
+      reverse: true,
+    })) as MaybeMockProduct[];
+  }
 
   if (!products.length) return null;
 
@@ -53,9 +62,17 @@ export async function JustArrivedRow() {
 }
 
 export async function TopTenSection() {
-  const products = (await getCollectionProducts({
+  let products = (await getCollectionProducts({
     collection: "top-10",
   })) as MaybeMockProduct[];
+
+  // No curated `top-10` collection? Fall back to best-sellers from the live
+  // catalog so the chart still renders outside demo mode.
+  if (!products.length) {
+    products = (await getProducts({
+      sortKey: "BEST_SELLING",
+    })) as MaybeMockProduct[];
+  }
 
   if (!products.length) return null;
 

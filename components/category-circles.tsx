@@ -11,7 +11,6 @@ type Category = {
   color: string;
   /** Glyph fallback rendered when no `<slug>.png/jpg/svg` is found. */
   glyph: string;
-  href: string;
 };
 
 const CATEGORIES: Category[] = [
@@ -20,57 +19,49 @@ const CATEGORIES: Category[] = [
     name: "Naruto",
     color: "var(--color-anime-orange)",
     glyph: "鳴",
-    href: "/search",
   },
   {
     slug: "one-piece",
     name: "One Piece",
     color: "var(--color-anime-cyan)",
     glyph: "海",
-    href: "/search",
   },
   {
-    slug: "jujutsu-kaisen",
-    name: "Jujutsu Kaisen",
+    slug: "bleach",
+    name: "Bleach",
     color: "var(--color-anime-purple)",
-    glyph: "呪",
-    href: "/search",
+    glyph: "死",
   },
   {
     slug: "demon-slayer",
     name: "Demon Slayer",
     color: "var(--color-anime-pink)",
     glyph: "鬼",
-    href: "/search",
   },
   {
-    slug: "super-mario",
-    name: "Super Mario",
+    slug: "wwe",
+    name: "WWE",
     color: "var(--color-anime-yellow)",
-    glyph: "★",
-    href: "/search",
+    glyph: "W",
   },
   {
     slug: "marvel",
     name: "Marvel",
     color: "#e23636",
     glyph: "✦",
-    href: "/search",
   },
   {
     slug: "harry-potter",
     name: "Harry Potter",
     color: "#4a3a1c",
     glyph: "⚡",
-    href: "/search",
   },
-  { slug: "dc", name: "DC", color: "#0476f2", glyph: "◆", href: "/search" },
+  { slug: "dc", name: "DC", color: "#0476f2", glyph: "◆" },
   {
     slug: "barbie",
     name: "Barbie",
     color: "#ff6fa3",
     glyph: "♥",
-    href: "/search",
   },
 ];
 
@@ -83,19 +74,42 @@ const CATEGORIES: Category[] = [
 const FRANCHISE_DIR = path.join(process.cwd(), "public", "franchises");
 const STATIC_EXTS = ["png", "jpg", "jpeg", "webp", "svg"] as const;
 
+// Append the file's modified-time so the browser refetches whenever an image
+// is swapped — filenames stay the same, so without this a replaced image keeps
+// serving from cache.
+function publicUrl(rel: string, abs: string): string {
+  try {
+    return `${rel}?v=${Math.round(fs.statSync(abs).mtimeMs)}`;
+  } catch {
+    return rel;
+  }
+}
+
 function resolveAssets(slug: string): { logo?: string; logoHover?: string } {
   let logo: string | undefined;
   for (const ext of STATIC_EXTS) {
-    if (fs.existsSync(path.join(FRANCHISE_DIR, `${slug}.${ext}`))) {
-      logo = `/franchises/${slug}.${ext}`;
+    const abs = path.join(FRANCHISE_DIR, `${slug}.${ext}`);
+    if (fs.existsSync(abs)) {
+      logo = publicUrl(`/franchises/${slug}.${ext}`, abs);
       break;
     }
   }
-  const hoverPath = path.join(FRANCHISE_DIR, `${slug}.gif`);
-  const logoHover = fs.existsSync(hoverPath)
-    ? `/franchises/${slug}.gif`
-    : undefined;
-  // If no static was found but a GIF exists, use the GIF for both states.
+  // Hover image: a second still (`<slug>-hover.<ext>`) wins, else an animated
+  // `<slug>.gif`. Either one crossfades in on hover (figure → face, like
+  // littlethings.me).
+  let logoHover: string | undefined;
+  for (const ext of STATIC_EXTS) {
+    const abs = path.join(FRANCHISE_DIR, `${slug}-hover.${ext}`);
+    if (fs.existsSync(abs)) {
+      logoHover = publicUrl(`/franchises/${slug}-hover.${ext}`, abs);
+      break;
+    }
+  }
+  const gifAbs = path.join(FRANCHISE_DIR, `${slug}.gif`);
+  if (!logoHover && fs.existsSync(gifAbs)) {
+    logoHover = publicUrl(`/franchises/${slug}.gif`, gifAbs);
+  }
+  // If no static was found but a hover exists, use the hover for both states.
   if (!logo && logoHover) return { logo: logoHover, logoHover };
   return { logo, logoHover };
 }
@@ -109,12 +123,14 @@ export function CategoryCircles() {
           return (
             <Link
               key={cat.slug}
-              href={cat.href}
+              href={`/search/${cat.slug}`}
               className="group flex flex-none flex-col items-center gap-4 md:flex-1 md:min-w-0"
             >
               <div
                 className="relative h-28 w-28 overflow-hidden rounded-full border-[2.5px] border-anime-ink shadow-[5px_5px_0_0_var(--color-anime-ink)] transition-transform duration-150 ease-out group-hover:-translate-x-[2px] group-hover:-translate-y-[2px] md:h-36 md:w-36 lg:h-44 lg:w-44 xl:h-48 xl:w-48"
-                style={{ background: cat.color }}
+                style={{
+                  background: `radial-gradient(circle at 50% 28%, color-mix(in srgb, ${cat.color} 50%, #fff) 0%, ${cat.color} 72%)`,
+                }}
               >
                 {logo ? (
                   <>
@@ -124,8 +140,8 @@ export function CategoryCircles() {
                       alt={`${cat.name} — collectibles`}
                       fill
                       sizes="(max-width: 768px) 112px, (max-width: 1024px) 144px, (max-width: 1280px) 176px, 192px"
-                      unoptimized={logo.endsWith(".gif")}
-                      className="object-cover transition-opacity duration-300 ease-out group-hover:opacity-0"
+                      unoptimized={/\.gif(\?|$)/i.test(logo)}
+                      className="object-contain transition-opacity duration-300 ease-out group-hover:opacity-0"
                     />
                     {/* Hover image — fades in on hover. Usually an animated GIF.
                         `unoptimized` keeps Next's image pipeline from stripping the animation. */}
@@ -136,15 +152,24 @@ export function CategoryCircles() {
                       fill
                       sizes="(max-width: 768px) 112px, (max-width: 1024px) 144px, (max-width: 1280px) 176px, 192px"
                       unoptimized
-                      className="object-cover opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100"
+                      className="object-contain opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100"
                     />
                   </>
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center">
-                    <span className="font-display text-5xl font-extrabold text-white drop-shadow-[3px_3px_0_rgba(13,10,26,0.6)] md:text-6xl lg:text-7xl xl:text-8xl">
-                      {cat.glyph}
-                    </span>
-                  </div>
+                  <>
+                    {/* Rest face — the glyph, fades out on hover. */}
+                    <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300 ease-out group-hover:opacity-0">
+                      <span className="font-display text-5xl font-extrabold text-white drop-shadow-[3px_3px_0_rgba(13,10,26,0.6)] md:text-6xl lg:text-7xl xl:text-8xl">
+                        {cat.glyph}
+                      </span>
+                    </div>
+                    {/* Hover face — dark panel with the franchise name, fades in. */}
+                    <div className="absolute inset-0 flex items-center justify-center bg-anime-ink px-3 opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100">
+                      <span className="text-center font-display text-base font-extrabold uppercase leading-tight tracking-[0.04em] text-white md:text-xl lg:text-2xl">
+                        {cat.name}
+                      </span>
+                    </div>
+                  </>
                 )}
               </div>
               <p className="text-center font-display text-sm font-extrabold uppercase tracking-[0.06em] text-anime-ink md:text-base">

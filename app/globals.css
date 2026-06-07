@@ -188,3 +188,20 @@ button {
 .prose.prose-onebox > :last-child {
   margin-bottom: 0;
 }
+
+/* Section-card variant (policy/footer pages): each <h2> heading and the
+   content after it (paragraphs, sub-headings, lists) up to the next <h2> are
+   wrapped in one .policy-card and rendered as a single box. */
+.prose.prose-sections > .policy-card {
+  background: #fff;
+  border: 2.5px solid var(--color-anime-ink);
+  border-radius: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  margin: 1.25rem 0;
+}
+.prose.prose-sections > .policy-card > :first-child {
+  margin-top: 0;
+}
+.prose.prose-sections > .policy-card > :last-child {
+  margin-bottom: 0;
+}

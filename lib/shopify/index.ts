@@ -477,8 +477,12 @@ export async function getCollections(): Promise<Collection[]> {
     },
     // Filter out the `hidden` collections.
     // Collections that start with `hidden-*` need to be hidden on the search page.
+    // `still-good*` is hidden from all listings (search box, collections sidebar,
+    // sitemap) but stays reachable at its direct /search/still-good URL.
     ...reshapeCollections(shopifyCollections).filter(
-      (collection) => !collection.handle.startsWith("hidden"),
+      (collection) =>
+        !collection.handle.startsWith("hidden") &&
+        !collection.handle.startsWith("still-good"),
     ),
   ];
 

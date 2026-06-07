@@ -19,6 +19,9 @@ export default async function OpengraphImage(
   const file = await readFile(join(process.cwd(), "./fonts/Inter-Bold.ttf"));
   const font = Uint8Array.from(file).buffer;
 
+  const cube = await readFile(join(process.cwd(), "./public/logo-cube.png"));
+  const cubeSrc = `data:image/png;base64,${cube.toString("base64")}`;
+
   return new ImageResponse(
     (
       <div
@@ -39,11 +42,10 @@ export default async function OpengraphImage(
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 64,
-              fontWeight: 800,
             }}
           >
-            cc
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={cubeSrc} width={84} height={84} alt="" />
           </div>
         </div>
         <div

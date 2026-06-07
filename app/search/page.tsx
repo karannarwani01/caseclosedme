@@ -1,7 +1,8 @@
+import { CategoryMatches } from "components/feed/category-matches";
 import { FeedBrowse } from "components/feed/feed-browse";
 import { defaultSort, sorting } from "lib/constants";
 import { DEMO_PRODUCTS, USE_DEMO_PRODUCTS } from "lib/demo-products";
-import { getProducts } from "lib/shopify";
+import { getCollections, getProducts } from "lib/shopify";
 
 export const metadata = {
   title: "Search",
@@ -20,10 +21,24 @@ export default async function SearchPage(props: {
     ? DEMO_PRODUCTS
     : await getProducts({ sortKey, reverse, query: searchValue });
 
+  // Also match the query against category names so every collection in the
+  // framework is findable from the search box, not just products.
+  let categoryMatches: Awaited<ReturnType<typeof getCollections>> = [];
+  if (searchValue) {
+    const q = searchValue.toLowerCase();
+    categoryMatches = (await getCollections())
+      .filter((c) => c.handle && c.handle !== "frontpage")
+      .filter((c) => c.title.toLowerCase().includes(q) || c.handle.includes(q))
+      .slice(0, 12);
+  }
+
   return (
-    <FeedBrowse
-      products={products}
-      heading={searchValue ? `Results for “${searchValue}”` : undefined}
-    />
+    <>
+      <CategoryMatches matches={categoryMatches} />
+      <FeedBrowse
+        products={products}
+        heading={searchValue ? `Results for “${searchValue}”` : undefined}
+      />
+    </>
   );
 }

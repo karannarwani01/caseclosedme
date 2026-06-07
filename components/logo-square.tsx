@@ -14,12 +14,12 @@ export default function LogoSquare({ size }: { size?: "sm" | undefined }) {
       aria-label="caseclosed logo"
     >
       <Image
-        src="/logo-cube.png"
+        src="/logo-mark.png"
         alt=""
         width={innerDim}
         height={innerDim}
+        quality={100}
         className="object-contain"
-        style={{ imageRendering: "pixelated" }}
       />
     </div>
   );

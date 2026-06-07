@@ -1,6 +1,6 @@
 import { HeartIcon, UserIcon } from "@heroicons/react/24/outline";
 import CartModal from "components/cart/modal";
-import LogoSquare from "components/logo-square";
+import LogoLockup from "components/logo-lockup";
 import { getMenu } from "lib/shopify";
 import { Menu } from "lib/shopify/types";
 import Link from "next/link";
@@ -43,10 +43,7 @@ export async function Navbar() {
               <MobileMenu menu={links} />
             </Suspense>
           </div>
-          <LogoSquare />
-          <span className="hidden font-display text-2xl font-extrabold leading-none tracking-[-0.02em] text-anime-ink md:inline 2xl:text-[32px]">
-            caseclosed
-          </span>
+          <LogoLockup />
         </Link>
 
         <NavMenu links={links} />
