@@ -18,7 +18,7 @@ export function isAdminConfigured(): boolean {
   return Boolean(ADMIN_TOKEN);
 }
 
-async function adminGraphQL<T = any>(
+export async function adminGraphQL<T = any>(
   query: string,
   variables?: Record<string, unknown>,
 ): Promise<T> {

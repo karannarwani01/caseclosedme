@@ -37,6 +37,9 @@ function mk(
     featuredImage: { url: "", altText: title, width: 0, height: 0 },
     seo: { title, description: title },
     tags,
+    productType: tags[0] ?? "",
+    vendor: "Caseclosed",
+    createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
 }

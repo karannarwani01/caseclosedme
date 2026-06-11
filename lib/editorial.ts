@@ -66,12 +66,6 @@ export function badgeForTags(tags: string[]): FeedBadge | null {
   const has = (...needles: string[]) =>
     t.some((tag) => needles.some((n) => tag.includes(n)));
 
-  if (has("vault", "grail", "rare"))
-    return {
-      label: "Vault",
-      bg: "var(--color-anime-ink)",
-      color: "var(--color-anime-yellow)",
-    };
   if (has("preorder", "pre-order", "pre order"))
     return {
       label: "Pre Order",
@@ -80,11 +74,5 @@ export function badgeForTags(tags: string[]): FeedBadge | null {
     };
   if (has("sale", "deal"))
     return { label: "On Sale", bg: "var(--color-anime-pink)", color: "#fff" };
-  if (has("new", "arrival", "drop"))
-    return {
-      label: "New Arrival",
-      bg: "var(--color-anime-yellow)",
-      color: "var(--color-anime-ink)",
-    };
   return null;
 }

@@ -2,11 +2,19 @@ import { CategoryCircles } from "components/category-circles";
 import { PromoBannersRow } from "components/featured-banners";
 import { HeroCarousel } from "components/hero-carousel";
 import Footer from "components/layout/footer";
-import { JustArrivedRow, TopTenSection } from "components/section-row";
+import {
+  ArrivingSoonRow,
+  JustArrivedRow,
+  TopTenSection,
+} from "components/section-row";
 
 export const metadata = {
+  title: {
+    absolute:
+      "caseclosed — Funko Pops, Pop Mart, Labubu & Trading Cards Online in the UAE",
+  },
   description:
-    "caseclosed — Funko Pops, slabbed cards, anime figures and exclusive drops. Curated for collectors.",
+    "Shop Funko Pops, Pop Mart Labubu, anime figures, blind boxes and Pokémon & Dragon Ball trading cards online in the UAE. Officially licensed, fast delivery — caseclosed.",
   openGraph: {
     type: "website",
   },
@@ -19,6 +27,7 @@ export default function HomePage() {
       <CategoryCircles />
       <TopTenSection />
       <JustArrivedRow />
+      <ArrivingSoonRow />
       <PromoBannersRow />
       <Footer />
     </>

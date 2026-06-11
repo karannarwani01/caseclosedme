@@ -102,14 +102,6 @@ export function BannerTiles({
                 </span>
               </div>
             </div>
-            <span
-              className={
-                "mt-2.5 block font-sans text-xs font-semibold uppercase tracking-[0.12em] " +
-                (active ? "text-anime-ink" : "text-anime-ink/60")
-              }
-            >
-              {t.sub}
-            </span>
           </button>
         );
       })}

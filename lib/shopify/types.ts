@@ -132,6 +132,13 @@ export type ShopifyProduct = {
   images: Connection<Image>;
   seo: SEO;
   tags: string[];
+  productType: string;
+  vendor: string;
+  createdAt: string;
+  compareAtPriceRange?: {
+    maxVariantPrice: Money;
+    minVariantPrice: Money;
+  };
   updatedAt: string;
 };
 

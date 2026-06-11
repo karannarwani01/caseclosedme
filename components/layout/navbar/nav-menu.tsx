@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
 
@@ -7,10 +8,12 @@ type LinkItem = { title: string; path: string };
 
 type MegaSection = { heading: string; links: LinkItem[] };
 
+// A featured tile shows a representative photo from `collection` (resolved at
+// render from the featuredImages map) and links to that collection.
 type FeaturedTile = {
   badge: string;
   title: string;
-  href: string;
+  collection: string;
   bg: string;
 };
 
@@ -82,14 +85,14 @@ const FIGURES_MEGA: MegaConfig = {
   featured: [
     {
       badge: "New Drop",
-      title: "Naruto vs Sasuke — 1/4 scale",
-      href: "/product/naruto-vs-sasuke-1-4-scale-diorama",
+      title: "New Figures",
+      collection: "figures",
       bg: "linear-gradient(135deg, var(--color-anime-orange) 0%, var(--color-anime-pink) 100%)",
     },
     {
-      badge: "Pre Order",
-      title: "Luffy Gear 5 — Pop! #1525",
-      href: "/product/luffy-gear-5-pop-1525",
+      badge: "Hot",
+      title: "Top Picks",
+      collection: "figures",
       bg: "linear-gradient(135deg, var(--color-anime-lime) 0%, var(--color-anime-cyan) 100%)",
     },
   ],
@@ -119,10 +122,16 @@ const TRADING_MEGA: MegaConfig = {
   ],
   featured: [
     {
-      badge: "Hot",
-      title: "Charizard — Holographic, PSA 9",
-      href: "/product/charizard-holographic-psa-9",
+      badge: "Sealed",
+      title: "Booster Boxes",
+      collection: "trading-cards",
       bg: "linear-gradient(135deg, var(--color-anime-yellow) 0%, var(--color-anime-orange) 100%)",
+    },
+    {
+      badge: "Hot",
+      title: "Just Dropped",
+      collection: "trading-cards",
+      bg: "linear-gradient(135deg, var(--color-anime-orange) 0%, var(--color-anime-pink) 100%)",
     },
   ],
 };
@@ -168,14 +177,14 @@ const FUNKO_MEGA: MegaConfig = {
   featured: [
     {
       badge: "New",
-      title: "Pikachu — Pop! Vinyl #353",
-      href: "/product/pikachu-pop-vinyl-353",
+      title: "New Funko",
+      collection: "funko-pops",
       bg: "linear-gradient(135deg, var(--color-anime-yellow) 0%, var(--color-anime-cyan) 100%)",
     },
     {
-      badge: "Chase",
-      title: "Deadpool — skateboard Pop! #531",
-      href: "/product/deadpool-skateboard-pop-531",
+      badge: "Hot",
+      title: "Hot Funko",
+      collection: "funko-pops",
       bg: "linear-gradient(135deg, var(--color-anime-pink) 0%, var(--color-anime-ink) 100%)",
     },
   ],
@@ -218,9 +227,15 @@ const BLIND_BOX_MEGA: MegaConfig = {
   featured: [
     {
       badge: "Hot",
-      title: "Labubu — The Monsters series",
-      href: "/search/labubu",
+      title: "New Drops",
+      collection: "blind-box",
       bg: "linear-gradient(135deg, var(--color-anime-pink) 0%, var(--color-anime-purple) 100%)",
+    },
+    {
+      badge: "New",
+      title: "Top Picks",
+      collection: "blind-box",
+      bg: "linear-gradient(135deg, var(--color-anime-cyan) 0%, var(--color-anime-purple) 100%)",
     },
   ],
 };
@@ -259,9 +274,9 @@ const NOVELTY_MEGA: MegaConfig = {
   ],
   featured: [
     {
-      badge: "Cozy",
-      title: "Grogu — flocked plush",
-      href: "/search/plushies",
+      badge: "Cute",
+      title: "Pop Mart Picks",
+      collection: "pop-mart",
       bg: "linear-gradient(135deg, var(--color-anime-lime) 0%, var(--color-anime-yellow) 100%)",
     },
   ],
@@ -302,9 +317,9 @@ const TOYS_MEGA: MegaConfig = {
   ],
   featured: [
     {
-      badge: "Set",
-      title: "Lego Pokemon Eevee — 72151",
-      href: "/search/lego",
+      badge: "Fun",
+      title: "Blind Boxes",
+      collection: "blind-box",
       bg: "linear-gradient(135deg, var(--color-anime-cyan) 0%, var(--color-anime-yellow) 100%)",
     },
   ],
@@ -344,8 +359,8 @@ const RETRO_MEGA: MegaConfig = {
   featured: [
     {
       badge: "Iconic",
-      title: "Kodak Charmera — Blind Box",
-      href: "/search/cameras",
+      title: "Funko Pops",
+      collection: "funko-pops",
       bg: "linear-gradient(135deg, var(--color-anime-orange) 0%, var(--color-anime-pink) 100%)",
     },
   ],
@@ -388,8 +403,8 @@ const GAMING_MEGA: MegaConfig = {
   featured: [
     {
       badge: "Drop",
-      title: "Game Boy — Special Edition",
-      href: "/search/retro-gaming",
+      title: "Funko Pops",
+      collection: "funko-pops",
       bg: "linear-gradient(135deg, var(--color-anime-purple) 0%, var(--color-anime-pink) 100%)",
     },
   ],
@@ -428,9 +443,9 @@ const STILL_GOOD_MEGA: MegaConfig = {
   ],
   featured: [
     {
-      badge: "One of one",
-      title: "Joker — 1/6 statue, near mint",
-      href: "/product/joker-1-6-statue",
+      badge: "Deal",
+      title: "Figures",
+      collection: "figures",
       bg: "linear-gradient(135deg, var(--color-anime-purple) 0%, var(--color-anime-yellow) 100%)",
     },
   ],
@@ -448,7 +463,13 @@ const MEGA_BY_TITLE: Record<string, MegaConfig> = {
   "Still Good": STILL_GOOD_MEGA,
 };
 
-export function NavMenu({ links }: { links: LinkItem[] }) {
+export function NavMenu({
+  links,
+  featuredImages = {},
+}: {
+  links: LinkItem[];
+  featuredImages?: Record<string, string[]>;
+}) {
   const [active, setActive] = useState<string | null>(null);
   const activeMega = active ? MEGA_BY_TITLE[active] : null;
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -523,26 +544,44 @@ export function NavMenu({ links }: { links: LinkItem[] }) {
                   Featured
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
-                  {activeMega.featured.map((f) => (
-                    <Link
-                      key={f.title}
-                      href={f.href}
-                      className="group relative flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-2xl border-[2.5px] border-anime-ink p-4 shadow-[5px_5px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[7px_7px_0_0_var(--color-anime-pink)]"
-                      style={{ background: f.bg }}
-                    >
-                      <div className="absolute right-3 top-3 inline-flex items-center rounded-full border-[2px] border-anime-ink bg-white px-2.5 py-0.5 font-display text-[10px] font-extrabold uppercase tracking-wider text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)]">
-                        {f.badge}
-                      </div>
-                      <div className="rounded-lg border-[2px] border-anime-ink bg-white px-3 py-2 shadow-[2px_2px_0_0_var(--color-anime-ink)]">
-                        <p className="font-display text-sm font-extrabold leading-tight text-anime-ink">
-                          {f.title}
-                        </p>
-                        <p className="mt-1 font-display text-[11px] font-extrabold uppercase tracking-wider text-anime-pink">
-                          Shop now →
-                        </p>
-                      </div>
-                    </Link>
-                  ))}
+                  {activeMega.featured.map((f, i) => {
+                    const img = featuredImages[f.collection]?.[i];
+                    return (
+                      <Link
+                        key={f.title}
+                        href={`/search/${f.collection}`}
+                        className="group relative flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-2xl border-[2.5px] border-anime-ink p-4 shadow-[5px_5px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[7px_7px_0_0_var(--color-anime-pink)]"
+                        style={{ background: f.bg }}
+                      >
+                        {img ? (
+                          <>
+                            <Image
+                              src={img}
+                              alt={f.title}
+                              fill
+                              sizes="220px"
+                              className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+                            />
+                            <div
+                              aria-hidden
+                              className="absolute inset-0 bg-gradient-to-t from-anime-ink/70 via-anime-ink/10 to-transparent"
+                            />
+                          </>
+                        ) : null}
+                        <div className="absolute right-3 top-3 z-10 inline-flex items-center rounded-full border-[2px] border-anime-ink bg-white px-2.5 py-0.5 font-display text-[10px] font-extrabold uppercase tracking-wider text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)]">
+                          {f.badge}
+                        </div>
+                        <div className="relative z-10 rounded-lg border-[2px] border-anime-ink bg-white px-3 py-2 shadow-[2px_2px_0_0_var(--color-anime-ink)]">
+                          <p className="font-display text-sm font-extrabold leading-tight text-anime-ink">
+                            {f.title}
+                          </p>
+                          <p className="mt-1 font-display text-[11px] font-extrabold uppercase tracking-wider text-anime-pink">
+                            Shop now →
+                          </p>
+                        </div>
+                      </Link>
+                    );
+                  })}
                 </div>
               </div>
             )}

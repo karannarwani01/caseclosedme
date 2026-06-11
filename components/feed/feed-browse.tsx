@@ -3,26 +3,35 @@
 import { BannerTiles, type QuickFilter } from "components/feed/banner-tiles";
 import { FeedCard } from "components/feed/feed-card";
 import { FeedFilters } from "components/feed/feed-filters";
-import { buildFacets } from "lib/feed-facets";
+import { buildFacetGroups, matchesFacet } from "lib/feed-facets";
 import type { Product } from "lib/shopify/types";
 import { useMemo, useState } from "react";
 
-type SortKey = "relevance" | "price-asc" | "price-desc";
+type SortKey =
+  | "relevance"
+  | "price-desc"
+  | "price-asc"
+  | "discount"
+  | "newest"
+  | "oldest";
 
 const SORT_LABELS: Record<SortKey, string> = {
   relevance: "Relevance",
-  "price-asc": "Price: Low to high",
-  "price-desc": "Price: High to low",
+  "price-desc": "Price: High to Low",
+  "price-asc": "Price: Low to High",
+  discount: "Discount: High to Low",
+  newest: "Newest First",
+  oldest: "Oldest First",
 };
 
 function price(p: Product) {
   return parseFloat(p.priceRange.maxVariantPrice.amount);
 }
 
-function toggle(set: Set<string>, value: string) {
-  const next = new Set(set);
-  next.has(value) ? next.delete(value) : next.add(value);
-  return next;
+function discountPct(p: Product) {
+  const now = price(p);
+  const was = parseFloat(p.compareAtPriceRange?.maxVariantPrice.amount ?? "0");
+  return was > now ? (was - now) / was : 0;
 }
 
 export function FeedBrowse({
@@ -32,20 +41,44 @@ export function FeedBrowse({
   products: Product[];
   heading?: string;
 }) {
-  const facets = useMemo(() => buildFacets(products), [products]);
+  const groups = useMemo(() => buildFacetGroups(products), [products]);
 
   const [quickId, setQuickId] = useState<string | null>(null);
   const [quick, setQuick] = useState<QuickFilter | null>(null);
-  const [cats, setCats] = useState<Set<string>>(new Set());
-  const [series, setSeries] = useState<Set<string>>(new Set());
+  const [selected, setSelected] = useState<Record<string, Set<string>>>({});
   const [stockOnly, setStockOnly] = useState(false);
   const [sort, setSort] = useState<SortKey>("relevance");
 
+  // Price bounds from the products on the page; null range = full (no filter).
+  const priceBounds = useMemo<[number, number]>(() => {
+    if (!products.length) return [0, 0];
+    const ps = products.map(price);
+    return [Math.floor(Math.min(...ps)), Math.ceil(Math.max(...ps))];
+  }, [products]);
+  const [priceRange, setPriceRange] = useState<[number, number] | null>(null);
+  const [priceLo, priceHi] = priceRange ?? priceBounds;
+  const priceActive =
+    priceRange !== null &&
+    (priceLo > priceBounds[0] || priceHi < priceBounds[1]);
+
+  const toggleFacet = (key: string, value: string) =>
+    setSelected((prev) => {
+      const cur = new Set(prev[key] ?? []);
+      cur.has(value) ? cur.delete(value) : cur.add(value);
+      return { ...prev, [key]: cur };
+    });
+
   const filtered = useMemo(() => {
     let xs = products.filter((p) => {
-      if (cats.size > 0 && !p.tags.some((t) => cats.has(t))) return false;
-      if (series.size > 0 && !p.tags.some((t) => series.has(t))) return false;
+      for (const g of groups) {
+        const chosen = selected[g.key];
+        if (chosen && chosen.size > 0) {
+          const ok = [...chosen].some((v) => matchesFacet(p, g.field, v));
+          if (!ok) return false;
+        }
+      }
       if (stockOnly && !p.availableForSale) return false;
+      if (price(p) < priceLo || price(p) > priceHi) return false;
       if (quick) {
         if (quick.kind === "badge" && !p.tags.includes(quick.value))
           return false;
@@ -61,8 +94,14 @@ export function FeedBrowse({
     });
     if (sort === "price-asc") xs = [...xs].sort((a, b) => price(a) - price(b));
     if (sort === "price-desc") xs = [...xs].sort((a, b) => price(b) - price(a));
+    if (sort === "discount")
+      xs = [...xs].sort((a, b) => discountPct(b) - discountPct(a));
+    if (sort === "newest")
+      xs = [...xs].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    if (sort === "oldest")
+      xs = [...xs].sort((a, b) => a.createdAt.localeCompare(b.createdAt));
     return xs;
-  }, [products, cats, series, stockOnly, quick, sort]);
+  }, [products, groups, selected, stockOnly, priceLo, priceHi, quick, sort]);
 
   const onQuick = (id: string, filter: QuickFilter | null) => {
     if (quickId === id) {
@@ -74,11 +113,16 @@ export function FeedBrowse({
     }
   };
 
-  const hasFilters = cats.size > 0 || series.size > 0 || stockOnly || quickId;
+  const activeCount =
+    Object.values(selected).reduce((n, s) => n + s.size, 0) +
+    (stockOnly ? 1 : 0) +
+    (priceActive ? 1 : 0) +
+    (quickId ? 1 : 0);
+  const hasFilters = activeCount > 0;
   const clearAll = () => {
-    setCats(new Set());
-    setSeries(new Set());
+    setSelected({});
     setStockOnly(false);
+    setPriceRange(null);
     setQuickId(null);
     setQuick(null);
   };
@@ -96,14 +140,18 @@ export function FeedBrowse({
         {/* Sidebar */}
         <div className="w-full flex-none md:w-[230px]">
           <FeedFilters
-            categories={facets.categories}
-            series={facets.series}
-            selectedCategories={cats}
-            selectedSeries={series}
+            groups={groups}
+            selected={selected}
+            onToggle={toggleFacet}
             stockOnly={stockOnly}
-            onToggleCategory={(l) => setCats((s) => toggle(s, l))}
-            onToggleSeries={(l) => setSeries((s) => toggle(s, l))}
             onToggleStock={() => setStockOnly((v) => !v)}
+            priceMin={priceBounds[0]}
+            priceMax={priceBounds[1]}
+            priceLo={priceLo}
+            priceHi={priceHi}
+            onPriceChange={(lo, hi) => setPriceRange([lo, hi])}
+            activeCount={activeCount}
+            onClear={clearAll}
           />
         </div>
 
@@ -111,44 +159,48 @@ export function FeedBrowse({
         <div className="min-h-screen w-full">
           {/* Header strip */}
           <header className="mb-6 flex items-center justify-between gap-4 border-b border-anime-ink/10 pb-4">
-            <p className="font-display text-sm font-semibold tracking-[0.02em] text-anime-ink">
-              <span className="font-extrabold">{filtered.length}</span> Products
+            <div className="flex items-center gap-2.5">
+              <span className="rounded-full border-[2.5px] border-anime-ink bg-anime-cyan px-3.5 py-1 font-comic text-sm uppercase tracking-wide text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)]">
+                {filtered.length} Products
+              </span>
               {hasFilters ? (
                 <button
                   type="button"
                   onClick={clearAll}
-                  className="ml-3 rounded-full bg-anime-ink/5 px-3 py-1 font-sans text-xs text-anime-ink/70 hover:bg-anime-ink/10"
+                  className="rounded-full border-2 border-anime-ink bg-white px-3 py-1 font-comic text-xs uppercase tracking-wide text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)] transition-all hover:-translate-y-0.5 hover:bg-anime-pink hover:text-white"
                 >
-                  Clear filters ✕
+                  Clear ✕
                 </button>
               ) : null}
-            </p>
+            </div>
             <label className="relative inline-flex items-center">
               <span className="sr-only">Sort by</span>
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value as SortKey)}
-                className="cursor-pointer appearance-none rounded-md border border-anime-ink/20 bg-white py-2 pl-3 pr-9 font-sans text-sm text-anime-ink outline-none"
+                className="cursor-pointer appearance-none rounded-full border-[2.5px] border-anime-ink bg-anime-yellow py-2 pl-4 pr-12 font-comic text-sm uppercase tracking-wide text-anime-ink shadow-[3px_3px_0_0_var(--color-anime-ink)] outline-none transition-all hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_var(--color-anime-ink)]"
               >
                 {(Object.keys(SORT_LABELS) as SortKey[]).map((k) => (
-                  <option key={k} value={k}>
+                  <option key={k} value={k} className="font-sans normal-case">
                     Sort By: {SORT_LABELS[k]}
                   </option>
                 ))}
               </select>
-              <svg
-                viewBox="0 0 24 24"
-                className="pointer-events-none absolute right-3 h-3.5 w-3.5 text-anime-ink/50"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-              >
-                <path
-                  d="M6 9l6 6 6-6"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <span className="pointer-events-none absolute right-1.5 grid h-7 w-7 place-items-center rounded-full border-2 border-anime-ink bg-white">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-3.5 w-3.5 text-anime-ink"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                >
+                  <path
+                    d="M6 9l6 6 6-6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
             </label>
           </header>
 

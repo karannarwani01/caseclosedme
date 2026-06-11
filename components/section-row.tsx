@@ -1,4 +1,5 @@
 import { GridTileImage } from "components/grid/tile";
+import { WishlistButton } from "components/wishlist/wishlist-button";
 import { getCollectionProducts, getProducts } from "lib/shopify";
 import type { Product } from "lib/shopify/types";
 import Image from "next/image";
@@ -34,7 +35,7 @@ export async function JustArrivedRow() {
       ctaHref="/search"
     >
       <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 lg:gap-5">
-        {products.map((p) => (
+        {products.slice(0, 6).map((p) => (
           <li key={p.handle} className="relative aspect-square">
             <Link
               href={`/product/${p.handle}`}
@@ -54,6 +55,59 @@ export async function JustArrivedRow() {
                 }}
               />
             </Link>
+            <WishlistButton product={p} variant="card" />
+          </li>
+        ))}
+      </ul>
+    </SectionShell>
+  );
+}
+
+// One-row "Arriving soon" — pulls the `pre-order` collection; while you build,
+// falls back to the earliest-listed items so the row still renders.
+export async function ArrivingSoonRow() {
+  let products = (await getCollectionProducts({
+    collection: "pre-order",
+  })) as MaybeMockProduct[];
+
+  if (!products.length) {
+    products = (await getProducts({
+      sortKey: "CREATED_AT",
+      reverse: false,
+    })) as MaybeMockProduct[];
+  }
+
+  if (!products.length) return null;
+
+  return (
+    <SectionShell
+      eyebrow="⏳ Dropping soon"
+      title="Arriving soon"
+      ctaText="See what's coming →"
+      ctaHref="/search/pre-order"
+    >
+      <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 lg:gap-5">
+        {products.slice(0, 6).map((p) => (
+          <li key={p.handle} className="relative aspect-square">
+            <Link
+              href={`/product/${p.handle}`}
+              className="relative block h-full w-full"
+            >
+              <GridTileImage
+                src={p.featuredImage?.url ?? ""}
+                fill
+                sizes="(min-width: 1024px) 16vw, (min-width: 768px) 25vw, 50vw"
+                alt={p.title}
+                swatch={p.swatch}
+                badge={p.badge}
+                label={{
+                  title: p.title,
+                  amount: p.priceRange.maxVariantPrice.amount,
+                  currencyCode: p.priceRange.maxVariantPrice.currencyCode,
+                }}
+              />
+            </Link>
+            <WishlistButton product={p} variant="card" />
           </li>
         ))}
       </ul>
@@ -85,7 +139,13 @@ export async function TopTenSection() {
     >
       <ul className="grid grid-cols-2 gap-x-3 gap-y-10 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-10 lg:gap-x-2">
         {products.slice(0, 10).map((p, i) => (
-          <li key={p.handle} className="flex flex-col">
+          <li key={p.handle} className="relative flex flex-col">
+            {/* heart in the card's top-left corner (rank crown sits top-center) */}
+            <WishlistButton
+              product={p}
+              variant="card"
+              positionClass="left-2 top-5"
+            />
             <Link
               href={`/product/${p.handle}`}
               className="group flex flex-col items-center"
@@ -176,6 +236,7 @@ export async function ShopAllGrid() {
                 }}
               />
             </Link>
+            <WishlistButton product={p} variant="card" />
           </li>
         ))}
       </ul>

@@ -1,17 +1,31 @@
-import { HeartIcon, UserIcon } from "@heroicons/react/24/outline";
 import CartModal from "components/cart/modal";
 import LogoLockup from "components/logo-lockup";
-import { ACCOUNT_URL } from "lib/constants";
-import { getMenu } from "lib/shopify";
+import { getCollectionProducts, getMenu } from "lib/shopify";
 import { Menu } from "lib/shopify/types";
 import Link from "next/link";
 import { Suspense } from "react";
+import { AccountNav } from "./account-nav";
+import { FEATURED_COLLECTION_HANDLES } from "./featured-collections";
 import MobileMenu from "./mobile-menu";
 import { NavMenu } from "./nav-menu";
 import Search, { SearchSkeleton } from "./search";
+import { WishlistNavLink } from "./wishlist-nav-link";
 
 export async function Navbar() {
   const menu = await getMenu("next-js-frontend-header-menu");
+
+  // Resolve a representative photo for each mega-menu featured collection.
+  const featuredEntries = await Promise.all(
+    FEATURED_COLLECTION_HANDLES.map(async (handle) => {
+      const products = await getCollectionProducts({ collection: handle });
+      const urls = products
+        .map((p) => p.featuredImage?.url)
+        .filter((u): u is string => Boolean(u))
+        .slice(0, 4);
+      return [handle, urls] as const;
+    }),
+  );
+  const featuredImages = Object.fromEntries(featuredEntries);
 
   const links: Menu[] = menu.length
     ? menu
@@ -44,7 +58,7 @@ export async function Navbar() {
           <LogoLockup />
         </Link>
 
-        <NavMenu links={links} />
+        <NavMenu links={links} featuredImages={featuredImages} />
 
         <div className="flex flex-1 justify-center">
           <div className="hidden w-full min-w-[140px] max-w-xs md:block">
@@ -55,20 +69,8 @@ export async function Navbar() {
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
-          <Link
-            href={ACCOUNT_URL}
-            aria-label="Log in to your account"
-            className="grid h-11 w-11 place-items-center rounded-2xl border-[2.5px] border-anime-ink bg-anime-cyan text-anime-ink shadow-[3px_3px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[4px_4px_0_0_var(--color-anime-ink)] lg:h-12 lg:w-12"
-          >
-            <UserIcon className="h-5 w-5" strokeWidth={2.5} />
-          </Link>
-          <Link
-            href="/wishlist"
-            aria-label="Wishlist"
-            className="grid h-11 w-11 place-items-center rounded-2xl border-[2.5px] border-anime-ink bg-anime-lime text-anime-ink shadow-[3px_3px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[4px_4px_0_0_var(--color-anime-ink)] lg:h-12 lg:w-12"
-          >
-            <HeartIcon className="h-5 w-5" strokeWidth={2.5} />
-          </Link>
+          <AccountNav />
+          <WishlistNavLink />
           <CartModal />
         </div>
       </nav>

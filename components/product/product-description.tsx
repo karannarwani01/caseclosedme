@@ -1,6 +1,7 @@
 import { AddToCart } from "components/cart/add-to-cart";
 import Price from "components/price";
 import Prose from "components/prose";
+import { WishlistButton } from "components/wishlist/wishlist-button";
 import { Product } from "lib/shopify/types";
 import { VariantSelector } from "./variant-selector";
 
@@ -23,7 +24,12 @@ export function ProductDescription({ product }: { product: Product }) {
           html={product.descriptionHtml}
         />
       ) : null}
-      <AddToCart product={product} />
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
+        <div className="flex-1">
+          <AddToCart product={product} />
+        </div>
+        <WishlistButton product={product} variant="detail" />
+      </div>
     </>
   );
 }

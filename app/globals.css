@@ -25,10 +25,88 @@
 
   --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-comic: var(--font-bangers), ui-sans-serif, system-ui, sans-serif;
 
   --animate-carousel: carousel 60s linear infinite;
   --animate-marquee: marquee 25s linear infinite;
   --animate-burst-spin: burst-spin 30s linear infinite;
+  --animate-spin-slow: burst-spin 9s linear infinite;
+  --animate-pop: pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  --animate-float-y: float-y 3.5s ease-in-out infinite;
+  --animate-sticker-in: sticker-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-heart-beat: heart-beat 1.4s ease-in-out infinite;
+  --animate-burst-ping: burst-ping 0.5s ease-out;
+  --animate-twinkle: twinkle 2.4s ease-in-out infinite;
+
+  @keyframes pop {
+    0% {
+      transform: scale(1) rotate(0deg);
+    }
+    40% {
+      transform: scale(1.4) rotate(-10deg);
+    }
+    70% {
+      transform: scale(0.88) rotate(6deg);
+    }
+    100% {
+      transform: scale(1) rotate(0deg);
+    }
+  }
+  @keyframes float-y {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-7px);
+    }
+  }
+  @keyframes sticker-in {
+    0% {
+      transform: scale(0.4) rotate(-14deg);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1) rotate(0deg);
+      opacity: 1;
+    }
+  }
+  @keyframes heart-beat {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    15% {
+      transform: scale(1.18);
+    }
+    30% {
+      transform: scale(1);
+    }
+    45% {
+      transform: scale(1.12);
+    }
+  }
+  @keyframes burst-ping {
+    0% {
+      transform: scale(0.6);
+      opacity: 0.9;
+    }
+    100% {
+      transform: scale(2.2);
+      opacity: 0;
+    }
+  }
+  @keyframes twinkle {
+    0%,
+    100% {
+      transform: scale(0.55) rotate(0deg);
+      opacity: 0.3;
+    }
+    50% {
+      transform: scale(1.1) rotate(22deg);
+      opacity: 1;
+    }
+  }
 
   @keyframes carousel {
     0% {
@@ -102,6 +180,90 @@ button {
 ::selection {
   background: var(--color-anime-pink);
   color: white;
+}
+
+/* ── Anime/manga motif utilities ─────────────────────────────────────────── */
+
+/* Radiating comic "speed lines" burst (use as a background layer). */
+.cc-speedlines {
+  background: repeating-conic-gradient(
+    from 0deg at 50% 50%,
+    rgba(13, 10, 26, 0.9) 0deg 1.4deg,
+    transparent 1.4deg 5deg
+  );
+  -webkit-mask-image: radial-gradient(
+    circle at 50% 50%,
+    transparent 0 24%,
+    black 42%,
+    transparent 78%
+  );
+  mask-image: radial-gradient(
+    circle at 50% 50%,
+    transparent 0 24%,
+    black 42%,
+    transparent 78%
+  );
+}
+
+/* Halftone dot field (manga shading). */
+.cc-halftone {
+  background-image: radial-gradient(
+    var(--color-anime-ink) 1.5px,
+    transparent 2px
+  );
+  background-size: 11px 11px;
+}
+
+/* Sunburst rays behind a hero element. */
+.cc-rays {
+  background: repeating-conic-gradient(
+    from 0deg at 50% 50%,
+    var(--color-anime-yellow) 0deg 9deg,
+    transparent 9deg 18deg
+  );
+}
+
+/* Dual-range price slider: transparent native track, chunky neobrutalist thumb.
+   pointer-events trick lets two overlapped range inputs both stay draggable. */
+.cc-range {
+  -webkit-appearance: none;
+  appearance: none;
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: transparent;
+}
+.cc-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  pointer-events: auto;
+  height: 20px;
+  width: 20px;
+  border-radius: 9999px;
+  background: var(--color-anime-pink);
+  border: 2.5px solid var(--color-anime-ink);
+  box-shadow: 1.5px 1.5px 0 0 var(--color-anime-ink);
+  cursor: pointer;
+}
+.cc-range::-moz-range-thumb {
+  pointer-events: auto;
+  height: 18px;
+  width: 18px;
+  border-radius: 9999px;
+  background: var(--color-anime-pink);
+  border: 2.5px solid var(--color-anime-ink);
+  cursor: pointer;
+}
+
+/* Thick comic text outline (layered shadow ink stroke). */
+.cc-comic-outline {
+  -webkit-text-stroke: 2.5px var(--color-anime-ink);
+  paint-order: stroke fill;
+  text-shadow:
+    4px 4px 0 var(--color-anime-ink),
+    7px 7px 0 rgba(13, 10, 26, 0.25);
 }
 
 /* FAQ-style accordion dropdowns inside Prose content (uses native <details>). */

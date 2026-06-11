@@ -1,5 +1,6 @@
 import { StarburstBadge } from "components/feed/starburst-badge";
 import Price from "components/price";
+import { WishlistButton } from "components/wishlist/wishlist-button";
 import { badgeForTags } from "lib/editorial";
 import { seriesOf } from "lib/feed-facets";
 import type { Product } from "lib/shopify/types";
@@ -73,26 +74,10 @@ export function FeedCard({ product }: { product: Product }) {
             </span>
           </div>
         )}
-
-        {/* Wishlist heart */}
-        <span
-          aria-hidden
-          className="absolute left-3 top-3 grid h-8 w-8 place-items-center rounded-full border border-black/10 bg-white/90 text-anime-ink/55 backdrop-blur-sm transition-colors group-hover:text-anime-pink"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            className="h-3.5 w-3.5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path
-              d="M12 21s-7.5-4.6-10-9.2C.7 9 1.8 5.5 5 5c2-.3 3.4 1 4 2 .6-1 2-2.3 4-2 3.2.5 4.3 4 3 6.8C19.5 16.4 12 21 12 21z"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </span>
       </Link>
+
+      {/* Wishlist heart (sibling of the Link so it isn't a nested interactive) */}
+      <WishlistButton product={product} variant="card" />
 
       {/* Title block */}
       <div className="px-1 pt-3">
@@ -100,15 +85,19 @@ export function FeedCard({ product }: { product: Product }) {
           {product.title}
         </h3>
         {series ? (
-          <p className="mt-1.5 font-sans text-[11px] font-medium uppercase tracking-[0.1em] text-anime-ink/45">
+          <span className="mt-2 inline-block -rotate-1 rounded-full border-2 border-anime-ink bg-anime-cyan px-2.5 py-0.5 font-comic text-[10px] uppercase tracking-wide text-anime-ink shadow-[1.5px_1.5px_0_0_var(--color-anime-ink)]">
             {series}
-          </p>
+          </span>
         ) : null}
-        <Price
-          className="mt-1 font-display text-[15px] font-extrabold tabular-nums text-anime-ink"
-          amount={product.priceRange.maxVariantPrice.amount}
-          currencyCode={product.priceRange.maxVariantPrice.currencyCode}
-        />
+        <div className="mt-2">
+          <span className="inline-block rotate-1 rounded-md border-[2.5px] border-anime-ink bg-anime-lime px-2.5 py-0.5 shadow-[2px_2px_0_0_var(--color-anime-ink)]">
+            <Price
+              className="font-comic text-base tracking-wide text-anime-ink"
+              amount={product.priceRange.maxVariantPrice.amount}
+              currencyCode={product.priceRange.maxVariantPrice.currencyCode}
+            />
+          </span>
+        </div>
       </div>
     </article>
   );

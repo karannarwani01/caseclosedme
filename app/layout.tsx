@@ -1,6 +1,7 @@
 import { CartProvider } from "components/cart/cart-context";
 import { Navbar } from "components/layout/navbar";
 import { PromoStrip } from "components/promo-strip";
+import { WishlistProvider } from "components/wishlist/wishlist-context";
 import {
   Bangers,
   Bricolage_Grotesque,
@@ -69,12 +70,14 @@ export default async function RootLayout({
     >
       <body className="flex min-h-screen flex-col overflow-x-clip bg-brand-bg text-brand-ink antialiased">
         <CartProvider cartPromise={cart}>
-          <PromoStrip />
-          <Navbar />
-          <main className="flex flex-1 flex-col">
-            {children}
-            <Toaster closeButton />
-          </main>
+          <WishlistProvider>
+            <PromoStrip />
+            <Navbar />
+            <main className="flex flex-1 flex-col">
+              {children}
+              <Toaster closeButton />
+            </main>
+          </WishlistProvider>
         </CartProvider>
       </body>
     </html>
