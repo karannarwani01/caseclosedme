@@ -7,8 +7,8 @@ export function sizeTagFor(title: string, productType: string): string | null {
   if (/\b2[- ]?pack\b/.test(t)) return "size-2-pack";
   if (/\b400%|\bmega\b/.test(t)) return "size-mega";
   if (/grandista|statue|nero|\b1\/\d|\bscale\b/.test(t)) return "size-statue";
-  if (/pop!? plus|\bjumbo\b|super[- ]?sized|\bplus\b/.test(t))
-    return "size-jumbo";
+  if (/pop!? plus|\bplus\b/.test(t)) return "size-plus";
+  if (/\bjumbo\b|super[- ]?sized/.test(t)) return "size-jumbo";
   if (productType === "Blind Box") return "size-blind-box";
   if (productType === "Designer Toy") return "size-designer";
   if (productType === "Funko Pop") return "size-standard";
