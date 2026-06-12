@@ -76,6 +76,7 @@ function franchiseLabelsOf(p: Product): string[] {
 // Figure size/format, from a `size-*` tag on the product (a real Shopify field).
 const SIZES: Record<string, string> = {
   "size-standard": "Standard Pop!",
+  "size-2-pack": "2-Pack",
   "size-jumbo": "Jumbo (Pop! Plus)",
   "size-mega": "Mega (400%)",
   "size-statue": "Statue / Scale",
