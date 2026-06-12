@@ -77,6 +77,7 @@ function franchiseLabelsOf(p: Product): string[] {
 const SIZES: Record<string, string> = {
   "size-standard": "Standard Pop!",
   "size-2-pack": "2-Pack",
+  "size-4-pack": "4-Pack",
   "size-jumbo": "Jumbo (Pop! Plus)",
   "size-mega": "Mega (400%)",
   "size-statue": "Statue / Scale",

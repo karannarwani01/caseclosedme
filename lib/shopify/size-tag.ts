@@ -3,6 +3,7 @@
 // Returns null when no sensible size applies (e.g. trading cards).
 export function sizeTagFor(title: string, productType: string): string | null {
   const t = (title || "").toLowerCase();
+  if (/\b4[- ]?pack\b/.test(t)) return "size-4-pack";
   if (/\b2[- ]?pack\b/.test(t)) return "size-2-pack";
   if (/\b400%|\bmega\b/.test(t)) return "size-mega";
   if (/grandista|statue|nero|\b1\/\d|\bscale\b/.test(t)) return "size-statue";
