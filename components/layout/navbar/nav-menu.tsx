@@ -167,6 +167,7 @@ const FUNKO_MEGA: MegaConfig = {
         { title: "Anime", path: "/search/funko-anime" },
         { title: "Disney", path: "/search/funko-disney" },
         { title: "Movies", path: "/search/funko-movies" },
+        { title: "James Bond 007", path: "/search/james-bond-007" },
         { title: "Music", path: "/search/funko-music" },
         { title: "Games", path: "/search/funko-games" },
         { title: "Star Wars", path: "/search/funko-star-wars" },
