@@ -92,7 +92,7 @@ export function FeedCard({ product }: { product: Product }) {
         <div className="mt-2">
           <span className="inline-block rotate-1 rounded-md border-[2.5px] border-anime-ink bg-anime-lime px-2.5 py-0.5 shadow-[2px_2px_0_0_var(--color-anime-ink)]">
             <Price
-              className="font-comic text-base tracking-wide text-anime-ink"
+              className="font-display text-base font-extrabold tabular-nums text-anime-ink"
               amount={product.priceRange.maxVariantPrice.amount}
               currencyCode={product.priceRange.maxVariantPrice.currencyCode}
             />

@@ -18,7 +18,7 @@ const Price = ({
   }).format(parseFloat(amount));
   return (
     <p suppressHydrationWarning={true} className={className}>
-      <DirhamSign className="mr-1" />
+      <DirhamSign className="mr-1.5" />
       {value}
     </p>
   );
