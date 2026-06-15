@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { ScrollRow } from "components/scroll-row";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -194,7 +195,10 @@ function resolveAssets(slug: string): { logo?: string; logoHover?: string } {
 export function CategoryCircles() {
   return (
     <section className="mx-auto mt-14 w-full px-4 md:mt-20 md:px-8">
-      <div className="flex gap-6 overflow-x-auto pb-6 md:justify-between md:gap-4 md:overflow-visible">
+      <ScrollRow
+        className="flex gap-6 pb-6 md:justify-between md:gap-4 md:overflow-visible"
+        arrowClassName="top-[3.5rem] md:hidden"
+      >
         {CATEGORIES.filter((cat) => !cat.hidden).map((cat) => {
           const { logo, logoHover } = resolveAssets(cat.slug);
           return (
@@ -268,7 +272,7 @@ export function CategoryCircles() {
             </Link>
           );
         })}
-      </div>
+      </ScrollRow>
     </section>
   );
 }

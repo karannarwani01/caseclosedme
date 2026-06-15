@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 // The cube + "caseclosed" wordmark enclosed together in a single bordered box.
-// On small screens the wordmark collapses so the box stays compact (cube only).
+// The full wordmark shows on every screen size (mobile included).
 export default function LogoLockup() {
   return (
     <div
@@ -16,7 +16,7 @@ export default function LogoLockup() {
         quality={100}
         className="object-contain"
       />
-      <span className="hidden font-display text-2xl font-extrabold leading-none tracking-[-0.02em] text-white md:inline 2xl:text-[30px]">
+      <span className="font-display text-xl font-extrabold leading-none tracking-[-0.02em] text-white md:text-2xl 2xl:text-[30px]">
         Caseclosed
       </span>
     </div>

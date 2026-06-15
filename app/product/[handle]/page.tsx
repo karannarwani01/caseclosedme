@@ -91,12 +91,12 @@ export default async function ProductPage(props: {
           __html: JSON.stringify(productJsonLd),
         }}
       />
-      <div className="mx-auto max-w-(--breakpoint-2xl) px-4 py-6 md:py-10">
+      <div className="mx-auto w-full min-w-0 max-w-(--breakpoint-2xl) px-4 py-6 md:py-10">
         <div className="flex flex-col gap-8 lg:flex-row lg:items-stretch lg:gap-10">
           {/* Left column — one card holding the gallery and the long-form
               description (divider between), so it grows to match the buy box
               instead of leaving dead space below the image. */}
-          <div className="w-full lg:basis-3/5">
+          <div className="w-full min-w-0 lg:basis-3/5">
             <div className="rounded-2xl border-[2.5px] border-anime-ink bg-[#fffcea] p-5 shadow-[6px_6px_0_0_var(--color-anime-ink)] md:p-6 lg:h-full">
               <Suspense
                 fallback={
@@ -147,7 +147,7 @@ export default async function ProductPage(props: {
           </div>
 
           {/* Buy box — equal height with the left column so both bottoms line up. */}
-          <div className="w-full lg:basis-2/5">
+          <div className="w-full min-w-0 lg:basis-2/5">
             <div className="rounded-2xl border-[2.5px] border-anime-ink bg-[#fffcea] p-6 shadow-[6px_6px_0_0_var(--color-anime-ink)] md:p-8 lg:h-full">
               <Suspense fallback={null}>
                 <ProductDescription

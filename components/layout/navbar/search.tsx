@@ -96,6 +96,7 @@ export default function Search() {
       <Form
         action="/search"
         className="relative w-full"
+        suppressHydrationWarning
         onSubmit={() => setOpen(false)}
       >
         <input
@@ -106,6 +107,7 @@ export default function Search() {
           onFocus={() => setOpen(true)}
           placeholder="Search drops..."
           autoComplete="off"
+          suppressHydrationWarning
           className={inputClass}
         />
         <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-anime-ink">

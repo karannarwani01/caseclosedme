@@ -196,11 +196,11 @@ function PriceRange({
     <div className="px-1 pb-1">
       <div className="mb-3 flex items-center justify-between gap-1 font-display text-[12px] font-extrabold text-anime-ink">
         <span className="rounded-md border-2 border-anime-ink bg-anime-paper px-2 py-0.5 tabular-nums">
-          AED {lo.toLocaleString()}
+          AED {lo.toLocaleString("en-AE")}
         </span>
         <span className="text-anime-ink/40">—</span>
         <span className="rounded-md border-2 border-anime-ink bg-anime-paper px-2 py-0.5 tabular-nums">
-          AED {hi.toLocaleString()}
+          AED {hi.toLocaleString("en-AE")}
         </span>
       </div>
       <div className="relative h-6">

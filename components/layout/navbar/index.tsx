@@ -62,12 +62,11 @@ export async function Navbar() {
         {/* Mobile hamburger stays pinned left; hidden on desktop. */}
         <div className="flex shrink-0 xl:hidden">
           <Suspense fallback={null}>
-            <MobileMenu menu={visibleLinks} />
+            <MobileMenu menu={visibleLinks} nonEmpty={nonEmpty} />
           </Suspense>
         </div>
 
-        {/* Logo + nav links + search sit together, centered in the row, so the
-            logo sits next to the collections instead of in the far corner. */}
+        {/* Logo + nav links + search, centered in the row. */}
         <div className="flex flex-1 items-center justify-center gap-3 lg:gap-6">
           <Link
             href="/"
@@ -87,14 +86,20 @@ export async function Navbar() {
               <Search />
             </Suspense>
           </div>
-          {/* Account / wishlist / cart join the centered cluster too, so they
-              sit next to search instead of in the far-right corner. */}
-          <div className="flex shrink-0 items-center gap-2">
+          {/* Account / wishlist / cart — desktop only. On mobile these live in
+              the bottom tab bar, so they're hidden here to keep the header clean.
+              (CartModal stays mounted so the bottom bar's cart button can still
+              open the drawer via the `open-cart` event.) */}
+          <div className="hidden shrink-0 items-center gap-2 lg:flex">
             <AccountNav />
             <WishlistNavLink />
             <CartModal />
           </div>
         </div>
+
+        {/* Mobile-only spacer matching the hamburger, so the centered logo is
+            balanced across the row (not pushed right by the menu button). */}
+        <div className="w-11 shrink-0 xl:hidden" aria-hidden />
       </nav>
     </div>
   );

@@ -427,3 +427,14 @@ html.a11y-no-motion *::after {
 html.a11y-hide-images img {
   opacity: 0 !important;
 }
+
+/* ──────────────── Lock the page to vertical scrolling ────────────────
+   No horizontal page scroll, drift, or overscroll bounce — inner carousels
+   keep their own horizontal scroll. `clip` (not `hidden`) so the sticky
+   navbar keeps working. */
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+  overscroll-behavior-x: none;
+}

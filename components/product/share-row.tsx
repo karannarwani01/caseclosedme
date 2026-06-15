@@ -59,13 +59,10 @@ export function ShareRow({ title }: { title: string }) {
   };
 
   const base =
-    "inline-flex items-center gap-1.5 rounded-full border-[2px] border-anime-ink bg-white px-3.5 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[3px_3px_0_0_var(--color-anime-pink)]";
+    "inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border-[2px] border-anime-ink bg-white px-3 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[3px_3px_0_0_var(--color-anime-pink)]";
 
   return (
     <div className="flex items-center gap-2">
-      <span className="font-display text-xs font-extrabold uppercase tracking-wider text-anime-ink/50">
-        Share
-      </span>
       <button type="button" className={base} onClick={() => share("facebook")}>
         <FacebookIcon /> Share
       </button>

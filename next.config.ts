@@ -1,4 +1,7 @@
 export default {
+  // Allow viewing the dev server from phones/other devices on the LAN without
+  // the cross-origin /_next/* dev warning. Dev-only; ignored in production.
+  allowedDevOrigins: ["192.168.0.139", "localhost"],
   experimental: {
     ppr: true,
     inlineCss: true,

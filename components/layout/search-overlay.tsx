@@ -171,6 +171,7 @@ export function SearchOverlay() {
         />
         <form
           className="flex-1"
+          suppressHydrationWarning
           onSubmit={(e) => {
             e.preventDefault();
             if (term) go(term);
@@ -183,6 +184,7 @@ export function SearchOverlay() {
             placeholder="Search for figures, brands…"
             autoComplete="off"
             enterKeyHint="search"
+            suppressHydrationWarning
             className="w-full bg-transparent text-base font-medium text-anime-ink placeholder:text-anime-ink/50 focus:outline-none"
           />
         </form>

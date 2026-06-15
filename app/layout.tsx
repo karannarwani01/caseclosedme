@@ -81,6 +81,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${bricolage.variable} ${inter.variable} ${bangers.variable} ${spaceGrotesk.variable} ${atkinson.variable}`}
     >
       <body className="flex min-h-screen flex-col overflow-x-clip bg-brand-bg text-brand-ink antialiased">
