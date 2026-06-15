@@ -18,7 +18,7 @@ export default function MobileMenu({ menu }: { menu: Menu[] }) {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth > 768) {
+      if (window.innerWidth >= 1280) {
         setIsOpen(false);
       }
     };
@@ -37,7 +37,7 @@ export default function MobileMenu({ menu }: { menu: Menu[] }) {
         aria-label="Open mobile menu"
         className="flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors xl:hidden dark:border-neutral-700 dark:text-white"
       >
-        <Bars3Icon className="h-4" />
+        <Bars3Icon className="h-6" />
       </button>
       <Transition show={isOpen}>
         <Dialog onClose={closeMobileMenu} className="relative z-50">

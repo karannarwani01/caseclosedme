@@ -1,5 +1,3 @@
-import { getCollectionProducts } from "lib/shopify";
-import Image from "next/image";
 import Link from "next/link";
 
 type Brand = {
@@ -99,91 +97,75 @@ export function FeaturedBrandsRow() {
   );
 }
 
-type FeaturedCategory = {
-  handle: string;
+type PromoBanner = {
+  eyebrow: string;
   title: string;
-  badge: string;
+  subtitle: string;
+  cta: string;
+  href: string;
   bg: string;
 };
 
-// Each card is a category; its photo is pulled from the first product in that
-// collection. Categories with no products are skipped.
-const FEATURED: FeaturedCategory[] = [
+const PROMOS: PromoBanner[] = [
   {
-    handle: "funko-pops",
-    title: "Funko Pops",
-    badge: "Bestsellers",
-    bg: "linear-gradient(135deg, var(--color-anime-cyan) 0%, var(--color-anime-purple) 100%)",
+    eyebrow: "Anime drops",
+    title: "Naruto & Demon Slayer",
+    subtitle: "New 1/4 scales just landed",
+    cta: "Shop now",
+    href: "/search/anime",
+    bg: "linear-gradient(135deg, var(--color-anime-pink) 0%, var(--color-anime-orange) 100%)",
   },
   {
-    handle: "pop-mart",
-    title: "Pop Mart & Labubu",
-    badge: "Hot drop",
-    bg: "linear-gradient(135deg, var(--color-anime-pink) 0%, var(--color-anime-purple) 100%)",
+    eyebrow: "Trading cards",
+    title: "Pokemon TCG",
+    subtitle: "Slabbed singles & sealed boxes",
+    cta: "Shop now",
+    href: "/search/pokemon-tcg",
+    bg: "linear-gradient(135deg, var(--color-anime-yellow) 0%, var(--color-anime-cyan) 100%)",
   },
   {
-    handle: "trading-cards",
-    title: "Trading Cards",
-    badge: "Sealed",
+    eyebrow: "Hot Funko",
+    title: "Vaulted Pop!",
+    subtitle: "Chase variants & rare finds",
+    cta: "Shop now",
+    href: "/search/funko-vaulted",
+    bg: "linear-gradient(135deg, var(--color-anime-purple) 0%, var(--color-anime-pink) 100%)",
+  },
+  {
+    eyebrow: "Pre-orders",
+    title: "Lock in the next drop",
+    subtitle: "Reserve before they're gone",
+    cta: "Shop now",
+    href: "/search/pre-order",
     bg: "linear-gradient(135deg, var(--color-anime-lime) 0%, var(--color-anime-cyan) 100%)",
-  },
-  {
-    handle: "one-piece",
-    title: "One Piece",
-    badge: "Fan favourite",
-    bg: "linear-gradient(135deg, var(--color-anime-orange) 0%, var(--color-anime-yellow) 100%)",
   },
 ];
 
-export async function PromoBannersRow() {
-  const cards = await Promise.all(
-    FEATURED.map(async (f) => {
-      const products = await getCollectionProducts({ collection: f.handle });
-      const image = products.find((p) => p.featuredImage?.url)?.featuredImage;
-      return { ...f, image };
-    }),
-  );
-  const visible = cards.filter((c) => c.image);
-  if (!visible.length) return null;
-
+export function PromoBannersRow() {
   return (
     <section className="mx-auto mt-14 w-full px-4 md:mt-20 md:px-8">
-      <div className="mb-8 flex flex-col items-center gap-3 text-center md:mb-10">
-        <span className="inline-flex items-center rounded-full border-[2.5px] border-anime-ink bg-anime-pink px-4 py-1.5 font-display text-xs font-extrabold uppercase tracking-[0.14em] text-white shadow-[2px_2px_0_0_var(--color-anime-ink)] md:text-sm">
-          ★ Featured
-        </span>
-        <h2 className="font-display text-4xl font-extrabold leading-[1] tracking-[-0.02em] text-anime-ink md:text-6xl lg:text-7xl">
-          Shop by category
-        </h2>
-      </div>
       <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {visible.map((c) => (
-          <li key={c.handle}>
+        {PROMOS.map((p) => (
+          <li key={p.title}>
             <Link
-              href={`/search/${c.handle}`}
-              className="group relative flex aspect-[3/4] flex-col justify-end overflow-hidden rounded-2xl border-[2.5px] border-anime-ink shadow-[6px_6px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[8px_8px_0_0_var(--color-anime-pink)]"
-              style={{ background: c.bg }}
+              href={p.href}
+              className="group relative flex aspect-[4/3] flex-col justify-between overflow-hidden rounded-2xl border-[2.5px] border-anime-ink p-6 shadow-[6px_6px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[8px_8px_0_0_var(--color-anime-pink)]"
+              style={{ background: p.bg }}
             >
-              <span className="absolute right-3 top-3 z-10 inline-flex items-center rounded-full border-[2px] border-anime-ink bg-white px-2.5 py-1 font-display text-[10px] font-extrabold uppercase tracking-wider text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)]">
-                {c.badge}
-              </span>
-              {/* product picture floating on the gradient */}
-              <div className="relative flex-1">
-                <Image
-                  src={c.image!.url}
-                  alt={c.image!.altText || c.title}
-                  fill
-                  loading="eager"
-                  sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 90vw"
-                  className="object-contain p-5 drop-shadow-[3px_6px_8px_rgba(13,10,26,0.4)] transition-transform duration-300 ease-out group-hover:scale-105 group-hover:-rotate-2"
-                />
+              <div>
+                <span className="inline-flex items-center rounded-full border-[2px] border-anime-ink bg-white px-2.5 py-1 font-display text-[10px] font-extrabold uppercase tracking-wider text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)]">
+                  {p.eyebrow}
+                </span>
               </div>
-              <div className="relative z-10 m-3 rounded-xl border-[2.5px] border-anime-ink bg-white p-3 shadow-[3px_3px_0_0_var(--color-anime-ink)]">
-                <h3 className="font-display text-base font-extrabold uppercase leading-tight tracking-tight text-anime-ink">
-                  {c.title}
+              <div className="flex flex-col gap-2">
+                <h3 className="font-display text-3xl font-extrabold leading-[0.95] tracking-[-0.02em] text-white drop-shadow-[3px_3px_0_rgba(13,10,26,0.5)] md:text-4xl">
+                  {p.title}
                 </h3>
-                <span className="mt-1.5 inline-flex items-center gap-1 font-display text-xs font-extrabold uppercase tracking-wider text-anime-pink">
-                  Shop now →
+                <p className="font-display text-sm font-bold text-white/95 md:text-base">
+                  {p.subtitle}
+                </p>
+                <span className="mt-2 inline-flex w-fit items-center gap-1 rounded-full border-[2.5px] border-anime-ink bg-white px-4 py-2 font-display text-sm font-extrabold uppercase tracking-wider text-anime-ink shadow-[3px_3px_0_0_var(--color-anime-ink)] transition-all group-hover:-translate-x-[1px] group-hover:-translate-y-[1px] group-hover:shadow-[4px_4px_0_0_var(--color-anime-pink)]">
+                  {p.cta} →
                 </span>
               </div>
             </Link>

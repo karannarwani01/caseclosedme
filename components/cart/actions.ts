@@ -14,18 +14,38 @@ import { redirect } from "next/navigation";
 
 export async function addItem(
   prevState: any,
-  selectedVariantId: string | undefined,
+  payload: { selectedVariantId: string | undefined; quantity?: number },
 ) {
+  const { selectedVariantId, quantity = 1 } = payload;
   if (!selectedVariantId) {
     return "Error adding item to cart";
   }
 
   try {
-    await addToCart([{ merchandiseId: selectedVariantId, quantity: 1 }]);
+    await addToCart([
+      { merchandiseId: selectedVariantId, quantity: Math.max(1, quantity) },
+    ]);
     updateTag(TAGS.cart);
   } catch (e) {
     return "Error adding item to cart";
   }
+}
+
+// Buy Now: add the selected variant, then jump straight to Shopify checkout.
+export async function buyNow(payload: {
+  selectedVariantId: string | undefined;
+  quantity?: number;
+}) {
+  const { selectedVariantId, quantity = 1 } = payload;
+  if (!selectedVariantId) return;
+
+  await addToCart([
+    { merchandiseId: selectedVariantId, quantity: Math.max(1, quantity) },
+  ]);
+  updateTag(TAGS.cart);
+
+  const cart = await getCart();
+  if (cart?.checkoutUrl) redirect(cart.checkoutUrl);
 }
 
 export async function removeItem(prevState: any, merchandiseId: string) {

@@ -7,7 +7,7 @@ import Link from "next/link";
 export function CategoryMatches({ matches }: { matches: Collection[] }) {
   if (!matches.length) return null;
   return (
-    <section className="mx-auto w-full max-w-[1800px] px-6 pt-6 lg:px-8">
+    <section className="mx-auto w-full max-w-[1800px] px-4 pt-6 lg:px-8">
       <h2 className="mb-3 font-display text-sm font-extrabold uppercase tracking-[0.14em] text-anime-ink/70">
         Categories
       </h2>

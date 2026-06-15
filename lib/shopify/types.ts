@@ -88,6 +88,8 @@ export type ProductVariant = {
     value: string;
   }[];
   price: Money;
+  sku?: string | null;
+  quantityAvailable?: number | null;
 };
 
 export type SEO = {

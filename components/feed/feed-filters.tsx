@@ -1,8 +1,10 @@
 "use client";
 
+import { Dialog, Transition } from "@headlessui/react";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import type { FacetGroup } from "lib/feed-facets";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 function Chevron({ open }: { open: boolean }) {
   return (
@@ -245,6 +247,7 @@ export function FeedFilters({
   onPriceChange,
   activeCount,
   onClear,
+  resultCount,
 }: {
   groups: FacetGroup[];
   selected: Record<string, Set<string>>;
@@ -258,20 +261,14 @@ export function FeedFilters({
   onPriceChange: (lo: number, hi: number) => void;
   activeCount: number;
   onClear: () => void;
+  resultCount?: number;
 }) {
-  return (
-    <aside className="hidden space-y-3 md:block">
-      <div className="mb-3 flex items-center gap-2">
-        <span className="-rotate-2 rounded-full border-[3px] border-anime-ink bg-anime-pink px-5 py-1 font-comic text-xl uppercase tracking-wider text-white shadow-[3px_3px_0_0_var(--color-anime-ink)]">
-          ★ Filters
-        </span>
-        {activeCount > 0 ? (
-          <span className="grid h-7 min-w-7 rotate-3 place-items-center rounded-full border-[2.5px] border-anime-ink bg-anime-yellow px-1.5 font-comic text-sm text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)]">
-            {activeCount}
-          </span>
-        ) : null}
-      </div>
+  const [mobileOpen, setMobileOpen] = useState(false);
 
+  // The actual filter controls, reused by the desktop sidebar and the mobile
+  // drawer so there is a single source of truth.
+  const controls = (
+    <div className="space-y-3">
       {activeCount > 0 ? (
         <button
           type="button"
@@ -331,6 +328,95 @@ export function FeedFilters({
           onToggle={onToggleStock}
         />
       </Group>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Mobile: a Filters button that opens a slide-in drawer. */}
+      <button
+        type="button"
+        onClick={() => setMobileOpen(true)}
+        className="flex w-full items-center justify-center gap-2 rounded-full border-[3px] border-anime-ink bg-anime-pink py-2.5 font-comic text-lg uppercase tracking-wider text-white shadow-[4px_4px_0_0_var(--color-anime-ink)] transition-all active:translate-y-0.5 md:hidden"
+      >
+        ★ Filters
+        {activeCount > 0 ? (
+          <span className="grid h-6 min-w-6 place-items-center rounded-full border-2 border-anime-ink bg-anime-yellow px-1.5 font-comic text-sm text-anime-ink">
+            {activeCount}
+          </span>
+        ) : null}
+      </button>
+
+      <Transition show={mobileOpen}>
+        <Dialog
+          onClose={() => setMobileOpen(false)}
+          className="relative z-50 md:hidden"
+        >
+          <Transition.Child
+            as={Fragment}
+            enter="transition-opacity ease-in-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition-opacity ease-in-out duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black/40" aria-hidden="true" />
+          </Transition.Child>
+          <Transition.Child
+            as={Fragment}
+            enter="transition-transform ease-in-out duration-300"
+            enterFrom="translate-x-[-100%]"
+            enterTo="translate-x-0"
+            leave="transition-transform ease-in-out duration-200"
+            leaveFrom="translate-x-0"
+            leaveTo="translate-x-[-100%]"
+          >
+            <Dialog.Panel className="fixed inset-y-0 left-0 flex w-[88%] max-w-sm flex-col border-r-[3px] border-anime-ink bg-anime-paper">
+              <div className="flex items-center justify-between border-b-[3px] border-anime-ink bg-anime-pink px-4 py-3">
+                <span className="font-comic text-2xl uppercase tracking-wider text-white">
+                  ★ Filters
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setMobileOpen(false)}
+                  aria-label="Close filters"
+                  className="grid h-10 w-10 place-items-center rounded-full border-[2.5px] border-anime-ink bg-white text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)]"
+                >
+                  <XMarkIcon className="h-6" strokeWidth={2.5} />
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-4">{controls}</div>
+              <div className="border-t-[3px] border-anime-ink bg-white p-3">
+                <button
+                  type="button"
+                  onClick={() => setMobileOpen(false)}
+                  className="w-full rounded-full border-[2.5px] border-anime-ink bg-anime-ink py-3 font-comic text-lg uppercase tracking-wider text-white shadow-[4px_4px_0_0_var(--color-anime-pink)] transition-all active:translate-y-0.5"
+                >
+                  {typeof resultCount === "number"
+                    ? `View ${resultCount} results`
+                    : "View results"}
+                </button>
+              </div>
+            </Dialog.Panel>
+          </Transition.Child>
+        </Dialog>
+      </Transition>
+
+      {/* Desktop: persistent sidebar. */}
+      <aside className="hidden space-y-3 md:block">
+        <div className="mb-3 flex items-center gap-2">
+          <span className="-rotate-2 rounded-full border-[3px] border-anime-ink bg-anime-pink px-5 py-1 font-comic text-xl uppercase tracking-wider text-white shadow-[3px_3px_0_0_var(--color-anime-ink)]">
+            ★ Filters
+          </span>
+          {activeCount > 0 ? (
+            <span className="grid h-7 min-w-7 rotate-3 place-items-center rounded-full border-[2.5px] border-anime-ink bg-anime-yellow px-1.5 font-comic text-sm text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)]">
+              {activeCount}
+            </span>
+          ) : null}
+        </div>
+        {controls}
+      </aside>
+    </>
   );
 }

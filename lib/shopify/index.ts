@@ -24,6 +24,7 @@ import {
 } from "./mutations/cart";
 import { getCartQuery } from "./queries/cart";
 import {
+  getCollectionHandlesWithProductsQuery,
   getCollectionProductsQuery,
   getCollectionQuery,
   getCollectionsQuery,
@@ -487,6 +488,33 @@ export async function getCollections(): Promise<Collection[]> {
   ];
 
   return collections;
+}
+
+// Handles of every collection that currently has at least one published
+// product. Used by the nav to hide empty collections/menus. Cached for hours
+// so newly-stocked collections surface without a deploy.
+export async function getNonEmptyCollectionHandles(): Promise<string[]> {
+  "use cache";
+  cacheTag(TAGS.collections, TAGS.products);
+  cacheLife("hours");
+
+  if (!endpoint) return [];
+
+  const res = await shopifyFetch<{
+    data: {
+      collections: {
+        edges: {
+          node: { handle: string; products: { edges: unknown[] } };
+        }[];
+      };
+    };
+  }>({
+    query: getCollectionHandlesWithProductsQuery,
+  });
+
+  return removeEdgesAndNodes(res.body.data.collections)
+    .filter((node) => node.products.edges.length > 0)
+    .map((node) => node.handle);
 }
 
 export async function getMenu(handle: string): Promise<Menu[]> {

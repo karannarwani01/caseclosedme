@@ -1,18 +1,26 @@
 import CartModal from "components/cart/modal";
 import LogoLockup from "components/logo-lockup";
-import { getCollectionProducts, getMenu } from "lib/shopify";
+import {
+  getCollectionProducts,
+  getMenu,
+  getNonEmptyCollectionHandles,
+} from "lib/shopify";
 import { Menu } from "lib/shopify/types";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AccountNav } from "./account-nav";
 import { FEATURED_COLLECTION_HANDLES } from "./featured-collections";
+import { megaHasContent } from "./mega-config";
 import MobileMenu from "./mobile-menu";
 import { NavMenu } from "./nav-menu";
 import Search, { SearchSkeleton } from "./search";
 import { WishlistNavLink } from "./wishlist-nav-link";
 
 export async function Navbar() {
-  const menu = await getMenu("next-js-frontend-header-menu");
+  const [menu, nonEmpty] = await Promise.all([
+    getMenu("next-js-frontend-header-menu"),
+    getNonEmptyCollectionHandles(),
+  ]);
 
   // Resolve a representative photo for each mega-menu featured collection.
   const featuredEntries = await Promise.all(
@@ -41,37 +49,51 @@ export async function Navbar() {
         { title: "Still Good", path: "/search" },
       ];
 
+  // Hide whole top-level menus whose collections are all empty (mobile mirrors
+  // the desktop NavMenu, which filters itself).
+  const nonEmptySet = new Set(nonEmpty);
+  const visibleLinks = links.filter((l) =>
+    megaHasContent(l.title, nonEmptySet),
+  );
+
   return (
     <div className="relative z-30 w-full border-b-[2.5px] border-anime-ink bg-white">
       <nav className="mx-auto flex w-full max-w-[1800px] items-center gap-2 px-4 py-6 lg:gap-4 lg:px-6">
-        <Link
-          href="/"
-          prefetch={true}
-          className="flex shrink-0 items-center gap-2"
-          aria-label="caseclosed home"
-        >
-          <div className="flex xl:hidden">
-            <Suspense fallback={null}>
-              <MobileMenu menu={links} />
-            </Suspense>
-          </div>
-          <LogoLockup />
-        </Link>
+        {/* Mobile hamburger stays pinned left; hidden on desktop. */}
+        <div className="flex shrink-0 xl:hidden">
+          <Suspense fallback={null}>
+            <MobileMenu menu={visibleLinks} />
+          </Suspense>
+        </div>
 
-        <NavMenu links={links} featuredImages={featuredImages} />
-
-        <div className="flex flex-1 justify-center">
+        {/* Logo + nav links + search sit together, centered in the row, so the
+            logo sits next to the collections instead of in the far corner. */}
+        <div className="flex flex-1 items-center justify-center gap-3 lg:gap-6">
+          <Link
+            href="/"
+            prefetch={true}
+            className="flex shrink-0 items-center"
+            aria-label="caseclosed home"
+          >
+            <LogoLockup />
+          </Link>
+          <NavMenu
+            links={visibleLinks}
+            featuredImages={featuredImages}
+            nonEmpty={nonEmpty}
+          />
           <div className="hidden w-full min-w-[140px] max-w-xs md:block">
             <Suspense fallback={<SearchSkeleton />}>
               <Search />
             </Suspense>
           </div>
-        </div>
-
-        <div className="flex shrink-0 items-center gap-2">
-          <AccountNav />
-          <WishlistNavLink />
-          <CartModal />
+          {/* Account / wishlist / cart join the centered cluster too, so they
+              sit next to search instead of in the far-right corner. */}
+          <div className="flex shrink-0 items-center gap-2">
+            <AccountNav />
+            <WishlistNavLink />
+            <CartModal />
+          </div>
         </div>
       </nav>
     </div>

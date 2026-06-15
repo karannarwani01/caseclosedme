@@ -36,6 +36,27 @@ export const getCollectionsQuery = /* GraphQL */ `
   ${collectionFragment}
 `;
 
+// Lightweight probe: every collection with a single product edge, used to tell
+// which collections are non-empty so the nav can hide empty ones.
+export const getCollectionHandlesWithProductsQuery = /* GraphQL */ `
+  query getCollectionHandlesWithProducts {
+    collections(first: 250, sortKey: TITLE) {
+      edges {
+        node {
+          handle
+          products(first: 1) {
+            edges {
+              node {
+                id
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const getCollectionProductsQuery = /* GraphQL */ `
   query getCollectionProducts(
     $handle: String!

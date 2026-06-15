@@ -5,9 +5,10 @@ export default {
     useCache: true,
   },
   images: {
-    // LOCAL DEV ONLY — this environment can't reach cdn.shopify.com through the
-    // /_next/image optimizer (ECONNRESET), so serve images unoptimized. Do NOT commit.
-    unoptimized: true,
+    // Dev only: this environment can't reach cdn.shopify.com through the
+    // /_next/image optimizer (ECONNRESET), so serve images unoptimized locally.
+    // In production we keep the optimizer ON (AVIF/WebP + resizing) for speed.
+    unoptimized: process.env.NODE_ENV === "development",
     formats: ["image/avif", "image/webp"],
     qualities: [75, 100],
     // Allow all local images, including those with a cache-busting `?v=` query

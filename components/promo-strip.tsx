@@ -4,8 +4,19 @@ export function PromoStrip() {
     "✦ Worldwide shipping on orders $100+",
     "♛ Just dropped: Luffy Gear 5 Pop! #1525",
     "◆ Slabbed PSA cards, fresh from the safe",
+    "☠ One Piece Pops in stock — Luffy, Zoro, Ace & more",
+    "⚡ Marvel & DC exclusives just landed",
+    "✷ Pokémon TCG sealed booster boxes available now",
+    "◈ Pop Mart × Labubu blind boxes — open at your own risk",
+    "✦ MEFCC 2025 convention exclusives in stock",
+    "♦ Glow-in-the-dark chase variants available",
+    "✓ 100% authentic — every collectible verified",
+    "✦ New arrivals weekly — be the first to cop",
   ];
 
+  // Repeated once so the marquee can scroll a full copy and loop seamlessly.
+  // With this many messages a single copy is wider than the viewport, so there
+  // is never a blank gap at the wrap point.
   const doubled = [...messages, ...messages];
 
   return (

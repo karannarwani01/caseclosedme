@@ -77,7 +77,7 @@ export function WishlistButton({
         aria-pressed={active}
         aria-label={label}
         className={clsx(
-          "relative flex items-center justify-center gap-2 overflow-visible rounded-full border-[3px] border-anime-ink px-7 py-4 font-comic text-xl uppercase tracking-[0.06em] shadow-[5px_5px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:rotate-[-1.5deg] hover:shadow-[8px_8px_0_0_var(--color-anime-pink)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[3px_3px_0_0_var(--color-anime-ink)]",
+          "relative flex w-full items-center justify-center gap-2 overflow-visible rounded-full border-[3px] border-anime-ink px-7 py-4 font-comic text-xl uppercase tracking-[0.06em] shadow-[5px_5px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:rotate-[-1.5deg] hover:shadow-[8px_8px_0_0_var(--color-anime-pink)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[3px_3px_0_0_var(--color-anime-ink)]",
           active
             ? "bg-anime-pink text-white"
             : "bg-anime-yellow text-anime-ink",

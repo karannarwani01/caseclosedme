@@ -184,7 +184,7 @@ export default function CartModal() {
                                     item.cost.totalAmount.currencyCode
                                   }
                                 />
-                                <div className="ml-auto flex h-9 flex-row items-center rounded-full border border-brand-ink/15">
+                                <div className="ml-auto flex h-11 flex-row items-center rounded-full border border-brand-ink/15">
                                   <EditItemQuantityButton
                                     item={item}
                                     type="minus"

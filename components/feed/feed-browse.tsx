@@ -128,7 +128,7 @@ export function FeedBrowse({
   };
 
   return (
-    <div className="mx-auto w-full max-w-[1800px] px-6 pt-6 pb-12 lg:px-8">
+    <div className="mx-auto w-full max-w-[1800px] px-4 pt-6 pb-12 lg:px-8">
       {heading ? (
         <h1 className="mb-6 font-display text-3xl font-extrabold uppercase tracking-tight text-anime-ink md:text-4xl">
           {heading}
@@ -152,11 +152,12 @@ export function FeedBrowse({
             onPriceChange={(lo, hi) => setPriceRange([lo, hi])}
             activeCount={activeCount}
             onClear={clearAll}
+            resultCount={filtered.length}
           />
         </div>
 
         {/* Grid */}
-        <div className="min-h-screen w-full">
+        <div className="w-full md:min-h-screen">
           {/* Header strip */}
           <header className="mb-6 flex items-center justify-between gap-4 border-b border-anime-ink/10 pb-4">
             <div className="flex items-center gap-2.5">

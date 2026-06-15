@@ -126,7 +126,7 @@ export default async function Footer() {
           pages, while always leaving a visible gap above it. */}
       <div aria-hidden className="mt-auto h-16 md:h-24" />
       <footer className="border-t-[2.5px] border-anime-ink bg-anime-ink text-white">
-        <div className="mx-auto grid w-full max-w-[1800px] gap-10 px-6 py-14 lg:px-8 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1.2fr_1.2fr_1fr_0.8fr]">
+        <div className="mx-auto grid w-full max-w-[1800px] gap-10 px-4 py-14 lg:px-8 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1.2fr_1.2fr_1fr_0.8fr]">
           <div className="flex flex-col gap-5">
             <Link
               href="/"
@@ -216,7 +216,7 @@ export default async function Footer() {
         </div>
 
         <div className="border-t-[2.5px] border-white/10">
-          <div className="mx-auto flex w-full max-w-[1800px] flex-col gap-1 px-6 py-5 text-sm text-white/60 md:flex-row md:items-center md:justify-between lg:px-8">
+          <div className="mx-auto flex w-full max-w-[1800px] flex-col gap-1 px-4 py-5 text-sm text-white/60 md:flex-row md:items-center md:justify-between lg:px-8">
             <p>Website last updated: {lastUpdated}</p>
             <p>
               &copy; {copyrightDate} {copyrightName}. All rights reserved.
