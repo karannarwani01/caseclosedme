@@ -3,10 +3,10 @@
 import clsx from "clsx";
 import {
   Black_Ops_One,
+  Bungee,
   Luckiest_Guy,
   Orbitron,
   Pirata_One,
-  Yuji_Syuku,
 } from "next/font/google";
 import Image from "next/image";
 
@@ -18,12 +18,12 @@ const pirata = Pirata_One({
   display: "swap",
   preload: false,
 }); // One Piece
-const yuji = Yuji_Syuku({
+const bungee = Bungee({
   weight: "400",
   subsets: ["latin"],
   display: "swap",
   preload: false,
-}); // Demon Slayer
+}); // Demon Slayer (Yuji Syuku triggers a Turbopack font-module bug)
 const orbitron = Orbitron({
   weight: "800",
   subsets: ["latin"],
@@ -103,7 +103,7 @@ const TILES: Tile[] = [
     artWrap: "inset-0",
     artFit: "object-contain object-center",
     bg: OCEAN,
-    font: yuji.className,
+    font: bungee.className,
   },
   {
     id: "figures",
