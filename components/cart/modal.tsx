@@ -34,6 +34,14 @@ export default function CartModal() {
     }
   }, [cart]);
 
+  // Let other UI (e.g. the mobile bottom tab bar) open this single drawer
+  // instance without prop-drilling, via a window event.
+  useEffect(() => {
+    const open = () => setIsOpen(true);
+    window.addEventListener("open-cart", open);
+    return () => window.removeEventListener("open-cart", open);
+  }, []);
+
   useEffect(() => {
     if (
       cart?.totalQuantity &&
@@ -143,9 +151,9 @@ export default function CartModal() {
                                 />
                               </div>
                               <div className="flex flex-row">
-                                <div className="relative h-16 w-16 overflow-hidden rounded-2xl border border-brand-ink/10 bg-brand-cream-2">
+                                <div className="relative h-16 w-16 overflow-hidden rounded-2xl border border-brand-ink/10 bg-white">
                                   <Image
-                                    className="h-full w-full object-cover"
+                                    className="h-full w-full object-contain p-1"
                                     width={64}
                                     height={64}
                                     alt={
@@ -164,7 +172,7 @@ export default function CartModal() {
                                   className="z-30 ml-2 flex flex-row space-x-4"
                                 >
                                   <div className="flex flex-1 flex-col text-base">
-                                    <span className="leading-tight">
+                                    <span className="font-display text-sm font-bold leading-tight text-anime-ink">
                                       {item.merchandise.product.title}
                                     </span>
                                     {item.merchandise.title !==
@@ -178,7 +186,7 @@ export default function CartModal() {
                               </div>
                               <div className="flex h-16 flex-col justify-between">
                                 <Price
-                                  className="flex justify-end space-y-2 text-right text-sm"
+                                  className="flex justify-end space-y-2 text-right font-display text-sm font-extrabold tabular-nums text-anime-ink"
                                   amount={item.cost.totalAmount.amount}
                                   currencyCode={
                                     item.cost.totalAmount.currencyCode

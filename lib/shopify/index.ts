@@ -48,9 +48,10 @@ import {
   ShopifyCart,
   ShopifyCartOperation,
   ShopifyCollection,
+  ShopifyCollectionListingOperation,
   ShopifyCollectionOperation,
-  ShopifyCollectionProductsOperation,
   ShopifyCollectionsOperation,
+  ShopifyListingProduct,
   ShopifyCreateCartOperation,
   ShopifyMenuOperation,
   ShopifyPageOperation,
@@ -262,6 +263,35 @@ const reshapeProduct = (
   };
 };
 
+// Reshape a trimmed listing node into a full Product, filling the fields the
+// listing fragment intentionally omits (description/options/seo/images) with
+// safe defaults so cards, facets and quick-add work unchanged.
+const reshapeListingProduct = (
+  p: ShopifyListingProduct,
+): Product | undefined => {
+  if (!p || p.tags.includes(HIDDEN_PRODUCT_TAG)) return undefined;
+  return {
+    id: p.id,
+    handle: p.handle,
+    availableForSale: p.availableForSale,
+    title: p.title,
+    description: "",
+    descriptionHtml: "",
+    options: [],
+    priceRange: p.priceRange,
+    compareAtPriceRange: p.compareAtPriceRange,
+    featuredImage: p.featuredImage,
+    images: p.featuredImage ? [p.featuredImage] : [],
+    variants: removeEdgesAndNodes(p.variants),
+    seo: { title: p.title, description: "" },
+    tags: p.tags,
+    productType: p.productType,
+    vendor: p.vendor,
+    createdAt: p.createdAt,
+    updatedAt: p.createdAt,
+  };
+};
+
 const reshapeProducts = (products: ShopifyProduct[]) => {
   const reshapedProducts = [];
 
@@ -416,7 +446,7 @@ export async function getCollectionProducts({
     return USE_DEMO_PRODUCTS ? getMockProductsForCollection(collection) : [];
   }
 
-  const res = await shopifyFetch<ShopifyCollectionProductsOperation>({
+  const res = await shopifyFetch<ShopifyCollectionListingOperation>({
     query: getCollectionProductsQuery,
     variables: {
       handle: collection,
@@ -431,9 +461,9 @@ export async function getCollectionProducts({
     return USE_DEMO_PRODUCTS ? getMockProductsForCollection(collection) : [];
   }
 
-  const products = reshapeProducts(
-    removeEdgesAndNodes(res.body.data.collection.products),
-  );
+  const products = removeEdgesAndNodes(res.body.data.collection.products)
+    .map(reshapeListingProduct)
+    .filter((p): p is Product => Boolean(p));
   if (products.length) return products;
   return USE_DEMO_PRODUCTS ? getMockProductsForCollection(collection) : [];
 }

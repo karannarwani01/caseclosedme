@@ -57,7 +57,7 @@ export async function Navbar() {
   );
 
   return (
-    <div className="relative z-30 w-full border-b-[2.5px] border-anime-ink bg-white">
+    <div className="sticky top-0 z-50 w-full border-b-[2.5px] border-anime-ink bg-white">
       <nav className="mx-auto flex w-full max-w-[1800px] items-center gap-2 px-4 py-6 lg:gap-4 lg:px-6">
         {/* Mobile hamburger stays pinned left; hidden on desktop. */}
         <div className="flex shrink-0 xl:hidden">

@@ -1,15 +1,22 @@
 import { AddToCart } from "components/cart/add-to-cart";
 import Price from "components/price";
-import Prose from "components/prose";
 import { WishlistButton } from "components/wishlist/wishlist-button";
 import { Product } from "lib/shopify/types";
-import { ReviewsAccordion } from "./reviews-accordion";
 import { ShareRow } from "./share-row";
+import { Stars } from "./stars";
 import { StockBar } from "./stock-bar";
 import { TrustBadges } from "./trust-badges";
 import { VariantSelector } from "./variant-selector";
 
-export function ProductDescription({ product }: { product: Product }) {
+export function ProductDescription({
+  product,
+  reviewCount = 0,
+  reviewAverage = 0,
+}: {
+  product: Product;
+  reviewCount?: number;
+  reviewAverage?: number;
+}) {
   const amount = product.priceRange.maxVariantPrice.amount;
   const currencyCode = product.priceRange.maxVariantPrice.currencyCode;
   const sku = product.variants.find((v) => v.sku)?.sku;
@@ -36,6 +43,18 @@ export function ProductDescription({ product }: { product: Product }) {
             {sku}
           </p>
         ) : null}
+        {reviewCount > 0 ? (
+          <a
+            href="#reviews"
+            className="flex w-fit items-center gap-2 transition-opacity hover:opacity-70"
+          >
+            <Stars value={reviewAverage} className="h-4 w-4" />
+            <span className="font-display text-xs font-extrabold text-anime-ink/70">
+              {reviewAverage.toFixed(1)} · {reviewCount} review
+              {reviewCount === 1 ? "" : "s"}
+            </span>
+          </a>
+        ) : null}
         <Price
           className="mr-auto rotate-[-2deg] rounded-full border-[2.5px] border-anime-ink bg-anime-lime px-4 py-1.5 font-display text-xl font-extrabold tabular-nums text-anime-ink shadow-[3px_3px_0_0_var(--color-anime-ink)]"
           amount={amount}
@@ -53,15 +72,6 @@ export function ProductDescription({ product }: { product: Product }) {
       </div>
 
       <TrustBadges />
-
-      {product.descriptionHtml ? (
-        <Prose
-          className="prose-onebox text-sm leading-relaxed text-anime-ink/80"
-          html={product.descriptionHtml}
-        />
-      ) : null}
-
-      <ReviewsAccordion title={product.title} />
 
       <ShareRow title={product.title} />
     </div>

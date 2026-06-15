@@ -1,4 +1,4 @@
-import productFragment from "../fragments/product";
+import productListingFragment from "../fragments/product-listing";
 import seoFragment from "../fragments/seo";
 
 const collectionFragment = /* GraphQL */ `
@@ -67,11 +67,11 @@ export const getCollectionProductsQuery = /* GraphQL */ `
       products(sortKey: $sortKey, reverse: $reverse, first: 100) {
         edges {
           node {
-            ...product
+            ...productListing
           }
         }
       }
     }
   }
-  ${productFragment}
+  ${productListingFragment}
 `;

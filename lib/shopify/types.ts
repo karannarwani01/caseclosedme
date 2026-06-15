@@ -222,6 +222,42 @@ export type ShopifyCollectionProductsOperation = {
   };
 };
 
+// Trimmed product node returned by the `productListing` fragment (listing/grid
+// views). Mirrors the fields in lib/shopify/fragments/product-listing.ts.
+export type ShopifyListingProduct = {
+  id: string;
+  handle: string;
+  availableForSale: boolean;
+  title: string;
+  priceRange: {
+    maxVariantPrice: Money;
+    minVariantPrice: Money;
+  };
+  compareAtPriceRange?: {
+    maxVariantPrice: Money;
+    minVariantPrice: Money;
+  };
+  featuredImage: Image;
+  variants: Connection<ProductVariant>;
+  tags: string[];
+  productType: string;
+  vendor: string;
+  createdAt: string;
+};
+
+export type ShopifyCollectionListingOperation = {
+  data: {
+    collection: {
+      products: Connection<ShopifyListingProduct>;
+    };
+  };
+  variables: {
+    handle: string;
+    reverse?: boolean;
+    sortKey?: string;
+  };
+};
+
 export type ShopifyCollectionsOperation = {
   data: {
     collections: Connection<ShopifyCollection>;

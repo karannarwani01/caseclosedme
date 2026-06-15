@@ -1,5 +1,8 @@
+"use client";
+
 import clsx from "clsx";
 import Image from "next/image";
+import { useState } from "react";
 import Label from "../label";
 
 export function GridTileImage({
@@ -8,12 +11,15 @@ export function GridTileImage({
   label,
   swatch,
   badge,
+  zoom = false,
   ...props
 }: {
   isInteractive?: boolean;
   active?: boolean;
   swatch?: [string, string];
   badge?: string;
+  // When true, the photo magnifies and pans under the cursor on hover.
+  zoom?: boolean;
   label?: {
     title: string;
     amount: string;
@@ -22,6 +28,8 @@ export function GridTileImage({
   };
 } & React.ComponentProps<typeof Image>) {
   const hasImage = Boolean(props.src);
+  const [hover, setHover] = useState(false);
+  const [origin, setOrigin] = useState("50% 50%");
 
   return (
     <div
@@ -30,17 +38,30 @@ export function GridTileImage({
         "shadow-[5px_5px_0_0_var(--color-anime-ink)]",
         {
           "hover:-translate-x-[3px] hover:-translate-y-[3px] hover:rotate-[-1.5deg] hover:shadow-[9px_9px_0_0_var(--color-anime-pink)]":
-            isInteractive,
+            isInteractive && !zoom,
           "shadow-[9px_9px_0_0_var(--color-anime-pink)]": active,
+          "cursor-zoom-in": zoom && hasImage,
         },
       )}
+      onMouseEnter={zoom ? () => setHover(true) : undefined}
+      onMouseLeave={zoom ? () => setHover(false) : undefined}
+      onMouseMove={
+        zoom
+          ? (e) => {
+              const r = e.currentTarget.getBoundingClientRect();
+              setOrigin(
+                `${((e.clientX - r.left) / r.width) * 100}% ${((e.clientY - r.top) / r.height) * 100}%`,
+              );
+            }
+          : undefined
+      }
     >
       {/* Anime speed-lines burst behind the figure */}
       <div
         aria-hidden
         className={clsx(
           "absolute inset-[10%] opacity-55 transition-transform duration-500 ease-out",
-          { "group-hover:rotate-[40deg]": isInteractive },
+          { "group-hover:rotate-[40deg]": isInteractive && !zoom },
         )}
         style={{
           background:
@@ -56,8 +77,17 @@ export function GridTileImage({
         <Image
           className={clsx("relative z-10 h-full w-full object-contain p-6", {
             "transition-transform duration-500 ease-out group-hover:scale-[1.08] group-hover:rotate-[6deg]":
-              isInteractive,
+              isInteractive && !zoom,
+            "transition-transform duration-200 ease-out": zoom,
           })}
+          style={
+            zoom
+              ? {
+                  transform: hover ? "scale(1.9)" : "scale(1)",
+                  transformOrigin: origin,
+                }
+              : undefined
+          }
           {...props}
         />
       ) : swatch ? (

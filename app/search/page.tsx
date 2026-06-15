@@ -17,9 +17,23 @@ export default async function SearchPage(props: {
   const { sortKey, reverse } =
     sorting.find((item) => item.slug === sort) || defaultSort;
 
-  const products = USE_DEMO_PRODUCTS
+  const allProducts = USE_DEMO_PRODUCTS
     ? DEMO_PRODUCTS
-    : await getProducts({ sortKey, reverse, query: searchValue });
+    : await getProducts({ sortKey, reverse });
+
+  // Match the query against title, type, vendor, handle AND every tag/keyword,
+  // so products are findable by any tag (character, franchise, colour,
+  // exclusivity, etc.) — not just their title. All tokens must match (AND).
+  let products = allProducts;
+  if (searchValue) {
+    const tokens = searchValue.toLowerCase().split(/\s+/).filter(Boolean);
+    products = allProducts.filter((p) => {
+      const haystack = [p.title, p.productType, p.vendor, p.handle, ...p.tags]
+        .join(" ")
+        .toLowerCase();
+      return tokens.every((t) => haystack.includes(t));
+    });
+  }
 
   // Also match the query against category names so every collection in the
   // framework is findable from the search box, not just products.

@@ -48,6 +48,7 @@ export async function JustArrivedRow() {
                 alt={p.title}
                 swatch={p.swatch}
                 badge={p.badge}
+                zoom
                 label={{
                   title: p.title,
                   amount: p.priceRange.maxVariantPrice.amount,
@@ -100,6 +101,7 @@ export async function ArrivingSoonRow() {
                 alt={p.title}
                 swatch={p.swatch}
                 badge={p.badge}
+                zoom
                 label={{
                   title: p.title,
                   amount: p.priceRange.maxVariantPrice.amount,

@@ -1,3 +1,4 @@
+import { QuickAddButton } from "components/cart/quick-add-button";
 import { StarburstBadge } from "components/feed/starburst-badge";
 import Price from "components/price";
 import { WishlistButton } from "components/wishlist/wishlist-button";
@@ -33,51 +34,59 @@ export function FeedCard({ product }: { product: Product }) {
 
   return (
     <article className="group relative flex flex-col">
-      {soldOut ? (
-        <StarburstBadge
-          label="Sold Out"
-          bg="var(--color-anime-ink)"
-          color="#fff"
-        />
-      ) : badge ? (
-        <StarburstBadge label={badge.label} bg={badge.bg} color={badge.color} />
-      ) : null}
-
-      <Link
-        href={`/product/${product.handle}`}
-        prefetch={true}
-        className="relative block aspect-square overflow-hidden rounded-2xl border border-black/5 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-all duration-200 ease-out group-hover:-translate-y-1 group-hover:shadow-[0_12px_28px_rgba(0,0,0,0.14)]"
-      >
-        {product.featuredImage?.url ? (
-          <Image
-            src={product.featuredImage.url}
-            alt={product.title}
-            fill
-            sizes="(min-width: 1024px) 24vw, (min-width: 640px) 33vw, 50vw"
-            className={
-              "object-contain p-5 transition-transform duration-500 ease-out group-hover:scale-[1.05]" +
-              (soldOut ? " opacity-60 saturate-50" : "")
-            }
+      <div className="relative">
+        {soldOut ? (
+          <StarburstBadge
+            label="Sold Out"
+            bg="var(--color-anime-ink)"
+            color="#fff"
           />
-        ) : (
-          <div
-            className="flex h-full w-full items-center justify-center"
-            style={{
-              background: `radial-gradient(circle at 50% 42%, color-mix(in srgb, ${colorForHandle(product.handle)} 30%, white) 0 46%, white 72%)`,
-            }}
-          >
-            <span className="font-display text-5xl font-extrabold text-anime-ink/85">
-              {product.title
-                .replace(/[^a-zA-Z0-9]/g, "")
-                .charAt(0)
-                .toUpperCase() || "?"}
-            </span>
-          </div>
-        )}
-      </Link>
+        ) : badge ? (
+          <StarburstBadge
+            label={badge.label}
+            bg={badge.bg}
+            color={badge.color}
+          />
+        ) : null}
 
-      {/* Wishlist heart (sibling of the Link so it isn't a nested interactive) */}
-      <WishlistButton product={product} variant="card" />
+        <Link
+          href={`/product/${product.handle}`}
+          prefetch={true}
+          className="relative block aspect-square overflow-hidden rounded-2xl border border-black/5 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-all duration-200 ease-out group-hover:-translate-y-1 group-hover:shadow-[0_12px_28px_rgba(0,0,0,0.14)]"
+        >
+          {product.featuredImage?.url ? (
+            <Image
+              src={product.featuredImage.url}
+              alt={product.title}
+              fill
+              sizes="(min-width: 1024px) 24vw, (min-width: 640px) 33vw, 50vw"
+              className={
+                "object-contain p-5 transition-transform duration-500 ease-out group-hover:scale-[1.05]" +
+                (soldOut ? " opacity-60 saturate-50" : "")
+              }
+            />
+          ) : (
+            <div
+              className="flex h-full w-full items-center justify-center"
+              style={{
+                background: `radial-gradient(circle at 50% 42%, color-mix(in srgb, ${colorForHandle(product.handle)} 30%, white) 0 46%, white 72%)`,
+              }}
+            >
+              <span className="font-display text-5xl font-extrabold text-anime-ink/85">
+                {product.title
+                  .replace(/[^a-zA-Z0-9]/g, "")
+                  .charAt(0)
+                  .toUpperCase() || "?"}
+              </span>
+            </div>
+          )}
+        </Link>
+
+        {/* Wishlist heart + quick add-to-cart (siblings of the Link so they
+          aren't nested interactives) */}
+        <WishlistButton product={product} variant="card" />
+        <QuickAddButton product={product} />
+      </div>
 
       {/* Title block */}
       <div className="px-1 pt-3">
