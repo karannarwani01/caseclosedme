@@ -242,7 +242,7 @@ export function CategoryCircles() {
                           ? { objectPosition: cat.hoverPosition }
                           : undefined
                       }
-                      className={`opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100 ${
+                      className={`opacity-100 transition-opacity duration-300 ease-out md:opacity-0 md:group-hover:opacity-100 ${
                         cat.hoverFit === "cover"
                           ? "object-cover"
                           : "object-contain"
