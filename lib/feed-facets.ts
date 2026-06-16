@@ -1,7 +1,13 @@
 import type { Product } from "lib/shopify/types";
 
 export type Facet = { value: string; label: string; count: number };
-export type FacetField = "type" | "vendor" | "franchise" | "size" | "color";
+export type FacetField =
+  | "type"
+  | "line"
+  | "vendor"
+  | "franchise"
+  | "size"
+  | "color";
 export type FacetGroup = {
   key: string;
   title: string;
@@ -94,6 +100,27 @@ function sizeOf(p: Product): string {
   return "";
 }
 
+// Die-cast line/format, from a tag on the product. Drives the "Type" facet on
+// car pages instead of productType (which there is just the brand, e.g. Hot
+// Wheels / Jada — already covered by the Brand facet). A product can carry more
+// than one (e.g. a Premium 2-Pack). LINE_ORDER fixes the display order.
+const LINES: Record<string, string> = {
+  mainline: "Mainline",
+  premium: "Premium",
+  "2-pack": "2 Pack",
+  "team-transport": "Team Transport",
+};
+const LINE_ORDER = ["Mainline", "Premium", "2 Pack", "Team Transport"];
+
+function lineLabelsOf(p: Product): string[] {
+  const labels = new Set<string>();
+  for (const t of p.tags) {
+    const label = LINES[norm(t)];
+    if (label) labels.add(label);
+  }
+  return [...labels];
+}
+
 // Does a product match a chosen facet value?
 export function matchesFacet(
   p: Product,
@@ -101,6 +128,7 @@ export function matchesFacet(
   value: string,
 ): boolean {
   if (field === "type") return p.productType === value;
+  if (field === "line") return lineLabelsOf(p).includes(value);
   if (field === "vendor") return prettyVendor(p.vendor) === value;
   if (field === "franchise") return franchiseLabelsOf(p).includes(value);
   if (field === "size") return sizeOf(p) === value;
@@ -118,6 +146,7 @@ function tally(map: Map<string, number>): Facet[] {
 // always reflect what's actually there.
 export function buildFacetGroups(products: Product[]): FacetGroup[] {
   const types = new Map<string, number>();
+  const lines = new Map<string, number>();
   const franchises = new Map<string, number>();
   const vendors = new Map<string, number>();
   const sizes = new Map<string, number>();
@@ -131,6 +160,7 @@ export function buildFacetGroups(products: Product[]): FacetGroup[] {
     bump(types, p.productType);
     bump(vendors, prettyVendor(p.vendor));
     bump(sizes, sizeOf(p));
+    for (const label of lineLabelsOf(p)) bump(lines, label);
     for (const label of franchiseLabelsOf(p)) bump(franchises, label);
     for (const label of colorLabelsOf(p)) bump(colors, label);
   }
@@ -149,10 +179,29 @@ export function buildFacetGroups(products: Product[]): FacetGroup[] {
       groups.push({ key, title, accent, field, options, dark: opts.dark });
   };
 
-  // Only show Type/Brand/Size when there's more than one option to choose.
-  push("type", "Type", "var(--color-anime-cyan)", "type", types, {
-    minOptions: 2,
-  });
+  // "Type" facet: on car pages, use the die-cast line tags (Mainline, Premium,
+  // 2 Pack, Team Transport) in a fixed order; otherwise fall back to the
+  // product's productType. Cars set productType to the brand (Hot Wheels /
+  // Jada), which already lives under the Brand facet, so we don't repeat it.
+  if (lines.size > 0) {
+    const options = [...lines.entries()]
+      .map(([value, count]) => ({ value, label: value, count }))
+      .sort(
+        (a, b) => LINE_ORDER.indexOf(a.label) - LINE_ORDER.indexOf(b.label),
+      );
+    groups.push({
+      key: "type",
+      title: "Type",
+      accent: "var(--color-anime-cyan)",
+      field: "line",
+      options,
+    });
+  } else {
+    // Only show Type when there's more than one productType to choose.
+    push("type", "Type", "var(--color-anime-cyan)", "type", types, {
+      minOptions: 2,
+    });
+  }
   push(
     "license",
     "License",
