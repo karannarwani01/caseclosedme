@@ -462,8 +462,10 @@ const CARS_MEGA: MegaConfig = {
     {
       heading: "Type",
       links: [
-        { title: "Premium", path: "/search/premium" },
         { title: "Mainline", path: "/search/mainline" },
+        { title: "Premium", path: "/search/premium" },
+        { title: "2 Pack", path: "/search/2-pack" },
+        { title: "Team Transport", path: "/search/team-transport" },
       ],
     },
     {
