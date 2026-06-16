@@ -294,7 +294,6 @@ const TOYS_MEGA: MegaConfig = {
       heading: "Type",
       links: [
         { title: "Lego", path: "/search/lego" },
-        { title: "Hot Wheels", path: "/search/hot-wheels" },
         { title: "RC Cars", path: "/search/rc" },
         { title: "Board Games", path: "/search/board-games" },
         { title: "Puzzles", path: "/search/puzzles" },
