@@ -44,6 +44,7 @@ export async function Navbar() {
         { title: "Trading Cards", path: "/search" },
         { title: "Novelty", path: "/search" },
         { title: "Toys", path: "/search" },
+        { title: "Cars", path: "/search" },
         { title: "Retro", path: "/search" },
         { title: "Gaming", path: "/search" },
         { title: "Still Good", path: "/search" },

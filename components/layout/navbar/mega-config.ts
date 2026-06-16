@@ -449,6 +449,50 @@ const STILL_GOOD_MEGA: MegaConfig = {
   ],
 };
 
+const CARS_MEGA: MegaConfig = {
+  sections: [
+    {
+      heading: "Shop",
+      links: [
+        { title: "All Cars", path: "/search/die-cast" },
+        { title: "Hot Wheels", path: "/search/hot-wheels" },
+        { title: "New Arrivals", path: "/search/new-arrivals" },
+      ],
+    },
+    {
+      heading: "Type",
+      links: [
+        { title: "Premium", path: "/search/premium" },
+        { title: "Mainline", path: "/search/mainline" },
+      ],
+    },
+    {
+      heading: "Series",
+      links: [
+        { title: "Car Culture", path: "/search/car-culture" },
+        { title: "Pop Culture", path: "/search/pop-culture" },
+        { title: "Fast & Furious", path: "/search/fast-furious" },
+        { title: "Formula 1", path: "/search/formula-1" },
+        { title: "Boulevard", path: "/search/boulevard" },
+      ],
+    },
+  ],
+  featured: [
+    {
+      badge: "New",
+      title: "Hot Wheels",
+      collection: "hot-wheels",
+      bg: "linear-gradient(135deg, var(--color-anime-orange) 0%, var(--color-anime-yellow) 100%)",
+    },
+    {
+      badge: "Hot",
+      title: "Die-Cast",
+      collection: "die-cast",
+      bg: "linear-gradient(135deg, var(--color-anime-cyan) 0%, var(--color-anime-purple) 100%)",
+    },
+  ],
+};
+
 export const MEGA_BY_TITLE: Record<string, MegaConfig> = {
   Figures: FIGURES_MEGA,
   Funko: FUNKO_MEGA,
@@ -456,6 +500,7 @@ export const MEGA_BY_TITLE: Record<string, MegaConfig> = {
   "Trading Cards": TRADING_MEGA,
   Novelty: NOVELTY_MEGA,
   Toys: TOYS_MEGA,
+  Cars: CARS_MEGA,
   Retro: RETRO_MEGA,
   Gaming: GAMING_MEGA,
   "Still Good": STILL_GOOD_MEGA,

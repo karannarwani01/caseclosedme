@@ -7,4 +7,6 @@ export const FEATURED_COLLECTION_HANDLES = [
   "funko-pops",
   "blind-box",
   "pop-mart",
+  "hot-wheels",
+  "die-cast",
 ];
