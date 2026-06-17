@@ -1,4 +1,8 @@
-import { getCollection, getCollectionProducts } from "lib/shopify";
+import {
+  getCollection,
+  getCollectionProducts,
+  getNonEmptyCollectionHandles,
+} from "lib/shopify";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -46,8 +50,8 @@ export default async function CategoryPage(props: {
 
   // In demo mode, skip Shopify entirely — those calls throw without a
   // configured store and crash the server render.
-  const [collection, products] = USE_DEMO_PRODUCTS
-    ? [null, filterDemoByCollection(params.collection)]
+  const [collection, products, availableHandles] = USE_DEMO_PRODUCTS
+    ? [null, filterDemoByCollection(params.collection), [] as string[]]
     : await Promise.all([
         getCollection(params.collection),
         getCollectionProducts({
@@ -55,9 +59,16 @@ export default async function CategoryPage(props: {
           sortKey,
           reverse,
         }),
+        getNonEmptyCollectionHandles(),
       ]);
 
   const heading = collection?.title || params.collection;
 
-  return <FeedBrowse products={products} heading={heading} />;
+  return (
+    <FeedBrowse
+      products={products}
+      heading={heading}
+      availableHandles={availableHandles}
+    />
+  );
 }

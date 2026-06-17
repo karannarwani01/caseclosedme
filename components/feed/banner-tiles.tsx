@@ -9,6 +9,7 @@ import {
   Pirata_One,
 } from "next/font/google";
 import Image from "next/image";
+import Link from "next/link";
 
 // Per-franchise display fonts, themed to each tile's character. Decorative, so
 // they swap in (no render-block) and aren't preloaded — keeps the page fast.
@@ -49,17 +50,11 @@ const blackops = Black_Ops_One({
 // optionally feature a character cutout (`art`) bleeding off the right edge
 // over a comic sunburst background.
 
-export type QuickFilter =
-  | { kind: "badge"; value: string }
-  | { kind: "category"; value: string }
-  | { kind: "categories"; value: string[] };
-
 type Tile = {
   id: string;
   label: string; // supports \n for the stacked word layout
   sub: string;
-  filter: QuickFilter | null; // badge quick-filter applied to the current page
-  facetGroup?: string; // OR: open this sidebar facet group (type/license/brand)
+  handle: string; // collection this tile links to → /search/<handle>
   art?: string; // character cutout shown behind the label
   artWrap?: string; // wrapper sizing/position (defaults to bottom-anchored)
   artFit?: string; // object-fit/position for the image
@@ -90,7 +85,7 @@ const TILES: Tile[] = [
     id: "preorder",
     label: "PRE-\nORDER",
     sub: "Pre order",
-    filter: { kind: "badge", value: "preorder" },
+    handle: "pre-order",
     art: "/banners/luffy-preorder.png",
     bg: TROPICAL,
     font: pirata.className,
@@ -99,7 +94,7 @@ const TILES: Tile[] = [
     id: "new",
     label: "NEW\nARRIVALS",
     sub: "New arrivals",
-    filter: { kind: "badge", value: "new" },
+    handle: "new-arrivals",
     art: "/banners/giyu-new.png",
     artWrap: "inset-0",
     artFit: "object-contain object-center",
@@ -110,8 +105,7 @@ const TILES: Tile[] = [
     id: "figures",
     label: "FIGURE\nTYPES",
     sub: "Type",
-    filter: null,
-    facetGroup: "type",
+    handle: "figures",
     art: "/banners/ironman-type.png",
     artWrap: "inset-0",
     artFit: "object-contain object-center",
@@ -122,8 +116,7 @@ const TILES: Tile[] = [
     id: "popscards",
     label: "POPS\n+ CARDS",
     sub: "License",
-    filter: null,
-    facetGroup: "license",
+    handle: "funko-pops",
     art: "/banners/ash-license.png",
     bg: MEADOW,
     font: luckiest.className,
@@ -132,8 +125,7 @@ const TILES: Tile[] = [
     id: "vault",
     label: "FROM\nTHE VAULT",
     sub: "Brands",
-    filter: null,
-    facetGroup: "brand",
+    handle: "funko-exclusives",
     art: "/banners/batman-vault.png",
     artWrap: "inset-0",
     artFit: "object-contain object-center",
@@ -143,37 +135,30 @@ const TILES: Tile[] = [
 ];
 
 export function BannerTiles({
-  activeId,
-  onSelect,
-  onOpenFacet,
+  availableHandles,
 }: {
-  activeId: string | null;
-  onSelect: (id: string, filter: QuickFilter | null) => void;
-  // Facet tiles (Type/License/Brands) ask the sidebar to open that group.
-  onOpenFacet: (groupKey: string) => void;
+  // Collection handles that currently have products; tiles linking to an empty
+  // collection (e.g. Pre-Order with no stock) are hidden.
+  availableHandles: string[];
 }) {
+  const available = new Set(availableHandles);
+  const visible = TILES.filter((t) => available.has(t.handle));
+  if (!visible.length) return null;
+
   return (
     <section className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-      {TILES.map((t) => {
-        const active = activeId === t.id;
+      {visible.map((t) => {
         return (
-          <button
+          <Link
             key={t.id}
-            type="button"
-            onClick={() =>
-              t.facetGroup
-                ? onOpenFacet(t.facetGroup)
-                : onSelect(t.id, t.filter)
-            }
-            aria-pressed={active}
+            href={`/search/${t.handle}`}
+            prefetch={false}
             className="group block w-full text-center"
           >
             <div
               className={clsx(
                 "relative aspect-[5/4] overflow-hidden rounded-2xl border-[2.5px] border-anime-ink transition-all duration-200 ease-out",
-                active
-                  ? "-translate-x-[2px] -translate-y-[2px] shadow-[7px_7px_0_0_var(--color-anime-pink)]"
-                  : "shadow-[5px_5px_0_0_var(--color-anime-ink)] group-hover:-translate-x-[2px] group-hover:-translate-y-[2px] group-hover:rotate-[-0.6deg] group-hover:shadow-[7px_7px_0_0_var(--color-anime-pink)]",
+                "shadow-[5px_5px_0_0_var(--color-anime-ink)] group-hover:-translate-x-[2px] group-hover:-translate-y-[2px] group-hover:rotate-[-0.6deg] group-hover:shadow-[7px_7px_0_0_var(--color-anime-pink)]",
               )}
               style={{ background: t.bg ?? RED }}
             >
@@ -241,7 +226,7 @@ export function BannerTiles({
             <span className="mt-2.5 block text-center font-display text-[11px] font-extrabold uppercase tracking-[0.2em] text-anime-ink/70">
               {t.sub}
             </span>
-          </button>
+          </Link>
         );
       })}
     </section>

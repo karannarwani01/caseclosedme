@@ -1,6 +1,6 @@
 "use client";
 
-import { BannerTiles, type QuickFilter } from "components/feed/banner-tiles";
+import { BannerTiles } from "components/feed/banner-tiles";
 import { FeedCard } from "components/feed/feed-card";
 import { FeedFilters } from "components/feed/feed-filters";
 import { buildFacetGroups, matchesFacet } from "lib/feed-facets";
@@ -37,23 +37,17 @@ function discountPct(p: Product) {
 export function FeedBrowse({
   products,
   heading,
+  availableHandles = [],
 }: {
   products: Product[];
   heading?: string;
+  availableHandles?: string[];
 }) {
   const groups = useMemo(() => buildFacetGroups(products), [products]);
 
-  const [quickId, setQuickId] = useState<string | null>(null);
-  const [quick, setQuick] = useState<QuickFilter | null>(null);
   const [selected, setSelected] = useState<Record<string, Set<string>>>({});
   const [stockOnly, setStockOnly] = useState(false);
   const [sort, setSort] = useState<SortKey>("relevance");
-  // Facet group a banner tile asked to open (e.g. "brand"); cleared once the
-  // sidebar has scrolled to + expanded it. A counter makes repeat taps re-fire.
-  const [focusFacet, setFocusFacet] = useState<{
-    key: string;
-    n: number;
-  } | null>(null);
 
   // Price bounds from the products on the page; null range = full (no filter).
   const priceBounds = useMemo<[number, number]>(() => {
@@ -85,17 +79,6 @@ export function FeedBrowse({
       }
       if (stockOnly && !p.availableForSale) return false;
       if (price(p) < priceLo || price(p) > priceHi) return false;
-      if (quick) {
-        if (quick.kind === "badge" && !p.tags.includes(quick.value))
-          return false;
-        if (quick.kind === "category" && !p.tags.includes(quick.value))
-          return false;
-        if (
-          quick.kind === "categories" &&
-          !quick.value.some((c) => p.tags.includes(c))
-        )
-          return false;
-      }
       return true;
     });
     if (sort === "price-asc") xs = [...xs].sort((a, b) => price(a) - price(b));
@@ -107,30 +90,17 @@ export function FeedBrowse({
     if (sort === "oldest")
       xs = [...xs].sort((a, b) => a.createdAt.localeCompare(b.createdAt));
     return xs;
-  }, [products, groups, selected, stockOnly, priceLo, priceHi, quick, sort]);
-
-  const onQuick = (id: string, filter: QuickFilter | null) => {
-    if (quickId === id) {
-      setQuickId(null);
-      setQuick(null);
-    } else {
-      setQuickId(id);
-      setQuick(filter);
-    }
-  };
+  }, [products, groups, selected, stockOnly, priceLo, priceHi, sort]);
 
   const activeCount =
     Object.values(selected).reduce((n, s) => n + s.size, 0) +
     (stockOnly ? 1 : 0) +
-    (priceActive ? 1 : 0) +
-    (quickId ? 1 : 0);
+    (priceActive ? 1 : 0);
   const hasFilters = activeCount > 0;
   const clearAll = () => {
     setSelected({});
     setStockOnly(false);
     setPriceRange(null);
-    setQuickId(null);
-    setQuick(null);
   };
 
   return (
@@ -140,13 +110,7 @@ export function FeedBrowse({
           {heading}
         </h1>
       ) : null}
-      <BannerTiles
-        activeId={quickId}
-        onSelect={onQuick}
-        onOpenFacet={(key) =>
-          setFocusFacet((prev) => ({ key, n: (prev?.n ?? 0) + 1 }))
-        }
-      />
+      <BannerTiles availableHandles={availableHandles} />
 
       <div className="flex flex-col gap-8 md:flex-row">
         {/* Sidebar */}
@@ -165,7 +129,6 @@ export function FeedBrowse({
             activeCount={activeCount}
             onClear={clearAll}
             resultCount={filtered.length}
-            focusFacet={focusFacet}
           />
         </div>
 

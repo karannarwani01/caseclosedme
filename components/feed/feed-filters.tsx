@@ -4,7 +4,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import type { FacetGroup } from "lib/feed-facets";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 
 function Chevron({ open }: { open: boolean }) {
   return (
@@ -254,7 +254,6 @@ export function FeedFilters({
   activeCount,
   onClear,
   resultCount,
-  focusFacet,
 }: {
   groups: FacetGroup[];
   selected: Record<string, Set<string>>;
@@ -269,7 +268,6 @@ export function FeedFilters({
   activeCount: number;
   onClear: () => void;
   resultCount?: number;
-  focusFacet?: { key: string; n: number } | null;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -284,27 +282,6 @@ export function FeedFilters({
       next.has(k) ? next.delete(k) : next.add(k);
       return next;
     });
-
-  // A banner tile asked to open a facet group: expand it, open the mobile
-  // drawer, and scroll it into view so the shopper can pick a value.
-  useEffect(() => {
-    if (!focusFacet) return;
-    setOpenKeys((prev) => new Set(prev).add(focusFacet.key));
-    setMobileOpen(true);
-    const t = setTimeout(() => {
-      const els = document.querySelectorAll(`[data-group="${focusFacet.key}"]`);
-      if (els.length) {
-        els.forEach((el) =>
-          el.scrollIntoView({ behavior: "smooth", block: "center" }),
-        );
-      } else {
-        document
-          .querySelector("[data-filters-root]")
-          ?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }, 350);
-    return () => clearTimeout(t);
-  }, [focusFacet]);
 
   // The actual filter controls, reused by the desktop sidebar and the mobile
   // drawer so there is a single source of truth.

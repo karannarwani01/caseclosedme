@@ -2,7 +2,11 @@ import { CategoryMatches } from "components/feed/category-matches";
 import { FeedBrowse } from "components/feed/feed-browse";
 import { defaultSort, sorting } from "lib/constants";
 import { DEMO_PRODUCTS, USE_DEMO_PRODUCTS } from "lib/demo-products";
-import { getCollections, getProducts } from "lib/shopify";
+import {
+  getCollections,
+  getNonEmptyCollectionHandles,
+  getProducts,
+} from "lib/shopify";
 
 export const metadata = {
   title: "Search",
@@ -46,12 +50,17 @@ export default async function SearchPage(props: {
       .slice(0, 12);
   }
 
+  const availableHandles = USE_DEMO_PRODUCTS
+    ? []
+    : await getNonEmptyCollectionHandles();
+
   return (
     <>
       <CategoryMatches matches={categoryMatches} />
       <FeedBrowse
         products={products}
         heading={searchValue ? `Results for “${searchValue}”` : undefined}
+        availableHandles={availableHandles}
       />
     </>
   );
