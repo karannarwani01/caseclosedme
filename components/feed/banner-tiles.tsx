@@ -84,9 +84,9 @@ const GOTHAM =
 const TILES: Tile[] = [
   {
     id: "preorder",
-    label: "PRE-\nORDER",
-    sub: "Coming soon",
-    handle: "pre-order",
+    label: "UNDER\nAED 100",
+    sub: "Budget buys",
+    handle: "under-100",
     art: "/banners/luffy-preorder.png",
     bg: TROPICAL,
     font: pirata.className,
@@ -116,9 +116,9 @@ const TILES: Tile[] = [
   },
   {
     id: "popscards",
-    label: "ON\nSALE",
-    sub: "Deals",
-    handle: "sale",
+    label: "PREMIUM",
+    sub: "High-end",
+    handle: "premium",
     art: "/banners/ash-license.png",
     bg: MEADOW,
     font: luckiest.className,
