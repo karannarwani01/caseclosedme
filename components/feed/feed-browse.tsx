@@ -48,6 +48,12 @@ export function FeedBrowse({
   const [selected, setSelected] = useState<Record<string, Set<string>>>({});
   const [stockOnly, setStockOnly] = useState(false);
   const [sort, setSort] = useState<SortKey>("relevance");
+  // Facet group a banner tile asked to open (e.g. "brand"); cleared once the
+  // sidebar has scrolled to + expanded it. A counter makes repeat taps re-fire.
+  const [focusFacet, setFocusFacet] = useState<{
+    key: string;
+    n: number;
+  } | null>(null);
 
   // Price bounds from the products on the page; null range = full (no filter).
   const priceBounds = useMemo<[number, number]>(() => {
@@ -134,7 +140,13 @@ export function FeedBrowse({
           {heading}
         </h1>
       ) : null}
-      <BannerTiles activeId={quickId} onSelect={onQuick} products={products} />
+      <BannerTiles
+        activeId={quickId}
+        onSelect={onQuick}
+        onOpenFacet={(key) =>
+          setFocusFacet((prev) => ({ key, n: (prev?.n ?? 0) + 1 }))
+        }
+      />
 
       <div className="flex flex-col gap-8 md:flex-row">
         {/* Sidebar */}
@@ -153,6 +165,7 @@ export function FeedBrowse({
             activeCount={activeCount}
             onClear={clearAll}
             resultCount={filtered.length}
+            focusFacet={focusFacet}
           />
         </div>
 

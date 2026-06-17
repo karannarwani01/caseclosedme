@@ -1,7 +1,6 @@
 "use client";
 
 import clsx from "clsx";
-import type { Product } from "lib/shopify/types";
 import {
   Black_Ops_One,
   Bungee,
@@ -59,7 +58,8 @@ type Tile = {
   id: string;
   label: string; // supports \n for the stacked word layout
   sub: string;
-  filter: QuickFilter | null;
+  filter: QuickFilter | null; // badge quick-filter applied to the current page
+  facetGroup?: string; // OR: open this sidebar facet group (type/license/brand)
   art?: string; // character cutout shown behind the label
   artWrap?: string; // wrapper sizing/position (defaults to bottom-anchored)
   artFit?: string; // object-fit/position for the image
@@ -110,7 +110,8 @@ const TILES: Tile[] = [
     id: "figures",
     label: "FIGURE\nTYPES",
     sub: "Type",
-    filter: { kind: "category", value: "Figures" },
+    filter: null,
+    facetGroup: "type",
     art: "/banners/ironman-type.png",
     artWrap: "inset-0",
     artFit: "object-contain object-center",
@@ -121,7 +122,8 @@ const TILES: Tile[] = [
     id: "popscards",
     label: "POPS\n+ CARDS",
     sub: "License",
-    filter: { kind: "categories", value: ["Funko Pops", "Trading Cards"] },
+    filter: null,
+    facetGroup: "license",
     art: "/banners/ash-license.png",
     bg: MEADOW,
     font: luckiest.className,
@@ -130,7 +132,8 @@ const TILES: Tile[] = [
     id: "vault",
     label: "FROM\nTHE VAULT",
     sub: "Brands",
-    filter: { kind: "badge", value: "vault" },
+    filter: null,
+    facetGroup: "brand",
     art: "/banners/batman-vault.png",
     artWrap: "inset-0",
     artFit: "object-contain object-center",
@@ -139,40 +142,29 @@ const TILES: Tile[] = [
   },
 ];
 
-// Does a product satisfy a tile's quick filter? Mirrors the filtering in
-// feed-browse (all quick-filter kinds match against the product's tags).
-function tileMatches(p: Product, filter: QuickFilter | null): boolean {
-  if (!filter) return true;
-  if (filter.kind === "categories")
-    return filter.value.some((c) => p.tags.includes(c));
-  return p.tags.includes(filter.value);
-}
-
 export function BannerTiles({
   activeId,
   onSelect,
-  products,
+  onOpenFacet,
 }: {
   activeId: string | null;
   onSelect: (id: string, filter: QuickFilter | null) => void;
-  products: Product[];
+  // Facet tiles (Type/License/Brands) ask the sidebar to open that group.
+  onOpenFacet: (groupKey: string) => void;
 }) {
-  // Only show tiles that actually match something in this collection, so a
-  // quick filter never drops the shopper onto an empty result set.
-  const visible = TILES.filter((t) =>
-    products.some((p) => tileMatches(p, t.filter)),
-  );
-  if (!visible.length) return null;
-
   return (
     <section className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-      {visible.map((t) => {
+      {TILES.map((t) => {
         const active = activeId === t.id;
         return (
           <button
             key={t.id}
             type="button"
-            onClick={() => onSelect(t.id, t.filter)}
+            onClick={() =>
+              t.facetGroup
+                ? onOpenFacet(t.facetGroup)
+                : onSelect(t.id, t.filter)
+            }
             aria-pressed={active}
             className="group block w-full text-center"
           >

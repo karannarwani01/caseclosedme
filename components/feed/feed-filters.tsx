@@ -4,7 +4,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import type { FacetGroup } from "lib/feed-facets";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 function Chevron({ open }: { open: boolean }) {
   return (
@@ -30,22 +30,28 @@ function Group({
   accent,
   dark = false,
   count,
-  defaultOpen = true,
+  groupKey,
+  open,
+  onToggle,
   children,
 }: {
   title: string;
   accent: string;
   dark?: boolean;
   count?: number;
-  defaultOpen?: boolean;
+  groupKey: string;
+  open: boolean;
+  onToggle: () => void;
   children?: React.ReactNode;
 }) {
-  const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="overflow-hidden rounded-2xl border-[3px] border-anime-ink bg-white shadow-[5px_5px_0_0_var(--color-anime-ink)]">
+    <div
+      data-group={groupKey}
+      className="scroll-mt-24 overflow-hidden rounded-2xl border-[3px] border-anime-ink bg-white shadow-[5px_5px_0_0_var(--color-anime-ink)]"
+    >
       <button
         type="button"
-        onClick={() => setOpen(!open)}
+        onClick={onToggle}
         className="flex w-full items-center justify-between gap-2 px-3.5 py-3 text-left transition-[filter] hover:brightness-105"
         style={{ background: accent }}
       >
@@ -248,6 +254,7 @@ export function FeedFilters({
   activeCount,
   onClear,
   resultCount,
+  focusFacet,
 }: {
   groups: FacetGroup[];
   selected: Record<string, Set<string>>;
@@ -262,8 +269,42 @@ export function FeedFilters({
   activeCount: number;
   onClear: () => void;
   resultCount?: number;
+  focusFacet?: { key: string; n: number } | null;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Which groups are expanded. First two facet groups open; the rest (incl.
+  // price/stock) closed — matching the prior default.
+  const [openKeys, setOpenKeys] = useState<Set<string>>(
+    () => new Set(groups.slice(0, 2).map((g) => g.key)),
+  );
+  const toggleKey = (k: string) =>
+    setOpenKeys((prev) => {
+      const next = new Set(prev);
+      next.has(k) ? next.delete(k) : next.add(k);
+      return next;
+    });
+
+  // A banner tile asked to open a facet group: expand it, open the mobile
+  // drawer, and scroll it into view so the shopper can pick a value.
+  useEffect(() => {
+    if (!focusFacet) return;
+    setOpenKeys((prev) => new Set(prev).add(focusFacet.key));
+    setMobileOpen(true);
+    const t = setTimeout(() => {
+      const els = document.querySelectorAll(`[data-group="${focusFacet.key}"]`);
+      if (els.length) {
+        els.forEach((el) =>
+          el.scrollIntoView({ behavior: "smooth", block: "center" }),
+        );
+      } else {
+        document
+          .querySelector("[data-filters-root]")
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 350);
+    return () => clearTimeout(t);
+  }, [focusFacet]);
 
   // The actual filter controls, reused by the desktop sidebar and the mobile
   // drawer so there is a single source of truth.
@@ -279,14 +320,16 @@ export function FeedFilters({
         </button>
       ) : null}
 
-      {groups.map((g, i) => (
+      {groups.map((g) => (
         <Group
           key={g.key}
+          groupKey={g.key}
           title={g.title}
           accent={g.accent}
           dark={g.dark}
           count={selected[g.key]?.size}
-          defaultOpen={i < 2}
+          open={openKeys.has(g.key)}
+          onToggle={() => toggleKey(g.key)}
         >
           {g.options.map((o) => (
             <CheckRow
@@ -302,10 +345,12 @@ export function FeedFilters({
       ))}
 
       <Group
+        groupKey="price"
         title="Price"
         accent="var(--color-anime-yellow)"
         count={priceLo > priceMin || priceHi < priceMax ? 1 : undefined}
-        defaultOpen={false}
+        open={openKeys.has("price")}
+        onToggle={() => toggleKey("price")}
       >
         <PriceRange
           min={priceMin}
@@ -317,10 +362,12 @@ export function FeedFilters({
       </Group>
 
       <Group
+        groupKey="stock"
         title="Stock"
         accent="var(--color-anime-ink)"
         dark
-        defaultOpen={false}
+        open={openKeys.has("stock")}
+        onToggle={() => toggleKey("stock")}
       >
         <CheckRow
           label="In stock only"
@@ -404,7 +451,7 @@ export function FeedFilters({
       </Transition>
 
       {/* Desktop: persistent sidebar. */}
-      <aside className="hidden space-y-3 md:block">
+      <aside data-filters-root className="hidden space-y-3 md:block">
         <div className="mb-3 flex items-center gap-2">
           <span className="-rotate-2 rounded-full border-[3px] border-anime-ink bg-anime-pink px-5 py-1 font-comic text-xl uppercase tracking-wider text-white shadow-[3px_3px_0_0_var(--color-anime-ink)]">
             ★ Filters
