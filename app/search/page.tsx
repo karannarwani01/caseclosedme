@@ -30,11 +30,13 @@ export default async function SearchPage(props: {
   // exclusivity, etc.) — not just their title. All tokens must match (AND).
   let products = allProducts;
   if (searchValue) {
-    const tokens = searchValue.toLowerCase().split(/\s+/).filter(Boolean);
+    // Normalize away hyphens so "die-cast" matches the "diecast" tag, etc.
+    const norm = (s: string) => s.toLowerCase().replace(/-/g, "");
+    const tokens = searchValue.split(/\s+/).filter(Boolean).map(norm);
     products = allProducts.filter((p) => {
-      const haystack = [p.title, p.productType, p.vendor, p.handle, ...p.tags]
-        .join(" ")
-        .toLowerCase();
+      const haystack = norm(
+        [p.title, p.productType, p.vendor, p.handle, ...p.tags].join(" "),
+      );
       return tokens.every((t) => haystack.includes(t));
     });
   }

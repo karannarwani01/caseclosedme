@@ -35,14 +35,16 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  const tokens = q.split(/\s+/).filter(Boolean);
+  // Normalize away hyphens so "die-cast" matches the "diecast" tag, etc.
+  const norm = (s: string) => s.toLowerCase().replace(/-/g, "");
+  const tokens = q.split(/\s+/).filter(Boolean).map(norm);
   const all = await getProducts({});
 
   const results = all
     .filter((p) => {
-      const haystack = [p.title, p.productType, p.vendor, p.handle, ...p.tags]
-        .join(" ")
-        .toLowerCase();
+      const haystack = norm(
+        [p.title, p.productType, p.vendor, p.handle, ...p.tags].join(" "),
+      );
       return tokens.every((t) => haystack.includes(t));
     })
     .slice(0, 7)
