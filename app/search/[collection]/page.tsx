@@ -48,20 +48,25 @@ export default async function CategoryPage(props: {
   const { sortKey, reverse } =
     sorting.find((item) => item.slug === sort) || defaultSort;
 
+  // Best Sellers is a catch-all collection — always rank it by sales and cap it
+  // to a genuine top list rather than the whole catalogue.
+  const isBestSellers = params.collection === "best-sellers";
+
   // In demo mode, skip Shopify entirely — those calls throw without a
   // configured store and crash the server render.
-  const [collection, products, availableHandles] = USE_DEMO_PRODUCTS
+  const [collection, allProducts, availableHandles] = USE_DEMO_PRODUCTS
     ? [null, filterDemoByCollection(params.collection), [] as string[]]
     : await Promise.all([
         getCollection(params.collection),
         getCollectionProducts({
           collection: params.collection,
-          sortKey,
-          reverse,
+          sortKey: isBestSellers ? "BEST_SELLING" : sortKey,
+          reverse: isBestSellers ? false : reverse,
         }),
         getNonEmptyCollectionHandles(),
       ]);
 
+  const products = isBestSellers ? allProducts.slice(0, 30) : allProducts;
   const heading = collection?.title || params.collection;
 
   return (
