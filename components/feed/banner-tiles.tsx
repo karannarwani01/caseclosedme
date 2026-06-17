@@ -55,6 +55,7 @@ type Tile = {
   label: string; // supports \n for the stacked word layout
   sub: string;
   handle: string; // collection this tile links to → /search/<handle>
+  query?: string; // optional query string appended to the link (e.g. a sort)
   art?: string; // character cutout shown behind the label
   artWrap?: string; // wrapper sizing/position (defaults to bottom-anchored)
   artFit?: string; // object-fit/position for the image
@@ -103,9 +104,10 @@ const TILES: Tile[] = [
   },
   {
     id: "figures",
-    label: "FIGURES",
-    sub: "Shop all",
-    handle: "figures",
+    label: "BEST\nSELLERS",
+    sub: "Most popular",
+    handle: "best-sellers",
+    query: "sort=trending-desc",
     art: "/banners/ironman-type.png",
     artWrap: "inset-0",
     artFit: "object-contain object-center",
@@ -114,9 +116,9 @@ const TILES: Tile[] = [
   },
   {
     id: "popscards",
-    label: "FUNKO\nPOPS",
-    sub: "Pop! vinyls",
-    handle: "funko-pops",
+    label: "ON\nSALE",
+    sub: "Deals",
+    handle: "sale",
     art: "/banners/ash-license.png",
     bg: MEADOW,
     font: luckiest.className,
@@ -151,7 +153,7 @@ export function BannerTiles({
         return (
           <Link
             key={t.id}
-            href={`/search/${t.handle}`}
+            href={`/search/${t.handle}${t.query ? `?${t.query}` : ""}`}
             prefetch={false}
             className="group block w-full text-center"
           >
