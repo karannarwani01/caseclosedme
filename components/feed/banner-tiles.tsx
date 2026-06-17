@@ -84,7 +84,7 @@ const TILES: Tile[] = [
   {
     id: "preorder",
     label: "PRE-\nORDER",
-    sub: "Pre order",
+    sub: "Coming soon",
     handle: "pre-order",
     art: "/banners/luffy-preorder.png",
     bg: TROPICAL,
@@ -93,7 +93,7 @@ const TILES: Tile[] = [
   {
     id: "new",
     label: "NEW\nARRIVALS",
-    sub: "New arrivals",
+    sub: "Just landed",
     handle: "new-arrivals",
     art: "/banners/giyu-new.png",
     artWrap: "inset-0",
@@ -103,8 +103,8 @@ const TILES: Tile[] = [
   },
   {
     id: "figures",
-    label: "FIGURE\nTYPES",
-    sub: "Type",
+    label: "FIGURES",
+    sub: "Shop all",
     handle: "figures",
     art: "/banners/ironman-type.png",
     artWrap: "inset-0",
@@ -114,8 +114,8 @@ const TILES: Tile[] = [
   },
   {
     id: "popscards",
-    label: "POPS\n+ CARDS",
-    sub: "License",
+    label: "FUNKO\nPOPS",
+    sub: "Pop! vinyls",
     handle: "funko-pops",
     art: "/banners/ash-license.png",
     bg: MEADOW,
@@ -124,7 +124,7 @@ const TILES: Tile[] = [
   {
     id: "vault",
     label: "FROM\nTHE VAULT",
-    sub: "Brands",
+    sub: "Exclusives",
     handle: "funko-exclusives",
     art: "/banners/batman-vault.png",
     artWrap: "inset-0",
