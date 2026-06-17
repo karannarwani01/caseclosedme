@@ -1,6 +1,7 @@
 "use client";
 
 import clsx from "clsx";
+import type { Product } from "lib/shopify/types";
 import {
   Black_Ops_One,
   Bungee,
@@ -138,16 +139,34 @@ const TILES: Tile[] = [
   },
 ];
 
+// Does a product satisfy a tile's quick filter? Mirrors the filtering in
+// feed-browse (all quick-filter kinds match against the product's tags).
+function tileMatches(p: Product, filter: QuickFilter | null): boolean {
+  if (!filter) return true;
+  if (filter.kind === "categories")
+    return filter.value.some((c) => p.tags.includes(c));
+  return p.tags.includes(filter.value);
+}
+
 export function BannerTiles({
   activeId,
   onSelect,
+  products,
 }: {
   activeId: string | null;
   onSelect: (id: string, filter: QuickFilter | null) => void;
+  products: Product[];
 }) {
+  // Only show tiles that actually match something in this collection, so a
+  // quick filter never drops the shopper onto an empty result set.
+  const visible = TILES.filter((t) =>
+    products.some((p) => tileMatches(p, t.filter)),
+  );
+  if (!visible.length) return null;
+
   return (
     <section className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-      {TILES.map((t) => {
+      {visible.map((t) => {
         const active = activeId === t.id;
         return (
           <button

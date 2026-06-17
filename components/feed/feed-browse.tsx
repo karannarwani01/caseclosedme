@@ -134,7 +134,7 @@ export function FeedBrowse({
           {heading}
         </h1>
       ) : null}
-      <BannerTiles activeId={quickId} onSelect={onQuick} />
+      <BannerTiles activeId={quickId} onSelect={onQuick} products={products} />
 
       <div className="flex flex-col gap-8 md:flex-row">
         {/* Sidebar */}
