@@ -14,6 +14,7 @@ type MaybeMockProduct = Product & {
 export async function JustArrivedRow() {
   let products = (await getCollectionProducts({
     collection: "just-arrived",
+    first: 6,
   })) as MaybeMockProduct[];
 
   // No curated `just-arrived` collection? Fall back to the newest live products
@@ -69,6 +70,7 @@ export async function JustArrivedRow() {
 export async function ArrivingSoonRow() {
   let products = (await getCollectionProducts({
     collection: "pre-order",
+    first: 6,
   })) as MaybeMockProduct[];
 
   if (!products.length) {
@@ -120,6 +122,7 @@ export async function ArrivingSoonRow() {
 export async function TopTenSection() {
   let products = (await getCollectionProducts({
     collection: "top-10",
+    first: 10,
   })) as MaybeMockProduct[];
 
   // No curated `top-10` collection? Fall back to best-sellers from the live

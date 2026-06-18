@@ -433,10 +433,15 @@ export async function getCollectionProducts({
   collection,
   reverse,
   sortKey,
+  first,
 }: {
   collection: string;
   reverse?: boolean;
   sortKey?: string;
+  // How many products to pull. Defaults to 100 (full listing/filter views).
+  // Homepage rows and the navbar pass a small limit to avoid over-fetching a
+  // whole collection just to render a handful of tiles.
+  first?: number;
 }): Promise<Product[]> {
   "use cache";
   cacheTag(TAGS.collections, TAGS.products);
@@ -452,6 +457,7 @@ export async function getCollectionProducts({
       handle: collection,
       reverse,
       sortKey: sortKey === "CREATED_AT" ? "CREATED" : sortKey,
+      ...(first != null ? { first } : {}),
     },
   });
 

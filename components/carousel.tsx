@@ -9,8 +9,11 @@ type MaybeMockProduct = Product & {
 };
 
 export async function Carousel() {
+  // Curated marquee — triples a small set to scroll. Cap the fetch so we never
+  // pull a whole collection just to loop a highlight reel.
   const products = (await getCollectionProducts({
     collection: "hidden-homepage-carousel",
+    first: 12,
   })) as MaybeMockProduct[];
 
   if (!products?.length) return null;

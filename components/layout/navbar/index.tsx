@@ -25,7 +25,10 @@ export async function Navbar() {
   // Resolve a representative photo for each mega-menu featured collection.
   const featuredEntries = await Promise.all(
     FEATURED_COLLECTION_HANDLES.map(async (handle) => {
-      const products = await getCollectionProducts({ collection: handle });
+      const products = await getCollectionProducts({
+        collection: handle,
+        first: 8,
+      });
       const urls = products
         .map((p) => p.featuredImage?.url)
         .filter((u): u is string => Boolean(u))
