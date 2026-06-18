@@ -9,7 +9,15 @@ type Order = {
   name: string;
   processedAt: string | null;
   total: { amount: string; currencyCode: string } | null;
+  status: string | null;
 };
+
+// "FULFILLED" / "PARTIALLY_FULFILLED" -> "Fulfilled" / "Partially fulfilled"
+function prettyStatus(s: string | null): string | null {
+  if (!s) return null;
+  const t = s.replace(/_/g, " ").toLowerCase();
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
 
 type AccountData = {
   loggedIn: boolean;
@@ -133,9 +141,16 @@ export default function AccountPage() {
                     {fmtDate(o.processedAt)}
                   </p>
                 </div>
-                <span className="inline-block rotate-1 rounded-md border-[2.5px] border-anime-ink bg-anime-lime px-2.5 py-0.5 font-display text-sm font-extrabold tabular-nums text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)]">
-                  {money(o.total)}
-                </span>
+                <div className="flex items-center gap-2">
+                  {prettyStatus(o.status) ? (
+                    <span className="inline-block rounded-full border-2 border-anime-ink bg-anime-cyan px-2.5 py-0.5 font-comic text-[10px] uppercase tracking-wide text-anime-ink">
+                      {prettyStatus(o.status)}
+                    </span>
+                  ) : null}
+                  <span className="inline-block rotate-1 rounded-md border-[2.5px] border-anime-ink bg-anime-lime px-2.5 py-0.5 font-display text-sm font-extrabold tabular-nums text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)]">
+                    {money(o.total)}
+                  </span>
+                </div>
               </li>
             ))}
           </ul>

@@ -9,6 +9,7 @@ export type AccountOrder = {
   name: string;
   processedAt: string | null;
   total: { amount: string; currencyCode: string } | null;
+  status: string | null;
 };
 
 export type AccountData = {
@@ -29,6 +30,7 @@ const QUERY = `query AccountDashboard {
           id
           name
           processedAt
+          fulfillmentStatus
           totalPrice { amount currencyCode }
         }
       }
@@ -63,6 +65,7 @@ export async function fetchAccountData(
           id: string;
           name: string;
           processedAt: string | null;
+          fulfillmentStatus: string | null;
           totalPrice: { amount: string; currencyCode: string } | null;
         };
       }) => ({
@@ -70,6 +73,7 @@ export async function fetchAccountData(
         name: e.node.name,
         processedAt: e.node.processedAt,
         total: e.node.totalPrice,
+        status: e.node.fulfillmentStatus ?? null,
       }),
     );
     return {
