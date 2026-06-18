@@ -9,6 +9,11 @@ import {
   SESSION_COOKIE,
   sessionCookieOptions,
 } from "lib/shopify/customer/session";
+import {
+  encodeTokens,
+  TOKEN_COOKIE,
+  tokensFromResponse,
+} from "lib/shopify/customer/tokens";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -26,7 +31,7 @@ export async function GET(req: NextRequest) {
   const jar = await cookies();
   const verifier = jar.get("cc_pkce")?.value;
   const savedState = jar.get("cc_state")?.value;
-  const returnTo = jar.get("cc_return")?.value || "/wishlist";
+  const returnTo = jar.get("cc_return")?.value || "/account";
 
   if (!code) return back("/wishlist?login=error&reason=no_code");
   if (!verifier) return back("/wishlist?login=error&reason=no_verifier_cookie");
@@ -92,6 +97,15 @@ export async function GET(req: NextRequest) {
     encodeSession({ customerKey, email, idToken: tok.id_token }),
     sessionCookieOptions,
   );
+  // Persist the Customer Account API tokens so /account can query the
+  // customer's own orders + profile (refreshed on demand).
+  if (tok.access_token) {
+    res.cookies.set(
+      TOKEN_COOKIE,
+      encodeTokens(tokensFromResponse(tok)),
+      sessionCookieOptions,
+    );
+  }
   res.cookies.delete("cc_pkce");
   res.cookies.delete("cc_state");
   res.cookies.delete("cc_return");
