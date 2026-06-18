@@ -13,3 +13,5 @@ gif-originals
 # Regenerable artifacts from scripts/ (font is downloaded, logos export to Downloads)
 scripts/*.ttf
 scripts/account-logo*.png
+
+.vercel
