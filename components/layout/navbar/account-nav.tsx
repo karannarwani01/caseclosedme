@@ -26,18 +26,16 @@ export function AccountNav() {
       .catch(() => {});
   }, []);
 
-  // Always route through /api/auth/login — that handler itself falls back to the
-  // hosted account page when the Customer Account API isn't configured, so this
-  // works whether or not it's set up, and avoids a hydration-timing fl/detour.
-  const href = state.loggedIn ? "/api/auth/logout" : "/api/auth/login";
+  // Logged in -> the account dashboard (logout lives there). Logged out ->
+  // /api/auth/login, which also falls back to the hosted account page when the
+  // Customer Account API isn't configured.
+  const href = state.loggedIn ? "/account" : "/api/auth/login";
 
-  const label = state.loggedIn
-    ? `Log out${state.email ? ` (${state.email})` : ""}`
-    : "Log in to your account";
+  const label = state.loggedIn ? "Your account" : "Log in to your account";
 
-  // Plain <a>, not next/link: these are route handlers that 307-redirect to
-  // Shopify's OAuth (an external origin). next/link client navigation can't
-  // follow that and the button silently does nothing — a full navigation works.
+  // Plain <a>, not next/link: the logged-out target is a route handler that
+  // 307-redirects to Shopify's OAuth (external origin), which next/link client
+  // navigation can't follow. A full navigation works for both targets.
   return (
     <a
       href={href}

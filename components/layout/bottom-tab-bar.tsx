@@ -104,11 +104,11 @@ export function BottomTabBar() {
         <span>Wishlist</span>
       </Link>
 
-      {/* Plain <a>, not next/link: /api/auth/* are route handlers that
-        307-redirect to Shopify's external OAuth, which client-side navigation
-        can't follow (the button does nothing). A full navigation works. */}
+      {/* Logged in -> account dashboard; logged out -> /api/auth/login (a route
+        handler that 307-redirects to Shopify's external OAuth). Plain <a>, not
+        next/link, so the external login redirect is followed by a full nav. */}
       <a
-        href={account.loggedIn ? "/api/auth/logout" : "/api/auth/login"}
+        href={account.loggedIn ? "/account" : "/api/auth/login"}
         className={cls(false)}
         aria-label={account.loggedIn ? "Your account" : "Log in"}
       >
