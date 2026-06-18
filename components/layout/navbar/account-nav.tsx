@@ -1,7 +1,6 @@
 "use client";
 
 import { UserIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
 type AccountState = {
@@ -36,8 +35,11 @@ export function AccountNav() {
     ? `Log out${state.email ? ` (${state.email})` : ""}`
     : "Log in to your account";
 
+  // Plain <a>, not next/link: these are route handlers that 307-redirect to
+  // Shopify's OAuth (an external origin). next/link client navigation can't
+  // follow that and the button silently does nothing — a full navigation works.
   return (
-    <Link
+    <a
       href={href}
       aria-label={label}
       title={label}
@@ -47,6 +49,6 @@ export function AccountNav() {
       {state.loggedIn ? (
         <span className="absolute -right-1 -top-1 h-3.5 w-3.5 rounded-full border-2 border-anime-ink bg-anime-lime" />
       ) : null}
-    </Link>
+    </a>
   );
 }
