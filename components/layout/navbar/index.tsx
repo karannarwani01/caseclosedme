@@ -50,10 +50,19 @@ export async function Navbar() {
         { title: "Still Good", path: "/search" },
       ];
 
+  // "Protectors" is a code-managed top-level (Funko / TCG / Hot Wheels protector
+  // collections). Append it when the Shopify-managed menu doesn't already list
+  // it, so it shows alongside the other categories.
+  const linksWithProtectors: Menu[] = links.some(
+    (l) => l.title === "Protectors",
+  )
+    ? links
+    : [...links, { title: "Protectors", path: "/search/protectors" }];
+
   // Hide whole top-level menus whose collections are all empty (mobile mirrors
   // the desktop NavMenu, which filters itself).
   const nonEmptySet = new Set(nonEmpty);
-  const visibleLinks = links.filter((l) =>
+  const visibleLinks = linksWithProtectors.filter((l) =>
     megaHasContent(l.title, nonEmptySet),
   );
 

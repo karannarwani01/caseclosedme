@@ -3,6 +3,7 @@ import type { Product } from "lib/shopify/types";
 export type Facet = { value: string; label: string; count: number };
 export type FacetField =
   | "type"
+  | "protector"
   | "line"
   | "vendor"
   | "franchise"
@@ -121,6 +122,25 @@ function lineLabelsOf(p: Product): string[] {
   return [...labels];
 }
 
+// Protector category, from the `<cat>-protectors` tag. Drives the "Type" facet
+// on protector pages (Funko / TCG / Hot Wheels) — protectors all share one
+// productType ("Protector"), so the normal Type facet never appears.
+const PROTECTOR_TYPES: Record<string, string> = {
+  "funko-protectors": "Funko",
+  "tcg-protectors": "TCG",
+  "hot-wheels-protectors": "Hot Wheels",
+};
+const PROTECTOR_ORDER = ["Funko", "TCG", "Hot Wheels"];
+
+function protectorTypeLabelsOf(p: Product): string[] {
+  const labels = new Set<string>();
+  for (const t of p.tags) {
+    const label = PROTECTOR_TYPES[norm(t)];
+    if (label) labels.add(label);
+  }
+  return [...labels];
+}
+
 // Does a product match a chosen facet value?
 export function matchesFacet(
   p: Product,
@@ -128,6 +148,7 @@ export function matchesFacet(
   value: string,
 ): boolean {
   if (field === "type") return p.productType === value;
+  if (field === "protector") return protectorTypeLabelsOf(p).includes(value);
   if (field === "line") return lineLabelsOf(p).includes(value);
   if (field === "vendor") return prettyVendor(p.vendor) === value;
   if (field === "franchise") return franchiseLabelsOf(p).includes(value);
@@ -146,6 +167,7 @@ function tally(map: Map<string, number>): Facet[] {
 // always reflect what's actually there.
 export function buildFacetGroups(products: Product[]): FacetGroup[] {
   const types = new Map<string, number>();
+  const protectorTypes = new Map<string, number>();
   const lines = new Map<string, number>();
   const franchises = new Map<string, number>();
   const vendors = new Map<string, number>();
@@ -160,6 +182,7 @@ export function buildFacetGroups(products: Product[]): FacetGroup[] {
     bump(types, p.productType);
     bump(vendors, prettyVendor(p.vendor));
     bump(sizes, sizeOf(p));
+    for (const label of protectorTypeLabelsOf(p)) bump(protectorTypes, label);
     for (const label of lineLabelsOf(p)) bump(lines, label);
     for (const label of franchiseLabelsOf(p)) bump(franchises, label);
     for (const label of colorLabelsOf(p)) bump(colors, label);
@@ -179,11 +202,27 @@ export function buildFacetGroups(products: Product[]): FacetGroup[] {
       groups.push({ key, title, accent, field, options, dark: opts.dark });
   };
 
-  // "Type" facet: on car pages, use the die-cast line tags (Mainline, Premium,
+  // "Type" facet: on protector pages, use the protector-category tags (Funko /
+  // TCG / Hot Wheels) — they share one productType so the normal Type facet
+  // never shows. On car pages, use the die-cast line tags (Mainline, Premium,
   // 2 Pack, Team Transport) in a fixed order; otherwise fall back to the
   // product's productType. Cars set productType to the brand (Hot Wheels /
   // Jada), which already lives under the Brand facet, so we don't repeat it.
-  if (lines.size > 0) {
+  if (protectorTypes.size > 1) {
+    const options = [...protectorTypes.entries()]
+      .map(([value, count]) => ({ value, label: value, count }))
+      .sort(
+        (a, b) =>
+          PROTECTOR_ORDER.indexOf(a.label) - PROTECTOR_ORDER.indexOf(b.label),
+      );
+    groups.push({
+      key: "type",
+      title: "Type",
+      accent: "var(--color-anime-cyan)",
+      field: "protector",
+      options,
+    });
+  } else if (lines.size > 0) {
     const options = [...lines.entries()]
       .map(([value, count]) => ({ value, label: value, count }))
       .sort(

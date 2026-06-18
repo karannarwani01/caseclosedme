@@ -127,11 +127,13 @@ export function NavMenu({
                             />
                           </>
                         ) : null}
-                        <div className="absolute right-3 top-3 z-10 inline-flex items-center rounded-full border-[2px] border-anime-ink bg-white px-2.5 py-0.5 font-display text-[10px] font-extrabold uppercase tracking-wider text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)]">
-                          {f.badge}
-                        </div>
+                        {f.badge ? (
+                          <div className="absolute right-3 top-3 z-10 inline-flex items-center rounded-full border-[2px] border-anime-ink bg-white px-2.5 py-0.5 font-display text-[10px] font-extrabold uppercase tracking-wider text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)]">
+                            {f.badge}
+                          </div>
+                        ) : null}
                         <div className="relative z-10 rounded-lg border-[2px] border-anime-ink bg-white px-3 py-2 shadow-[2px_2px_0_0_var(--color-anime-ink)]">
-                          <p className="font-display text-sm font-extrabold leading-tight text-anime-ink">
+                          <p className="font-display text-xs font-extrabold leading-tight text-anime-ink [hyphens:none]">
                             {f.title}
                           </p>
                           <p className="mt-1 font-display text-[11px] font-extrabold uppercase tracking-wider text-anime-pink">

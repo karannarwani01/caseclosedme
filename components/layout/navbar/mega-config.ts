@@ -494,6 +494,43 @@ const CARS_MEGA: MegaConfig = {
   ],
 };
 
+const PROTECTORS_MEGA: MegaConfig = {
+  sections: [
+    {
+      heading: "Shop Protectors",
+      links: [
+        { title: "All Protectors", path: "/search/protectors" },
+        { title: "Funko Protectors", path: "/search/funko-protectors" },
+        { title: "TCG Protectors", path: "/search/tcg-protectors" },
+        {
+          title: "Hot Wheels Protectors",
+          path: "/search/hot-wheels-protectors",
+        },
+      ],
+    },
+  ],
+  featured: [
+    {
+      badge: "",
+      title: "Funko",
+      collection: "funko-protectors",
+      bg: "linear-gradient(135deg, var(--color-anime-yellow) 0%, var(--color-anime-cyan) 100%)",
+    },
+    {
+      badge: "",
+      title: "TCG",
+      collection: "tcg-protectors",
+      bg: "linear-gradient(135deg, var(--color-anime-lime) 0%, var(--color-anime-orange) 100%)",
+    },
+    {
+      badge: "",
+      title: "Hot Wheels",
+      collection: "hot-wheels-protectors",
+      bg: "linear-gradient(135deg, var(--color-anime-orange) 0%, var(--color-anime-pink) 100%)",
+    },
+  ],
+};
+
 export const MEGA_BY_TITLE: Record<string, MegaConfig> = {
   Figures: FIGURES_MEGA,
   Funko: FUNKO_MEGA,
@@ -502,6 +539,7 @@ export const MEGA_BY_TITLE: Record<string, MegaConfig> = {
   Novelty: NOVELTY_MEGA,
   Toys: TOYS_MEGA,
   Cars: CARS_MEGA,
+  Protectors: PROTECTORS_MEGA,
   Retro: RETRO_MEGA,
   Gaming: GAMING_MEGA,
   "Still Good": STILL_GOOD_MEGA,
