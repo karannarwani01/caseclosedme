@@ -6,7 +6,6 @@ import { SearchOverlay } from "components/layout/search-overlay";
 import { PromoStrip } from "components/promo-strip";
 import { WishlistProvider } from "components/wishlist/wishlist-context";
 import {
-  Atkinson_Hyperlegible,
   Bangers,
   Bricolage_Grotesque,
   Inter,
@@ -46,16 +45,8 @@ const inter = Inter({
   display: "swap",
 });
 
-// High-legibility font used when the "Dyslexia Font" accessibility toggle is on.
-const atkinson = Atkinson_Hyperlegible({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  variable: "--font-dyslexia",
-  display: "swap",
-});
-
 // Re-applies saved accessibility preferences to <html> before paint (no flash).
-const a11yInitScript = `(function(){try{var s=JSON.parse(localStorage.getItem('cc-a11y')||'{}');var m={contrast:'a11y-contrast',links:'a11y-links',biggerText:'a11y-bigger-text',spacing:'a11y-spacing',noMotion:'a11y-no-motion',hideImages:'a11y-hide-images',dyslexia:'a11y-dyslexia',lineHeight:'a11y-line-height'};var e=document.documentElement;for(var k in m){if(s[k])e.classList.add(m[k]);}}catch(e){}})();`;
+const a11yInitScript = `(function(){try{var s=JSON.parse(localStorage.getItem('cc-a11y')||'{}');var m={contrast:'a11y-contrast',links:'a11y-links',biggerText:'a11y-bigger-text',spacing:'a11y-spacing',noMotion:'a11y-no-motion',hideImages:'a11y-hide-images',lineHeight:'a11y-line-height'};var e=document.documentElement;for(var k in m){if(s[k])e.classList.add(m[k]);}}catch(e){}})();`;
 
 const { SITE_NAME } = process.env;
 
@@ -82,7 +73,7 @@ export default async function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${bricolage.variable} ${inter.variable} ${bangers.variable} ${spaceGrotesk.variable} ${atkinson.variable}`}
+      className={`${bricolage.variable} ${inter.variable} ${bangers.variable} ${spaceGrotesk.variable}`}
     >
       <body className="flex min-h-screen flex-col overflow-x-clip bg-brand-bg text-brand-ink antialiased">
         <script dangerouslySetInnerHTML={{ __html: a11yInitScript }} />

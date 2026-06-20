@@ -399,13 +399,6 @@ html.a11y-line-height h3 {
   line-height: 1.9 !important;
 }
 
-/* Dyslexia-friendly — force a high-legibility font everywhere. */
-html.a11y-dyslexia,
-html.a11y-dyslexia * {
-  font-family:
-    var(--font-dyslexia), ui-sans-serif, system-ui, sans-serif !important;
-}
-
 /* Highlight links. */
 html.a11y-links a {
   text-decoration: underline !important;

@@ -5,7 +5,6 @@ import {
   ArrowsRightLeftIcon,
   Bars3BottomLeftIcon,
   EyeSlashIcon,
-  LanguageIcon,
   LinkIcon,
   MagnifyingGlassPlusIcon,
   PauseCircleIcon,
@@ -26,7 +25,6 @@ type Key =
   | "spacing"
   | "noMotion"
   | "hideImages"
-  | "dyslexia"
   | "lineHeight";
 
 export const A11Y_STORAGE_KEY = "cc-a11y";
@@ -39,7 +37,6 @@ export const A11Y_CLASS: Record<Key, string> = {
   spacing: "a11y-spacing",
   noMotion: "a11y-no-motion",
   hideImages: "a11y-hide-images",
-  dyslexia: "a11y-dyslexia",
   lineHeight: "a11y-line-height",
 };
 
@@ -50,7 +47,6 @@ const OPTIONS: { key: Key; label: string; Icon: typeof LinkIcon }[] = [
   { key: "spacing", label: "Text Spacing", Icon: ArrowsRightLeftIcon },
   { key: "noMotion", label: "Pause Motion", Icon: PauseCircleIcon },
   { key: "hideImages", label: "Hide Images", Icon: EyeSlashIcon },
-  { key: "dyslexia", label: "Dyslexia Font", Icon: LanguageIcon },
   { key: "lineHeight", label: "Line Height", Icon: Bars3BottomLeftIcon },
 ];
 
