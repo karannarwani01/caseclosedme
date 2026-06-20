@@ -432,6 +432,13 @@ html.a11y-hide-images video {
   visibility: hidden !important;
 }
 
+/* Dyslexia-friendly — force a high-legibility font everywhere. */
+html.a11y-dyslexia,
+html.a11y-dyslexia * {
+  font-family:
+    var(--font-dyslexia), ui-sans-serif, system-ui, sans-serif !important;
+}
+
 /* ──────────────── Lock the page to vertical scrolling ────────────────
    No horizontal page scroll, drift, or overscroll bounce — inner carousels
    keep their own horizontal scroll. `clip` (not `hidden`) so the sticky
