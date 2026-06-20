@@ -376,34 +376,42 @@ button {
 /* High contrast — boost the page content only (not the fixed chrome, so
    fixed positioning isn't broken by the filter's containing block). */
 html.a11y-contrast main {
-  filter: contrast(1.3);
+  filter: contrast(1.5);
 }
 
-/* Bigger text — scales every rem-based font size. */
+/* Bigger text — scales every rem-based font size site-wide. */
 html.a11y-bigger-text {
-  font-size: 115%;
+  font-size: 125%;
 }
 
-/* Extra letter / word spacing. */
-html.a11y-spacing body {
-  letter-spacing: 0.05em;
-  word-spacing: 0.12em;
+/* Extra letter / word spacing on all text (forced past per-element tracking). */
+html.a11y-spacing body,
+html.a11y-spacing body * {
+  letter-spacing: 0.06em !important;
+  word-spacing: 0.16em !important;
 }
 
-/* Looser line height on running text + headings. */
-html.a11y-line-height p,
-html.a11y-line-height li,
-html.a11y-line-height h1,
-html.a11y-line-height h2,
-html.a11y-line-height h3 {
+/* Looser line height on running text, headings, links, list items, etc. */
+html.a11y-line-height body,
+html.a11y-line-height body p,
+html.a11y-line-height body li,
+html.a11y-line-height body a,
+html.a11y-line-height body span,
+html.a11y-line-height body h1,
+html.a11y-line-height body h2,
+html.a11y-line-height body h3,
+html.a11y-line-height body h4,
+html.a11y-line-height body blockquote,
+html.a11y-line-height body label {
   line-height: 1.9 !important;
 }
 
-/* Highlight links. */
+/* Highlight links — underline + bold so they stand out from body text. */
 html.a11y-links a {
   text-decoration: underline !important;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 2px;
+  text-decoration-thickness: 2px !important;
+  text-underline-offset: 3px;
+  font-weight: 700 !important;
 }
 
 /* Pause animations + transitions. */
@@ -412,13 +420,16 @@ html.a11y-no-motion *::before,
 html.a11y-no-motion *::after {
   animation-duration: 0.001ms !important;
   animation-iteration-count: 1 !important;
+  animation-delay: 0ms !important;
   transition-duration: 0.001ms !important;
   scroll-behavior: auto !important;
 }
 
-/* Hide images (keeps their layout boxes). */
-html.a11y-hide-images img {
-  opacity: 0 !important;
+/* Hide content images (icons/SVGs stay so the UI remains usable). */
+html.a11y-hide-images img,
+html.a11y-hide-images picture,
+html.a11y-hide-images video {
+  visibility: hidden !important;
 }
 
 /* ──────────────── Lock the page to vertical scrolling ────────────────
