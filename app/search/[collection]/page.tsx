@@ -1,6 +1,6 @@
 import {
   getCollection,
-  getCollectionProducts,
+  getCollectionProductsPage,
   getNonEmptyCollectionHandles,
 } from "lib/shopify";
 import { Metadata } from "next";
@@ -9,6 +9,11 @@ import { notFound } from "next/navigation";
 import { FeedBrowse } from "components/feed/feed-browse";
 import { defaultSort, sorting } from "lib/constants";
 import { filterDemoByCollection, USE_DEMO_PRODUCTS } from "lib/demo-products";
+import type { Product } from "lib/shopify/types";
+import { loadMoreCollectionProducts } from "./actions";
+
+// Initial product page size; the rest load on demand via "Load more".
+const PAGE_SIZE = 48;
 
 export async function generateMetadata(props: {
   params: Promise<{ collection: string }>;
@@ -52,28 +57,52 @@ export default async function CategoryPage(props: {
   // to a genuine top list rather than the whole catalogue.
   const isBestSellers = params.collection === "best-sellers";
 
-  // In demo mode, skip Shopify entirely — those calls throw without a
-  // configured store and crash the server render.
-  const [collection, allProducts, availableHandles] = USE_DEMO_PRODUCTS
-    ? [null, filterDemoByCollection(params.collection), [] as string[]]
-    : await Promise.all([
-        getCollection(params.collection),
-        getCollectionProducts({
-          collection: params.collection,
-          sortKey: isBestSellers ? "BEST_SELLING" : sortKey,
-          reverse: isBestSellers ? false : reverse,
-        }),
-        getNonEmptyCollectionHandles(),
-      ]);
+  let products: Product[];
+  let availableHandles: string[];
+  let heading: string;
+  let initialCursor: string | null = null;
+  let initialHasMore = false;
 
-  const products = isBestSellers ? allProducts.slice(0, 30) : allProducts;
-  const heading = collection?.title || params.collection;
+  if (USE_DEMO_PRODUCTS) {
+    // Demo mode has no live Shopify collection; load the full mock set, no
+    // pagination.
+    products = filterDemoByCollection(params.collection);
+    availableHandles = [];
+    heading = params.collection;
+  } else {
+    // Best Sellers is a curated top-30 catch-all — fetch 30, don't paginate.
+    const first = isBestSellers ? 30 : PAGE_SIZE;
+    const [collection, page, handles] = await Promise.all([
+      getCollection(params.collection),
+      getCollectionProductsPage({
+        collection: params.collection,
+        sortKey: isBestSellers ? "BEST_SELLING" : sortKey,
+        reverse: isBestSellers ? false : reverse,
+        first,
+      }),
+      getNonEmptyCollectionHandles(),
+    ]);
+    products = page.products;
+    availableHandles = handles;
+    heading = collection?.title || params.collection;
+    initialCursor = isBestSellers ? null : page.endCursor;
+    initialHasMore = isBestSellers ? false : page.hasNextPage;
+  }
 
   return (
     <FeedBrowse
+      key={params.collection}
       products={products}
       heading={heading}
       availableHandles={availableHandles}
+      loadMore={
+        USE_DEMO_PRODUCTS || isBestSellers
+          ? undefined
+          : loadMoreCollectionProducts
+      }
+      loadMoreArgs={{ collection: params.collection, sortKey, reverse }}
+      initialCursor={initialCursor}
+      initialHasMore={initialHasMore}
     />
   );
 }

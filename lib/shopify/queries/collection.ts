@@ -76,3 +76,35 @@ export const getCollectionProductsQuery = /* GraphQL */ `
   }
   ${productListingFragment}
 `;
+
+// Cursor-paginated variant for the collection grid: caps the initial fetch and
+// powers "Load more" via the returned endCursor/hasNextPage.
+export const getCollectionProductsPageQuery = /* GraphQL */ `
+  query getCollectionProductsPage(
+    $handle: String!
+    $sortKey: ProductCollectionSortKeys
+    $reverse: Boolean
+    $first: Int = 48
+    $after: String
+  ) {
+    collection(handle: $handle) {
+      products(
+        sortKey: $sortKey
+        reverse: $reverse
+        first: $first
+        after: $after
+      ) {
+        edges {
+          node {
+            ...productListing
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+      }
+    }
+  }
+  ${productListingFragment}
+`;

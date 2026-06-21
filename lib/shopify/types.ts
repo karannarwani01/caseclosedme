@@ -258,6 +258,25 @@ export type ShopifyCollectionListingOperation = {
   };
 };
 
+// Cursor-paginated variant used by the collection grid's "Load more" so the
+// initial fetch can be capped (first: 48) without losing products beyond it.
+export type ShopifyCollectionListingPageOperation = {
+  data: {
+    collection?: {
+      products: Connection<ShopifyListingProduct> & {
+        pageInfo: { hasNextPage: boolean; endCursor: string | null };
+      };
+    };
+  };
+  variables: {
+    handle: string;
+    reverse?: boolean;
+    sortKey?: string;
+    first?: number;
+    after?: string;
+  };
+};
+
 export type ShopifyCollectionsOperation = {
   data: {
     collections: Connection<ShopifyCollection>;

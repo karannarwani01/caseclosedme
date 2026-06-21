@@ -34,27 +34,71 @@ function discountPct(p: Product) {
   return was > now ? (was - now) / was : 0;
 }
 
+type LoadMoreResult = {
+  products: Product[];
+  endCursor: string | null;
+  hasNextPage: boolean;
+};
+
 export function FeedBrowse({
   products,
   heading,
   availableHandles = [],
+  loadMore,
+  loadMoreArgs,
+  initialCursor = null,
+  initialHasMore = false,
 }: {
   products: Product[];
   heading?: string;
   availableHandles?: string[];
+  // When provided, a "Load more" button fetches the next cursor page from the
+  // server and appends it. Filters/sort still run client-side over whatever is
+  // loaded so far (load more to widen the set).
+  loadMore?: (input: {
+    collection: string;
+    sortKey?: string;
+    reverse?: boolean;
+    after: string;
+  }) => Promise<LoadMoreResult>;
+  loadMoreArgs?: { collection: string; sortKey?: string; reverse?: boolean };
+  initialCursor?: string | null;
+  initialHasMore?: boolean;
 }) {
-  const groups = useMemo(() => buildFacetGroups(products), [products]);
+  const [items, setItems] = useState<Product[]>(products);
+  const [cursor, setCursor] = useState<string | null>(initialCursor);
+  const [hasMore, setHasMore] = useState<boolean>(initialHasMore);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  const groups = useMemo(() => buildFacetGroups(items), [items]);
 
   const [selected, setSelected] = useState<Record<string, Set<string>>>({});
   const [stockOnly, setStockOnly] = useState(false);
   const [sort, setSort] = useState<SortKey>("relevance");
 
+  const canLoadMore = Boolean(loadMore && loadMoreArgs && hasMore);
+  const onLoadMore = async () => {
+    if (!loadMore || !loadMoreArgs || !cursor || loadingMore) return;
+    setLoadingMore(true);
+    try {
+      const res = await loadMore({ ...loadMoreArgs, after: cursor });
+      setItems((prev) => {
+        const seen = new Set(prev.map((p) => p.handle));
+        return [...prev, ...res.products.filter((p) => !seen.has(p.handle))];
+      });
+      setCursor(res.endCursor);
+      setHasMore(res.hasNextPage && res.products.length > 0);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
   // Price bounds from the products on the page; null range = full (no filter).
   const priceBounds = useMemo<[number, number]>(() => {
-    if (!products.length) return [0, 0];
-    const ps = products.map(price);
+    if (!items.length) return [0, 0];
+    const ps = items.map(price);
     return [Math.floor(Math.min(...ps)), Math.ceil(Math.max(...ps))];
-  }, [products]);
+  }, [items]);
   const [priceRange, setPriceRange] = useState<[number, number] | null>(null);
   const [priceLo, priceHi] = priceRange ?? priceBounds;
   const priceActive =
@@ -69,7 +113,7 @@ export function FeedBrowse({
     });
 
   const filtered = useMemo(() => {
-    let xs = products.filter((p) => {
+    let xs = items.filter((p) => {
       for (const g of groups) {
         const chosen = selected[g.key];
         if (chosen && chosen.size > 0) {
@@ -90,7 +134,7 @@ export function FeedBrowse({
     if (sort === "oldest")
       xs = [...xs].sort((a, b) => a.createdAt.localeCompare(b.createdAt));
     return xs;
-  }, [products, groups, selected, stockOnly, priceLo, priceHi, sort]);
+  }, [items, groups, selected, stockOnly, priceLo, priceHi, sort]);
 
   const activeCount =
     Object.values(selected).reduce((n, s) => n + s.size, 0) +
@@ -138,7 +182,8 @@ export function FeedBrowse({
           <header className="mb-6 flex items-center justify-between gap-4 border-b border-anime-ink/10 pb-4">
             <div className="flex items-center gap-2.5">
               <span className="rounded-full border-[2.5px] border-anime-ink bg-anime-cyan px-3.5 py-1 font-comic text-sm uppercase tracking-wide text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)]">
-                {filtered.length} Products
+                {filtered.length}
+                {hasMore ? "+" : ""} Products
               </span>
               {hasFilters ? (
                 <button
@@ -203,6 +248,19 @@ export function FeedBrowse({
               ))}
             </ul>
           )}
+
+          {canLoadMore ? (
+            <div className="mt-10 flex justify-center">
+              <button
+                type="button"
+                onClick={onLoadMore}
+                disabled={loadingMore}
+                className="rounded-full border-[2.5px] border-anime-ink bg-anime-yellow px-8 py-3 font-comic text-sm uppercase tracking-wide text-anime-ink shadow-[4px_4px_0_0_var(--color-anime-ink)] transition-all hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_var(--color-anime-ink)] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {loadingMore ? "Loading…" : "Load more"}
+              </button>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

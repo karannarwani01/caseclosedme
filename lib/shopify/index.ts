@@ -25,6 +25,7 @@ import {
 import { getCartQuery } from "./queries/cart";
 import {
   getCollectionHandlesWithProductsQuery,
+  getCollectionProductsPageQuery,
   getCollectionProductsQuery,
   getCollectionQuery,
   getCollectionsQuery,
@@ -49,6 +50,7 @@ import {
   ShopifyCartOperation,
   ShopifyCollection,
   ShopifyCollectionListingOperation,
+  ShopifyCollectionListingPageOperation,
   ShopifyCollectionOperation,
   ShopifyCollectionsOperation,
   ShopifyListingProduct,
@@ -472,6 +474,67 @@ export async function getCollectionProducts({
     .filter((p): p is Product => Boolean(p));
   if (products.length) return products;
   return USE_DEMO_PRODUCTS ? getMockProductsForCollection(collection) : [];
+}
+
+// Cursor-paginated collection fetch backing the grid's "Load more". Lets the
+// collection page cap the initial fetch (e.g. first: 48) and pull subsequent
+// pages on demand instead of serializing the whole collection up front.
+export async function getCollectionProductsPage({
+  collection,
+  reverse,
+  sortKey,
+  first = 48,
+  after,
+}: {
+  collection: string;
+  reverse?: boolean;
+  sortKey?: string;
+  first?: number;
+  after?: string | null;
+}): Promise<{
+  products: Product[];
+  endCursor: string | null;
+  hasNextPage: boolean;
+}> {
+  "use cache";
+  cacheTag(TAGS.collections, TAGS.products);
+  cacheLife("days");
+
+  const empty = { products: [], endCursor: null, hasNextPage: false };
+
+  if (!endpoint) {
+    return USE_DEMO_PRODUCTS
+      ? { ...empty, products: getMockProductsForCollection(collection) }
+      : empty;
+  }
+
+  const res = await shopifyFetch<ShopifyCollectionListingPageOperation>({
+    query: getCollectionProductsPageQuery,
+    variables: {
+      handle: collection,
+      reverse,
+      sortKey: sortKey === "CREATED_AT" ? "CREATED" : sortKey,
+      first,
+      ...(after ? { after } : {}),
+    },
+  });
+
+  const coll = res.body.data.collection;
+  if (!coll) {
+    return USE_DEMO_PRODUCTS
+      ? { ...empty, products: getMockProductsForCollection(collection) }
+      : empty;
+  }
+
+  const products = removeEdgesAndNodes(coll.products)
+    .map(reshapeListingProduct)
+    .filter((p): p is Product => Boolean(p));
+
+  return {
+    products,
+    endCursor: coll.products.pageInfo.endCursor,
+    hasNextPage: coll.products.pageInfo.hasNextPage,
+  };
 }
 
 export async function getCollections(): Promise<Collection[]> {
