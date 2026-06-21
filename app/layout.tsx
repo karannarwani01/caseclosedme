@@ -16,7 +16,6 @@ import { getCart } from "lib/shopify";
 import { ReactNode } from "react";
 import { Toaster } from "sonner";
 import "./globals.css";
-import "flag-icons/css/flag-icons.min.css";
 import { baseUrl } from "lib/utils";
 
 const bricolage = Bricolage_Grotesque({

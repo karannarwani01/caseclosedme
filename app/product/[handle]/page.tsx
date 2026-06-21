@@ -71,7 +71,7 @@ export default async function ProductPage(props: {
     "@type": "Product",
     name: product.title,
     description: product.description,
-    image: product.featuredImage.url,
+    image: product.featuredImage?.url,
     offers: {
       "@type": "AggregateOffer",
       availability: product.availableForSale

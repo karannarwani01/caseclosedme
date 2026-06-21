@@ -163,7 +163,23 @@ function publicUrl(rel: string, abs: string): string {
   }
 }
 
+// The /public/franchises assets only change on deploy (which restarts the
+// server process), so resolve the filesystem lookups once per slug and memoize
+// — avoids dozens of blocking sync fs syscalls on every homepage render.
+const assetCache = new Map<string, { logo?: string; logoHover?: string }>();
+
 function resolveAssets(slug: string): { logo?: string; logoHover?: string } {
+  const cached = assetCache.get(slug);
+  if (cached) return cached;
+  const resolved = resolveAssetsUncached(slug);
+  assetCache.set(slug, resolved);
+  return resolved;
+}
+
+function resolveAssetsUncached(slug: string): {
+  logo?: string;
+  logoHover?: string;
+} {
   let logo: string | undefined;
   for (const ext of STATIC_EXTS) {
     const abs = path.join(FRANCHISE_DIR, `${slug}.${ext}`);
