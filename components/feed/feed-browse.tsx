@@ -15,6 +15,11 @@ type SortKey =
   | "newest"
   | "oldest";
 
+// How many cards to render per "page" client-side. Caps the rendered grid even
+// when the full result set is loaded (e.g. search, which must search all
+// products), so big result sets don't all hydrate at once.
+const PAGE_SIZE = 48;
+
 const SORT_LABELS: Record<SortKey, string> = {
   relevance: "Relevance",
   "price-desc": "Price: High to Low",
@@ -69,6 +74,7 @@ export function FeedBrowse({
   const [cursor, setCursor] = useState<string | null>(initialCursor);
   const [hasMore, setHasMore] = useState<boolean>(initialHasMore);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const groups = useMemo(() => buildFacetGroups(items), [items]);
 
@@ -76,8 +82,10 @@ export function FeedBrowse({
   const [stockOnly, setStockOnly] = useState(false);
   const [sort, setSort] = useState<SortKey>("relevance");
 
-  const canLoadMore = Boolean(loadMore && loadMoreArgs && hasMore);
-  const onLoadMore = async () => {
+  // Whether the server has more pages to fetch (collection pages); search/demo
+  // load everything up front so this is false and we just reveal more locally.
+  const canFetchMore = Boolean(loadMore && loadMoreArgs && hasMore);
+  const fetchNextPage = async () => {
     if (!loadMore || !loadMoreArgs || !cursor || loadingMore) return;
     setLoadingMore(true);
     try {
@@ -145,6 +153,20 @@ export function FeedBrowse({
     setSelected({});
     setStockOnly(false);
     setPriceRange(null);
+  };
+
+  // Render only up to visibleCount; "Load more" first reveals already-loaded
+  // matches, then (collection pages) fetches the next server page.
+  const displayed = filtered.slice(0, visibleCount);
+  const moreLocal = visibleCount < filtered.length;
+  const canShowMore = moreLocal || canFetchMore;
+  const onShowMore = async () => {
+    if (moreLocal) {
+      setVisibleCount((v) => v + PAGE_SIZE);
+    } else if (canFetchMore) {
+      await fetchNextPage();
+      setVisibleCount((v) => v + PAGE_SIZE);
+    }
   };
 
   return (
@@ -241,7 +263,7 @@ export function FeedBrowse({
             </div>
           ) : (
             <ul className="grid grid-cols-2 gap-x-5 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
-              {filtered.map((p) => (
+              {displayed.map((p) => (
                 <li key={p.handle} className="animate-fadeIn">
                   <FeedCard product={p} />
                 </li>
@@ -249,11 +271,11 @@ export function FeedBrowse({
             </ul>
           )}
 
-          {canLoadMore ? (
+          {canShowMore ? (
             <div className="mt-10 flex justify-center">
               <button
                 type="button"
-                onClick={onLoadMore}
+                onClick={onShowMore}
                 disabled={loadingMore}
                 className="rounded-full border-[2.5px] border-anime-ink bg-anime-yellow px-8 py-3 font-comic text-sm uppercase tracking-wide text-anime-ink shadow-[4px_4px_0_0_var(--color-anime-ink)] transition-all hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_var(--color-anime-ink)] disabled:cursor-not-allowed disabled:opacity-60"
               >
