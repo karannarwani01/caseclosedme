@@ -124,7 +124,7 @@ const PROMOS: PromoBanner[] = [
     cta: "Shop now",
     href: "/search/funko-pops",
     bg: "linear-gradient(135deg, var(--color-anime-pink) 0%, var(--color-anime-orange) 100%)",
-    image: "/banners/funko-pops-v4.webp",
+    image: "/banners/funko-pops-v5.webp",
   },
   {
     eyebrow: "TCG",
@@ -142,7 +142,7 @@ const PROMOS: PromoBanner[] = [
     cta: "Shop now",
     href: "/search/hot-wheels",
     bg: "linear-gradient(135deg, var(--color-anime-purple) 0%, var(--color-anime-pink) 100%)",
-    image: "/banners/hot-wheels-v4.webp",
+    image: "/banners/hot-wheels-v5.webp",
   },
   {
     eyebrow: "Surprise",
