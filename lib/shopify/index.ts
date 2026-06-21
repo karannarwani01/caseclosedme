@@ -24,6 +24,7 @@ import {
 } from "./mutations/cart";
 import { getCartQuery } from "./queries/cart";
 import {
+  getCollectionFeaturedImagesQuery,
   getCollectionHandlesWithProductsQuery,
   getCollectionProductsPageQuery,
   getCollectionProductsQuery,
@@ -49,6 +50,7 @@ import {
   ShopifyCart,
   ShopifyCartOperation,
   ShopifyCollection,
+  ShopifyCollectionFeaturedImagesOperation,
   ShopifyCollectionListingOperation,
   ShopifyCollectionListingPageOperation,
   ShopifyCollectionOperation,
@@ -535,6 +537,46 @@ export async function getCollectionProductsPage({
     endCursor: coll.products.pageInfo.endCursor,
     hasNextPage: coll.products.pageInfo.hasNextPage,
   };
+}
+
+// Featured image URLs for a collection's first products — used by the mega-menu
+// thumbnails. Tiny payload vs getCollectionProducts (no variants/price/tags).
+export async function getCollectionFeaturedImageUrls(
+  collection: string,
+  { first = 8, take = 4 }: { first?: number; take?: number } = {},
+): Promise<string[]> {
+  "use cache";
+  cacheTag(TAGS.collections, TAGS.products);
+  cacheLife("days");
+
+  const fromProducts = (products: Product[]) =>
+    products
+      .map((p) => p.featuredImage?.url)
+      .filter((u): u is string => Boolean(u))
+      .slice(0, take);
+
+  if (!endpoint) {
+    return USE_DEMO_PRODUCTS
+      ? fromProducts(getMockProductsForCollection(collection))
+      : [];
+  }
+
+  const res = await shopifyFetch<ShopifyCollectionFeaturedImagesOperation>({
+    query: getCollectionFeaturedImagesQuery,
+    variables: { handle: collection, first },
+  });
+
+  const coll = res.body.data.collection;
+  if (!coll) {
+    return USE_DEMO_PRODUCTS
+      ? fromProducts(getMockProductsForCollection(collection))
+      : [];
+  }
+
+  return removeEdgesAndNodes(coll.products)
+    .map((n) => n.featuredImage?.url)
+    .filter((u): u is string => Boolean(u))
+    .slice(0, take);
 }
 
 export async function getCollections(): Promise<Collection[]> {

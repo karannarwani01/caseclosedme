@@ -277,6 +277,21 @@ export type ShopifyCollectionListingPageOperation = {
   };
 };
 
+// Minimal query for the mega-menu: just the featured image URLs of a
+// collection's first few products (no variants/price/tags), so the navbar
+// doesn't pull full product listings on every page.
+export type ShopifyCollectionFeaturedImagesOperation = {
+  data: {
+    collection?: {
+      products: Connection<{ featuredImage?: { url: string } | null }>;
+    };
+  };
+  variables: {
+    handle: string;
+    first?: number;
+  };
+};
+
 export type ShopifyCollectionsOperation = {
   data: {
     collections: Connection<ShopifyCollection>;

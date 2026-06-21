@@ -36,6 +36,25 @@ export const getCollectionsQuery = /* GraphQL */ `
   ${collectionFragment}
 `;
 
+// Minimal query for the mega-menu thumbnails: only the featured image URLs of a
+// collection's first few products. Avoids pulling full product listings (price,
+// variants, tags) just to show 4 images in the navbar on every page.
+export const getCollectionFeaturedImagesQuery = /* GraphQL */ `
+  query getCollectionFeaturedImages($handle: String!, $first: Int = 8) {
+    collection(handle: $handle) {
+      products(first: $first) {
+        edges {
+          node {
+            featuredImage {
+              url
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 // Lightweight probe: every collection with a single product edge, used to tell
 // which collections are non-empty so the nav can hide empty ones.
 export const getCollectionHandlesWithProductsQuery = /* GraphQL */ `

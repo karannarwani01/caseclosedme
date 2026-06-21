@@ -1,7 +1,7 @@
 import CartModal from "components/cart/modal";
 import LogoLockup from "components/logo-lockup";
 import {
-  getCollectionProducts,
+  getCollectionFeaturedImageUrls,
   getMenu,
   getNonEmptyCollectionHandles,
 } from "lib/shopify";
@@ -23,16 +23,10 @@ export async function Navbar() {
   ]);
 
   // Resolve a representative photo for each mega-menu featured collection.
+  // Uses a minimal featured-image-only query (not the full product listing).
   const featuredEntries = await Promise.all(
     FEATURED_COLLECTION_HANDLES.map(async (handle) => {
-      const products = await getCollectionProducts({
-        collection: handle,
-        first: 8,
-      });
-      const urls = products
-        .map((p) => p.featuredImage?.url)
-        .filter((u): u is string => Boolean(u))
-        .slice(0, 4);
+      const urls = await getCollectionFeaturedImageUrls(handle);
       return [handle, urls] as const;
     }),
   );
