@@ -133,7 +133,7 @@ const PROMOS: PromoBanner[] = [
     cta: "Shop now",
     href: "/search/trading-cards",
     bg: "linear-gradient(135deg, var(--color-anime-yellow) 0%, var(--color-anime-cyan) 100%)",
-    image: "/banners/trading-cards.webp",
+    image: "/banners/trading-cards-v2.webp",
   },
   {
     eyebrow: "Die-cast",
