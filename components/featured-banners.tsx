@@ -142,7 +142,7 @@ const PROMOS: PromoBanner[] = [
     cta: "Shop now",
     href: "/search/hot-wheels",
     bg: "linear-gradient(135deg, var(--color-anime-purple) 0%, var(--color-anime-pink) 100%)",
-    image: "/banners/hot-wheels-v5.webp",
+    image: "/banners/hot-wheels-v6.webp",
   },
   {
     eyebrow: "Surprise",
