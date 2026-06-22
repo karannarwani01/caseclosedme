@@ -141,8 +141,8 @@ const PROMOS: PromoBanner[] = [
     subtitle: "Premium & mainline cars",
     cta: "Shop now",
     href: "/search/hot-wheels",
-    bg: "linear-gradient(135deg, var(--color-anime-purple) 0%, var(--color-anime-pink) 100%)",
-    image: "/banners/hot-wheels-v6.webp",
+    bg: "linear-gradient(135deg, #0b33c9 0%, #12b8ff 100%)",
+    image: "/banners/hot-wheels-v7.webp",
   },
   {
     eyebrow: "Surprise",
