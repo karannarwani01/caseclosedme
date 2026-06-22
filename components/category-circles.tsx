@@ -235,14 +235,15 @@ export function CategoryCircles() {
               >
                 {logo ? (
                   <>
-                    {/* Default image — fades out on hover. */}
+                    {/* Default image — fades out on hover. On touch devices
+                        (no hover) it's hidden so the animation autoplays. */}
                     <Image
                       src={logo}
                       alt={`${cat.name} — collectibles`}
                       fill
                       sizes="(max-width: 768px) 112px, (max-width: 1024px) 144px, (max-width: 1280px) 176px, 192px"
                       unoptimized={/\.gif(\?|$)/i.test(logo)}
-                      className="object-contain transition-opacity duration-300 ease-out group-hover:opacity-0"
+                      className="object-contain transition-opacity duration-300 ease-out group-hover:opacity-0 [@media(hover:none)]:opacity-0"
                     />
                     {/* Hover image — fades in on hover. Usually an animated GIF.
                         `unoptimized` keeps Next's image pipeline from stripping the animation. */}
@@ -258,7 +259,7 @@ export function CategoryCircles() {
                           ? { objectPosition: cat.hoverPosition }
                           : undefined
                       }
-                      className={`opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100 ${
+                      className={`opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100 [@media(hover:none)]:opacity-100 ${
                         cat.hoverFit === "cover"
                           ? "object-cover"
                           : "object-contain"
