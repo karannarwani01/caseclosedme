@@ -151,7 +151,7 @@ const PROMOS: PromoBanner[] = [
     cta: "Shop now",
     href: "/search/blind-box",
     bg: "linear-gradient(135deg, var(--color-anime-lime) 0%, var(--color-anime-cyan) 100%)",
-    image: "/banners/blind-box.webp",
+    image: "/banners/blind-box-v2.webp",
   },
 ];
 
