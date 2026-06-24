@@ -12,8 +12,14 @@ export default {
     useCache: true,
   },
   images: {
-    // Next/image optimizer ON in dev + prod (resizes + AVIF/WebP), so images
-    // download at display size instead of full-resolution Shopify originals.
+    // Serve images via a custom loader (lib/shopify-image-loader) that resizes
+    // through Shopify's own CDN, bypassing Vercel's /_next/image optimizer.
+    // The optimizer is quota-capped on the Hobby plan and returns HTTP 402 once
+    // exhausted, which breaks every image site-wide; Shopify CDN resizing is
+    // free + unlimited. The settings below only matter for the built-in
+    // optimizer and are ignored under a custom loader, but are kept for clarity.
+    loader: "custom",
+    loaderFile: "./lib/shopify-image-loader.ts",
     formats: ["image/avif", "image/webp"],
     qualities: [75, 100],
     // Allow all local images, including those with a cache-busting `?v=` query
