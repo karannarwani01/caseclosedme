@@ -33,7 +33,7 @@ const productListingFragment = /* GraphQL */ `
     featuredImage {
       ...image
     }
-    variants(first: 8) {
+    variants(first: 1) {
       edges {
         node {
           id

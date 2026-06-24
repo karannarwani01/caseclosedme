@@ -12,8 +12,12 @@ import { filterDemoByCollection, USE_DEMO_PRODUCTS } from "lib/demo-products";
 import type { Product } from "lib/shopify/types";
 import { loadMoreCollectionProducts } from "./actions";
 
-// Initial product page size; the rest load on demand via "Load more".
-const PAGE_SIZE = 48;
+// Fetch the whole collection up front so the filter facets and filtering
+// reflect every product, not just the first page. Rendering stays lazy —
+// FeedBrowse only paints a page at a time via its own visibleCount. 250 is the
+// Storefront API max per query; larger collections append the rest via
+// "Load more".
+const PAGE_SIZE = 250;
 
 export async function generateMetadata(props: {
   params: Promise<{ collection: string }>;
