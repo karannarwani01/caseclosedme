@@ -17,7 +17,8 @@ import { useEffect, useState } from "react";
 // Front-end accessibility preferences. Each toggle adds/removes a class on
 // <html>; the matching CSS lives in globals.css. Saved per-device in
 // localStorage and re-applied before paint by the inline script in the root
-// layout (so there's no flash on load). Mobile-only, to match the scope.
+// layout (so there's no flash on load). Available on mobile (bottom sheet)
+// and desktop (anchored popover).
 
 type Key =
   | "contrast"
@@ -140,14 +141,16 @@ export function AccessibilityMenu() {
 
   return (
     <>
-      {/* Floating launcher, above the bottom tab bar */}
+      {/* Floating launcher — above the bottom tab bar on mobile, bottom-left on desktop */}
       <button
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Accessibility options"
-        className="fixed bottom-[calc(64px+env(safe-area-inset-bottom)+1rem)] left-4 z-50 grid h-12 w-12 place-items-center rounded-full border-[2.5px] border-anime-ink bg-anime-pink text-white shadow-[3px_3px_0_0_var(--color-anime-ink)] transition-transform active:scale-95 lg:hidden"
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        className="fixed bottom-[calc(64px+env(safe-area-inset-bottom)+1rem)] left-4 z-50 grid h-12 w-12 place-items-center rounded-full border-[2.5px] border-anime-ink bg-anime-pink text-white shadow-[3px_3px_0_0_var(--color-anime-ink)] transition-transform hover:scale-105 active:scale-95 lg:bottom-6 lg:left-6 lg:h-14 lg:w-14"
       >
-        <A11yFigure className="h-6 w-6" />
+        <A11yFigure className="h-6 w-6 lg:h-7 lg:w-7" />
         {activeCount > 0 ? (
           <span className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full border-2 border-white bg-anime-lime px-1 font-display text-[10px] font-extrabold leading-none text-anime-ink">
             {activeCount}
@@ -155,10 +158,10 @@ export function AccessibilityMenu() {
         ) : null}
       </button>
 
-      {/* Bottom sheet */}
+      {/* Bottom sheet (mobile) / anchored popover (desktop) */}
       <div
         className={clsx(
-          "fixed inset-0 z-[70] lg:hidden",
+          "fixed inset-0 z-[70]",
           open ? "" : "pointer-events-none",
         )}
         aria-hidden={!open}
@@ -166,7 +169,7 @@ export function AccessibilityMenu() {
         <div
           onClick={() => setOpen(false)}
           className={clsx(
-            "absolute inset-0 bg-black/40 transition-opacity duration-300",
+            "absolute inset-0 bg-black/40 transition-opacity duration-300 lg:bg-black/20",
             open ? "opacity-100" : "opacity-0",
           )}
         />
@@ -175,11 +178,14 @@ export function AccessibilityMenu() {
           aria-modal="true"
           aria-label="Accessibility menu"
           className={clsx(
-            "absolute inset-x-0 bottom-0 max-h-[88vh] overflow-y-auto rounded-t-3xl border-t-[2.5px] border-anime-ink bg-white p-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] shadow-[0_-6px_24px_rgba(0,0,0,0.18)] transition-transform duration-300 ease-out",
-            open ? "translate-y-0" : "translate-y-full",
+            "absolute inset-x-0 bottom-0 max-h-[88vh] overflow-y-auto rounded-t-3xl border-t-[2.5px] border-anime-ink bg-white p-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] shadow-[0_-6px_24px_rgba(0,0,0,0.18)] transition-all duration-300 ease-out",
+            "lg:inset-x-auto lg:bottom-24 lg:left-6 lg:w-[24rem] lg:max-h-[80vh] lg:origin-bottom-left lg:rounded-3xl lg:border-[2.5px] lg:pb-5 lg:shadow-[6px_6px_0_0_var(--color-anime-ink)]",
+            open
+              ? "translate-y-0 lg:scale-100 lg:opacity-100"
+              : "translate-y-full lg:translate-y-0 lg:scale-95 lg:opacity-0",
           )}
         >
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-1 flex items-center justify-between">
             <h2 className="font-comic text-2xl uppercase tracking-wide text-anime-ink">
               Accessibility
             </h2>
@@ -191,6 +197,9 @@ export function AccessibilityMenu() {
               <XMarkIcon className="h-7 w-7 text-anime-ink" strokeWidth={2.5} />
             </button>
           </div>
+          <p className="mb-4 text-xs font-medium text-anime-ink/60">
+            Saved on this device. Tap any option to turn it on or off.
+          </p>
 
           <div className="grid grid-cols-2 gap-3">
             {OPTIONS.map(({ key, label, Icon }) => {
@@ -205,7 +214,7 @@ export function AccessibilityMenu() {
                     "flex flex-col items-center gap-2 rounded-2xl border-[2.5px] border-anime-ink p-4 text-center transition-all",
                     on
                       ? "bg-anime-pink text-white shadow-[3px_3px_0_0_var(--color-anime-ink)]"
-                      : "bg-white text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)] active:translate-y-[1px]",
+                      : "bg-white text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)] hover:-translate-y-[1px] hover:bg-anime-paper active:translate-y-[1px]",
                   )}
                 >
                   <Icon className="h-7 w-7" strokeWidth={2} />

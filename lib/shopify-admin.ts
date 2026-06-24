@@ -2,6 +2,11 @@
 // as app-owned metaobjects (type "$app:refund_request"), including photo
 // uploads to Shopify Files. Server-only; never import into a client component.
 
+import {
+  unstable_cacheLife as cacheLife,
+  unstable_cacheTag as cacheTag,
+} from "next/cache";
+
 const ADMIN_API_VERSION = "2026-04";
 const STORE_DOMAIN =
   process.env.SHOPIFY_STORE_DOMAIN || "rje5fv-8c.myshopify.com";
@@ -250,12 +255,16 @@ export type ProductReview = {
 };
 
 // All reviews for a product (read from `cc_review` metaobjects), newest first,
-// with the aggregate average + count. Cached; busted on submit via the
-// "reviews" tag.
+// with the aggregate average + count. Cached and tagged "reviews": submitting a
+// review (review-actions.ts) calls updateTag("reviews"), so new reviews show
+// immediately; cacheLife("hours") bounds staleness for direct-admin edits. This
+// removes a blocking 250-metaobject Admin round-trip from every PDP render.
 export async function getProductReviews(
   productHandle: string,
 ): Promise<{ reviews: ProductReview[]; count: number; average: number }> {
-  // Not cached, so admin edits/deletes reflect immediately. Volume is low.
+  "use cache";
+  cacheTag("reviews", `reviews-${productHandle}`);
+  cacheLife("hours");
   if (!ADMIN_TOKEN) return { reviews: [], count: 0, average: 0 };
 
   const data = await adminGraphQL<{

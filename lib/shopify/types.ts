@@ -258,6 +258,40 @@ export type ShopifyCollectionListingOperation = {
   };
 };
 
+// Cursor-paginated variant used by the collection grid's "Load more" so the
+// initial fetch can be capped (first: 48) without losing products beyond it.
+export type ShopifyCollectionListingPageOperation = {
+  data: {
+    collection?: {
+      products: Connection<ShopifyListingProduct> & {
+        pageInfo: { hasNextPage: boolean; endCursor: string | null };
+      };
+    };
+  };
+  variables: {
+    handle: string;
+    reverse?: boolean;
+    sortKey?: string;
+    first?: number;
+    after?: string;
+  };
+};
+
+// Minimal query for the mega-menu: just the featured image URLs of a
+// collection's first few products (no variants/price/tags), so the navbar
+// doesn't pull full product listings on every page.
+export type ShopifyCollectionFeaturedImagesOperation = {
+  data: {
+    collection?: {
+      products: Connection<{ featuredImage?: { url: string } | null }>;
+    };
+  };
+  variables: {
+    handle: string;
+    first?: number;
+  };
+};
+
 export type ShopifyCollectionsOperation = {
   data: {
     collections: Connection<ShopifyCollection>;

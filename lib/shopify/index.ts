@@ -24,7 +24,9 @@ import {
 } from "./mutations/cart";
 import { getCartQuery } from "./queries/cart";
 import {
+  getCollectionFeaturedImagesQuery,
   getCollectionHandlesWithProductsQuery,
+  getCollectionProductsPageQuery,
   getCollectionProductsQuery,
   getCollectionQuery,
   getCollectionsQuery,
@@ -48,7 +50,9 @@ import {
   ShopifyCart,
   ShopifyCartOperation,
   ShopifyCollection,
+  ShopifyCollectionFeaturedImagesOperation,
   ShopifyCollectionListingOperation,
+  ShopifyCollectionListingPageOperation,
   ShopifyCollectionOperation,
   ShopifyCollectionsOperation,
   ShopifyListingProduct,
@@ -472,6 +476,107 @@ export async function getCollectionProducts({
     .filter((p): p is Product => Boolean(p));
   if (products.length) return products;
   return USE_DEMO_PRODUCTS ? getMockProductsForCollection(collection) : [];
+}
+
+// Cursor-paginated collection fetch backing the grid's "Load more". Lets the
+// collection page cap the initial fetch (e.g. first: 48) and pull subsequent
+// pages on demand instead of serializing the whole collection up front.
+export async function getCollectionProductsPage({
+  collection,
+  reverse,
+  sortKey,
+  first = 48,
+  after,
+}: {
+  collection: string;
+  reverse?: boolean;
+  sortKey?: string;
+  first?: number;
+  after?: string | null;
+}): Promise<{
+  products: Product[];
+  endCursor: string | null;
+  hasNextPage: boolean;
+}> {
+  "use cache";
+  cacheTag(TAGS.collections, TAGS.products);
+  cacheLife("days");
+
+  const empty = { products: [], endCursor: null, hasNextPage: false };
+
+  if (!endpoint) {
+    return USE_DEMO_PRODUCTS
+      ? { ...empty, products: getMockProductsForCollection(collection) }
+      : empty;
+  }
+
+  const res = await shopifyFetch<ShopifyCollectionListingPageOperation>({
+    query: getCollectionProductsPageQuery,
+    variables: {
+      handle: collection,
+      reverse,
+      sortKey: sortKey === "CREATED_AT" ? "CREATED" : sortKey,
+      first,
+      ...(after ? { after } : {}),
+    },
+  });
+
+  const coll = res.body.data.collection;
+  if (!coll) {
+    return USE_DEMO_PRODUCTS
+      ? { ...empty, products: getMockProductsForCollection(collection) }
+      : empty;
+  }
+
+  const products = removeEdgesAndNodes(coll.products)
+    .map(reshapeListingProduct)
+    .filter((p): p is Product => Boolean(p));
+
+  return {
+    products,
+    endCursor: coll.products.pageInfo.endCursor,
+    hasNextPage: coll.products.pageInfo.hasNextPage,
+  };
+}
+
+// Featured image URLs for a collection's first products — used by the mega-menu
+// thumbnails. Tiny payload vs getCollectionProducts (no variants/price/tags).
+export async function getCollectionFeaturedImageUrls(
+  collection: string,
+  { first = 8, take = 4 }: { first?: number; take?: number } = {},
+): Promise<string[]> {
+  "use cache";
+  cacheTag(TAGS.collections, TAGS.products);
+  cacheLife("days");
+
+  const fromProducts = (products: Product[]) =>
+    products
+      .map((p) => p.featuredImage?.url)
+      .filter((u): u is string => Boolean(u))
+      .slice(0, take);
+
+  if (!endpoint) {
+    return USE_DEMO_PRODUCTS
+      ? fromProducts(getMockProductsForCollection(collection))
+      : [];
+  }
+
+  const res = await shopifyFetch<ShopifyCollectionFeaturedImagesOperation>({
+    query: getCollectionFeaturedImagesQuery,
+    variables: { handle: collection, first },
+  });
+
+  const coll = res.body.data.collection;
+  if (!coll) {
+    return USE_DEMO_PRODUCTS
+      ? fromProducts(getMockProductsForCollection(collection))
+      : [];
+  }
+
+  return removeEdgesAndNodes(coll.products)
+    .map((n) => n.featuredImage?.url)
+    .filter((u): u is string => Boolean(u))
+    .slice(0, take);
 }
 
 export async function getCollections(): Promise<Collection[]> {

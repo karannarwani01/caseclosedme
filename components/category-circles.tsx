@@ -1,8 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { ScrollRow } from "components/scroll-row";
-import Image from "next/image";
-import Link from "next/link";
+import { CategoryCirclesClient } from "components/category-circles-client";
 
 type Category = {
   /** URL-safe slug — also the filename stem used in /public/franchises/. */
@@ -163,7 +161,23 @@ function publicUrl(rel: string, abs: string): string {
   }
 }
 
+// The /public/franchises assets only change on deploy (which restarts the
+// server process), so resolve the filesystem lookups once per slug and memoize
+// — avoids dozens of blocking sync fs syscalls on every homepage render.
+const assetCache = new Map<string, { logo?: string; logoHover?: string }>();
+
 function resolveAssets(slug: string): { logo?: string; logoHover?: string } {
+  const cached = assetCache.get(slug);
+  if (cached) return cached;
+  const resolved = resolveAssetsUncached(slug);
+  assetCache.set(slug, resolved);
+  return resolved;
+}
+
+function resolveAssetsUncached(slug: string): {
+  logo?: string;
+  logoHover?: string;
+} {
   let logo: string | undefined;
   for (const ext of STATIC_EXTS) {
     const abs = path.join(FRANCHISE_DIR, `${slug}.${ext}`);
@@ -193,86 +207,13 @@ function resolveAssets(slug: string): { logo?: string; logoHover?: string } {
 }
 
 export function CategoryCircles() {
+  const items = CATEGORIES.filter((cat) => !cat.hidden).map((cat) => {
+    const { logo, logoHover } = resolveAssets(cat.slug);
+    return { ...cat, logo, logoHover };
+  });
   return (
     <section className="mx-auto mt-14 w-full px-4 md:mt-20 md:px-8">
-      <ScrollRow
-        className="flex gap-6 pb-6 md:justify-between md:gap-4 md:overflow-visible"
-        arrowClassName="top-[3.5rem] md:hidden"
-      >
-        {CATEGORIES.filter((cat) => !cat.hidden).map((cat) => {
-          const { logo, logoHover } = resolveAssets(cat.slug);
-          return (
-            <Link
-              key={cat.slug}
-              href={`/search/${cat.slug}`}
-              className="group flex flex-none flex-col items-center gap-4 md:flex-1 md:min-w-0"
-            >
-              <div
-                className="relative h-28 w-28 overflow-hidden rounded-full border-[2.5px] border-anime-ink shadow-[5px_5px_0_0_var(--color-anime-ink)] transition-transform duration-150 ease-out group-hover:-translate-x-[2px] group-hover:-translate-y-[2px] md:h-36 md:w-36 lg:h-44 lg:w-44 xl:h-48 xl:w-48"
-                style={{
-                  background: cat.bg
-                    ? cat.bg
-                    : cat.flatBg
-                      ? cat.color
-                      : `radial-gradient(circle at 50% 28%, color-mix(in srgb, ${cat.color} 50%, #fff) 0%, ${cat.color} 72%)`,
-                }}
-              >
-                {logo ? (
-                  <>
-                    {/* Default image — fades out on hover. */}
-                    <Image
-                      src={logo}
-                      alt={`${cat.name} — collectibles`}
-                      fill
-                      sizes="(max-width: 768px) 112px, (max-width: 1024px) 144px, (max-width: 1280px) 176px, 192px"
-                      unoptimized={/\.gif(\?|$)/i.test(logo)}
-                      className="object-contain transition-opacity duration-300 ease-out group-hover:opacity-0"
-                    />
-                    {/* Hover image — fades in on hover. Usually an animated GIF.
-                        `unoptimized` keeps Next's image pipeline from stripping the animation. */}
-                    <Image
-                      src={logoHover ?? logo}
-                      alt=""
-                      aria-hidden
-                      fill
-                      sizes="(max-width: 768px) 112px, (max-width: 1024px) 144px, (max-width: 1280px) 176px, 192px"
-                      unoptimized
-                      style={
-                        cat.hoverPosition
-                          ? { objectPosition: cat.hoverPosition }
-                          : undefined
-                      }
-                      className={`opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100 ${
-                        cat.hoverFit === "cover"
-                          ? "object-cover"
-                          : "object-contain"
-                      }`}
-                    />
-                  </>
-                ) : (
-                  <>
-                    {/* Rest face — the glyph, fades out on hover. */}
-                    <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300 ease-out group-hover:opacity-0">
-                      <span className="font-display text-5xl font-extrabold text-white drop-shadow-[3px_3px_0_rgba(13,10,26,0.6)] md:text-6xl lg:text-7xl xl:text-8xl">
-                        {cat.glyph}
-                      </span>
-                    </div>
-                    {/* Hover face — dark panel with the franchise name, fades in. */}
-                    <div className="absolute inset-0 flex items-center justify-center bg-anime-ink px-3 opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100">
-                      <span className="text-center font-display text-base font-extrabold uppercase leading-tight tracking-[0.04em] text-white md:text-xl lg:text-2xl">
-                        {cat.name}
-                      </span>
-                    </div>
-                  </>
-                )}
-              </div>
-              <p className="text-center font-display text-sm font-extrabold uppercase tracking-[0.06em] text-anime-ink md:text-base">
-                {cat.name}
-              </p>
-            </Link>
-          );
-        })}
-      </ScrollRow>
+      <CategoryCirclesClient items={items} />
     </section>
   );
 }

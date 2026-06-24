@@ -16,7 +16,6 @@ import { getCart } from "lib/shopify";
 import { ReactNode } from "react";
 import { Toaster } from "sonner";
 import "./globals.css";
-import "flag-icons/css/flag-icons.min.css";
 import { baseUrl } from "lib/utils";
 
 const bricolage = Bricolage_Grotesque({
@@ -46,12 +45,15 @@ const inter = Inter({
   display: "swap",
 });
 
-// High-legibility font used when the "Dyslexia Font" accessibility toggle is on.
+// High-legibility font used only when the "Dyslexia Font" accessibility toggle
+// is on. preload:false so its two weights aren't downloaded for every visitor —
+// the browser fetches it on demand when the toggle applies var(--font-dyslexia).
 const atkinson = Atkinson_Hyperlegible({
   subsets: ["latin"],
   weight: ["400", "700"],
   variable: "--font-dyslexia",
   display: "swap",
+  preload: false,
 });
 
 // Re-applies saved accessibility preferences to <html> before paint (no flash).

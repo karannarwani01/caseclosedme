@@ -6,6 +6,9 @@ import {
   DEFAULT_COUNTRY_ISO,
   type Country,
 } from "lib/country-codes";
+// Scoped here (not the root layout) so the 30 KB flag-icons stylesheet only
+// loads on the two form pages that use this component, not every route.
+import "flag-icons/css/flag-icons.min.css";
 
 /**
  * Universal country dial-code selector. Renders a compact flag + dial-code

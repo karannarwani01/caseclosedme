@@ -4,7 +4,11 @@ export default {
   allowedDevOrigins: ["192.168.0.139", "localhost"],
   experimental: {
     ppr: true,
-    inlineCss: true,
+    // NOTE: `inlineCss` is intentionally disabled. When enabled, Next inlines the
+    // next/font `@font-face` rules into each page's HTML, where their relative
+    // `src: url(../media/…)` resolves against the page URL (e.g. /terms-conditions
+    // -> /media/… = 404) instead of /_next/static/media/…. That makes every
+    // webfont fail to load and the whole site falls back to system fonts.
     useCache: true,
   },
   images: {

@@ -6,6 +6,7 @@ export type FacetField =
   | "feature"
   | "protector"
   | "line"
+  | "format"
   | "vendor"
   | "franchise"
   | "size"
@@ -143,6 +144,33 @@ function featureLabelsOf(p: Product): string[] {
   return [...labels];
 }
 
+// Sealed trading-card format, from a tag on the product. Drives the "Type"
+// facet on card pages — there productType is just "Trading Cards", so the
+// normal Type facet never shows. CARD_FORMAT_ORDER fixes the display order.
+const CARD_FORMATS: Record<string, string> = {
+  "booster-box": "Booster Box",
+  blister: "Blister",
+  display: "Display",
+  "elite-trainer-box": "Elite Trainer Box",
+  "single-pack": "Single Pack",
+};
+const CARD_FORMAT_ORDER = [
+  "Booster Box",
+  "Elite Trainer Box",
+  "Display",
+  "Blister",
+  "Single Pack",
+];
+
+function cardFormatLabelsOf(p: Product): string[] {
+  const labels = new Set<string>();
+  for (const t of p.tags) {
+    const label = CARD_FORMATS[norm(t)];
+    if (label) labels.add(label);
+  }
+  return [...labels];
+}
+
 // Protector category, from the `<cat>-protectors` tag. Drives the "Type" facet
 // on protector pages (Funko / TCG / Hot Wheels) — protectors all share one
 // productType ("Protector"), so the normal Type facet never appears.
@@ -172,6 +200,7 @@ export function matchesFacet(
   if (field === "feature") return featureLabelsOf(p).includes(value);
   if (field === "protector") return protectorTypeLabelsOf(p).includes(value);
   if (field === "line") return lineLabelsOf(p).includes(value);
+  if (field === "format") return cardFormatLabelsOf(p).includes(value);
   if (field === "vendor") return prettyVendor(p.vendor) === value;
   if (field === "franchise") return franchiseLabelsOf(p).includes(value);
   if (field === "size") return sizeOf(p) === value;
@@ -192,6 +221,7 @@ export function buildFacetGroups(products: Product[]): FacetGroup[] {
   const protectorTypes = new Map<string, number>();
   const lines = new Map<string, number>();
   const features = new Map<string, number>();
+  const cardFormats = new Map<string, number>();
   const franchises = new Map<string, number>();
   const vendors = new Map<string, number>();
   const sizes = new Map<string, number>();
@@ -208,6 +238,7 @@ export function buildFacetGroups(products: Product[]): FacetGroup[] {
     for (const label of protectorTypeLabelsOf(p)) bump(protectorTypes, label);
     for (const label of lineLabelsOf(p)) bump(lines, label);
     for (const label of featureLabelsOf(p)) bump(features, label);
+    for (const label of cardFormatLabelsOf(p)) bump(cardFormats, label);
     for (const label of franchiseLabelsOf(p)) bump(franchises, label);
     for (const label of colorLabelsOf(p)) bump(colors, label);
   }
@@ -273,6 +304,22 @@ export function buildFacetGroups(products: Product[]): FacetGroup[] {
       title: "Type",
       accent: "var(--color-anime-cyan)",
       field: "feature",
+      options,
+    });
+  } else if (cardFormats.size > 0) {
+    // Card pages: the Type facet is the sealed-format tags, in a fixed order.
+    const options = [...cardFormats.entries()]
+      .map(([value, count]) => ({ value, label: value, count }))
+      .sort(
+        (a, b) =>
+          CARD_FORMAT_ORDER.indexOf(a.label) -
+          CARD_FORMAT_ORDER.indexOf(b.label),
+      );
+    groups.push({
+      key: "type",
+      title: "Type",
+      accent: "var(--color-anime-cyan)",
+      field: "format",
       options,
     });
   } else {
