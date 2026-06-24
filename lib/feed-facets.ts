@@ -3,6 +3,7 @@ import type { Product } from "lib/shopify/types";
 export type Facet = { value: string; label: string; count: number };
 export type FacetField =
   | "type"
+  | "feature"
   | "protector"
   | "line"
   | "vendor"
@@ -122,6 +123,26 @@ function lineLabelsOf(p: Product): string[] {
   return [...labels];
 }
 
+// Special "feature" tags that drive the Funko Type facet: Chase, Limited
+// Edition (anything with a limited piece count), and Glow in the Dark. A
+// product can carry more than one. FEATURE_ORDER fixes the display order.
+const FEATURES: Record<string, string> = {
+  chase: "Chase",
+  "limited-edition": "Limited Edition",
+  glow: "Glow in the Dark",
+  "glow-in-the-dark": "Glow in the Dark",
+};
+const FEATURE_ORDER = ["Chase", "Limited Edition", "Glow in the Dark"];
+
+function featureLabelsOf(p: Product): string[] {
+  const labels = new Set<string>();
+  for (const t of p.tags) {
+    const label = FEATURES[norm(t)];
+    if (label) labels.add(label);
+  }
+  return [...labels];
+}
+
 // Protector category, from the `<cat>-protectors` tag. Drives the "Type" facet
 // on protector pages (Funko / TCG / Hot Wheels) — protectors all share one
 // productType ("Protector"), so the normal Type facet never appears.
@@ -148,6 +169,7 @@ export function matchesFacet(
   value: string,
 ): boolean {
   if (field === "type") return p.productType === value;
+  if (field === "feature") return featureLabelsOf(p).includes(value);
   if (field === "protector") return protectorTypeLabelsOf(p).includes(value);
   if (field === "line") return lineLabelsOf(p).includes(value);
   if (field === "vendor") return prettyVendor(p.vendor) === value;
@@ -169,6 +191,7 @@ export function buildFacetGroups(products: Product[]): FacetGroup[] {
   const types = new Map<string, number>();
   const protectorTypes = new Map<string, number>();
   const lines = new Map<string, number>();
+  const features = new Map<string, number>();
   const franchises = new Map<string, number>();
   const vendors = new Map<string, number>();
   const sizes = new Map<string, number>();
@@ -184,6 +207,7 @@ export function buildFacetGroups(products: Product[]): FacetGroup[] {
     bump(sizes, sizeOf(p));
     for (const label of protectorTypeLabelsOf(p)) bump(protectorTypes, label);
     for (const label of lineLabelsOf(p)) bump(lines, label);
+    for (const label of featureLabelsOf(p)) bump(features, label);
     for (const label of franchiseLabelsOf(p)) bump(franchises, label);
     for (const label of colorLabelsOf(p)) bump(colors, label);
   }
@@ -233,6 +257,22 @@ export function buildFacetGroups(products: Product[]): FacetGroup[] {
       title: "Type",
       accent: "var(--color-anime-cyan)",
       field: "line",
+      options,
+    });
+  } else if (features.size > 0) {
+    // Funko pages: the Type facet is the special-edition feature tags
+    // (Chase / Limited Edition / Glow in the Dark), in a fixed order.
+    const options = [...features.entries()]
+      .map(([value, count]) => ({ value, label: value, count }))
+      .sort(
+        (a, b) =>
+          FEATURE_ORDER.indexOf(a.label) - FEATURE_ORDER.indexOf(b.label),
+      );
+    groups.push({
+      key: "type",
+      title: "Type",
+      accent: "var(--color-anime-cyan)",
+      field: "feature",
       options,
     });
   } else {
