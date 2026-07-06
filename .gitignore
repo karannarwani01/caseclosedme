@@ -15,3 +15,5 @@ scripts/*.ttf
 scripts/account-logo*.png
 
 .vercel
+.lh-*
+lh-*
