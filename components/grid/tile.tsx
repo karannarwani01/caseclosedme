@@ -75,14 +75,17 @@ export function GridTileImage({
 
       {hasImage ? (
         <Image
-          className={clsx("relative z-10 h-full w-full object-contain px-5 pt-5", {
-            // Leave room at the bottom so the label overlay never crops the figure.
-            "pb-[5.25rem]": label,
-            "pb-5": !label,
-            "transition-transform duration-500 ease-out group-hover:scale-[1.08] group-hover:rotate-[6deg]":
-              isInteractive && !zoom,
-            "transition-transform duration-200 ease-out": zoom,
-          })}
+          className={clsx(
+            "relative z-10 h-full w-full object-contain px-5 pt-5",
+            {
+              // Leave room at the bottom so the label overlay never crops the figure.
+              "pb-[5.25rem]": label,
+              "pb-5": !label,
+              "transition-transform duration-500 ease-out group-hover:scale-[1.08] group-hover:rotate-[6deg]":
+                isInteractive && !zoom,
+              "transition-transform duration-200 ease-out": zoom,
+            },
+          )}
           style={
             zoom
               ? {
