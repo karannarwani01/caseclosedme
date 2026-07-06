@@ -149,7 +149,7 @@ export function BannerTiles({
 
   return (
     <section className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-      {visible.map((t) => {
+      {visible.map((t, tileIdx) => {
         return (
           <Link
             key={t.id}
@@ -199,6 +199,7 @@ export function BannerTiles({
                     src={t.art}
                     alt=""
                     fill
+                    priority={tileIdx < 2}
                     className={clsx(
                       "transition-transform duration-300 ease-out group-hover:scale-105",
                       t.artFit ?? "object-contain object-bottom",
