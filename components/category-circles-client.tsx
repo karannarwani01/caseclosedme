@@ -25,7 +25,10 @@ const SIZES =
 // autoplay — but only ONE at a time (the circle most in view), swapping the
 // rest back to their static poster so just a single animated WebP decodes.
 export function CategoryCirclesClient({ items }: { items: CategoryItem[] }) {
-  const [isTouch, setIsTouch] = useState(false);
+  // Touch-first default: SSR HTML must NOT include hover-animation WebPs
+  // (420KB+) — phones would download them before hydration can gate them.
+  // Desktops flip to hover-mode post-hydration, long before any mouse arrives.
+  const [isTouch, setIsTouch] = useState(true);
   const [active, setActive] = useState(0);
   const refs = useRef<(HTMLAnchorElement | null)[]>([]);
 
