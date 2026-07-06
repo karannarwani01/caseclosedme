@@ -195,7 +195,7 @@ export function HeroCarousel() {
   const [idx, setIdx] = useState(0);
 
   useEffect(() => {
-    const t = setInterval(() => setIdx((i) => (i + 1) % PROMOS.length), 6000);
+    const t = setInterval(() => setIdx((i) => (i + 1) % PROMOS.length), 15000);
     return () => clearInterval(t);
   }, []);
 
