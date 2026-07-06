@@ -194,10 +194,27 @@ function PromoSlide({ promo, eager }: { promo: Promo; eager: boolean }) {
 export function HeroCarousel() {
   const [idx, setIdx] = useState(0);
 
+  // Auto-rotate only after the visitor first interacts (scroll/touch/pointer).
+  // A carousel that rotates before the user has engaged repeatedly re-claims
+  // the page's Largest Contentful Paint (each new slide = a fresh, larger
+  // paint), tanking the metric that mirrors perceived load speed. Real users
+  // interact within seconds and still get the rotation.
+  const [engaged, setEngaged] = useState(false);
   useEffect(() => {
-    const t = setInterval(() => setIdx((i) => (i + 1) % PROMOS.length), 15000);
+    if (engaged) return;
+    const arm = () => setEngaged(true);
+    window.addEventListener("scroll", arm, { once: true, passive: true });
+    window.addEventListener("pointerdown", arm, { once: true });
+    return () => {
+      window.removeEventListener("scroll", arm);
+      window.removeEventListener("pointerdown", arm);
+    };
+  }, [engaged]);
+  useEffect(() => {
+    if (!engaged) return;
+    const t = setInterval(() => setIdx((i) => (i + 1) % PROMOS.length), 8000);
     return () => clearInterval(t);
-  }, []);
+  }, [engaged]);
 
   const promo = PROMOS[idx]!;
 
