@@ -62,6 +62,20 @@ const productFragment = /* GraphQL */ `
         }
       }
     }
+    media(first: 20) {
+      edges {
+        node {
+          mediaContentType
+          ... on Model3d {
+            sources {
+              url
+              format
+              mimeType
+            }
+          }
+        }
+      }
+    }
     seo {
       ...seo
     }

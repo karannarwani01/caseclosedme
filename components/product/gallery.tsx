@@ -3,24 +3,31 @@
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
+  CubeIcon,
   MagnifyingGlassPlusIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
+import { ModelViewer360 } from "components/product/model-viewer-360";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export function Gallery({
   images,
+  model3dUrl,
 }: {
   images: { src: string; altText: string }[];
+  model3dUrl?: string;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  // The 3D view, when available, lives at one index past the last image.
+  const slideCount = images.length + (model3dUrl ? 1 : 0);
   const imageIndex = searchParams.has("image")
-    ? parseInt(searchParams.get("image")!)
+    ? Math.min(parseInt(searchParams.get("image")!) || 0, slideCount - 1)
     : 0;
+  const is3d = !!model3dUrl && imageIndex === images.length;
 
   // Tap the photo to open a full-screen enlarged preview (works on touch +
   // desktop, unlike the old cursor-magnifier).
@@ -33,9 +40,9 @@ export function Gallery({
     router.replace(`?${params.toString()}`, { scroll: false });
   };
 
-  const nextImageIndex = imageIndex + 1 < images.length ? imageIndex + 1 : 0;
+  const nextImageIndex = imageIndex + 1 < slideCount ? imageIndex + 1 : 0;
   const previousImageIndex =
-    imageIndex === 0 ? images.length - 1 : imageIndex - 1;
+    imageIndex === 0 ? slideCount - 1 : imageIndex - 1;
 
   // Swipe support: drag left → next image, drag right → previous (and don't
   // trigger the tap-to-enlarge).
@@ -75,7 +82,7 @@ export function Gallery({
   return (
     <>
       <form className="flex flex-col-reverse gap-3 lg:flex-row lg:items-start">
-        {images.length > 1 ? (
+        {slideCount > 1 ? (
           <ul className="flex shrink-0 gap-3 overflow-x-auto py-1 lg:flex-col lg:overflow-visible">
             {images.map((image, index) => {
               const isActive = index === imageIndex;
@@ -102,42 +109,81 @@ export function Gallery({
                 </li>
               );
             })}
+            {model3dUrl ? (
+              <li key="model-3d" className="shrink-0">
+                <button
+                  formAction={() => updateImage(images.length.toString())}
+                  aria-label="View in 360°"
+                  className={clsx(
+                    "grid h-[68px] w-[68px] place-items-center rounded-xl border-[2.5px] bg-white transition-all",
+                    is3d
+                      ? "border-anime-pink shadow-[3px_3px_0_0_var(--color-anime-pink)]"
+                      : "border-anime-ink hover:-translate-y-0.5 hover:border-anime-pink",
+                  )}
+                >
+                  <span className="flex flex-col items-center gap-0.5 text-anime-ink">
+                    <CubeIcon className="h-6 w-6" strokeWidth={2} />
+                    <span className="text-[10px] font-bold leading-none">
+                      360°
+                    </span>
+                  </span>
+                </button>
+              </li>
+            ) : null}
           </ul>
         ) : null}
 
         <div className="flex-1">
           <div
-            className="relative mx-auto aspect-square w-full max-w-[550px] cursor-zoom-in overflow-hidden rounded-xl border-[2.5px] border-anime-ink bg-white"
+            className={clsx(
+              "relative mx-auto aspect-square w-full max-w-[550px] overflow-hidden rounded-xl border-[2.5px] border-anime-ink bg-white",
+              !is3d && "cursor-zoom-in",
+            )}
             onClick={() => {
+              if (is3d) return;
               if (clickGuard.current) {
                 clickGuard.current = false;
                 return;
               }
               setLightbox(true);
             }}
-            onTouchStart={onTouchStart}
-            onTouchEnd={onTouchEnd}
+            onTouchStart={is3d ? undefined : onTouchStart}
+            onTouchEnd={is3d ? undefined : onTouchEnd}
           >
-            {current && (
-              <Image
-                className="h-full w-full object-contain"
-                fill
-                sizes="(min-width: 1024px) 55vw, 100vw"
-                alt={current.altText}
-                src={current.src}
-                priority={true}
+            {is3d && model3dUrl ? (
+              <ModelViewer360
+                src={model3dUrl}
+                poster={images[0]?.src}
+                alt={`${images[0]?.altText ?? "Product"} 360° view`}
               />
+            ) : (
+              current && (
+                <Image
+                  className="h-full w-full object-contain"
+                  fill
+                  sizes="(min-width: 1024px) 55vw, 100vw"
+                  alt={current.altText}
+                  src={current.src}
+                  priority={true}
+                />
+              )
             )}
 
-            {/* Tap-to-enlarge hint */}
-            <span
-              aria-hidden
-              className="pointer-events-none absolute bottom-2 right-2 z-10 grid h-9 w-9 place-items-center rounded-full border-[2.5px] border-anime-ink bg-white/90 text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)] backdrop-blur-sm"
-            >
-              <MagnifyingGlassPlusIcon className="h-5" strokeWidth={2.5} />
-            </span>
+            {/* Tap-to-enlarge hint (images only) */}
+            {!is3d ? (
+              <span
+                aria-hidden
+                className="pointer-events-none absolute bottom-2 right-2 z-10 grid h-9 w-9 place-items-center rounded-full border-[2.5px] border-anime-ink bg-white/90 text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)] backdrop-blur-sm"
+              >
+                <MagnifyingGlassPlusIcon className="h-5" strokeWidth={2.5} />
+              </span>
+            ) : (
+              <span className="pointer-events-none absolute bottom-2 left-1/2 z-10 -translate-x-1/2 rounded-full border-[2.5px] border-anime-ink bg-white/90 px-3 py-1 text-xs font-bold text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)] backdrop-blur-sm">
+                Drag to spin · pinch to zoom
+              </span>
+            )}
 
-            {images.length > 1 ? (
+            {slideCount > 1 ? (
               <>
                 <button
                   formAction={() => updateImage(previousImageIndex.toString())}
@@ -200,7 +246,9 @@ export function Gallery({
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  updateImage(previousImageIndex.toString());
+                  updateImage(
+                    ((imageIndex === 0 ? images.length : imageIndex) - 1).toString(),
+                  );
                 }}
                 aria-label="Previous image"
                 className="absolute left-3 top-1/2 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full border-[2.5px] border-white bg-white/10 text-white backdrop-blur-sm"
@@ -211,7 +259,7 @@ export function Gallery({
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  updateImage(nextImageIndex.toString());
+                  updateImage(((imageIndex + 1) % images.length).toString());
                 }}
                 aria-label="Next image"
                 className="absolute right-3 top-1/2 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full border-[2.5px] border-white bg-white/10 text-white backdrop-blur-sm"

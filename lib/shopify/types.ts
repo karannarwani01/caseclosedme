@@ -68,9 +68,11 @@ export type Page = {
   updatedAt: string;
 };
 
-export type Product = Omit<ShopifyProduct, "variants" | "images"> & {
+export type Product = Omit<ShopifyProduct, "variants" | "images" | "media"> & {
   variants: ProductVariant[];
   images: Image[];
+  /** URL of the product's GLB 3D model, when one is uploaded as media. */
+  model3dUrl?: string;
 };
 
 export type ProductOption = {
@@ -142,6 +144,16 @@ export type ShopifyProduct = {
     minVariantPrice: Money;
   };
   updatedAt: string;
+  media?: Connection<ShopifyMedia>;
+};
+
+export type ShopifyMedia = {
+  mediaContentType: string;
+  sources?: {
+    url: string;
+    format: string;
+    mimeType: string;
+  }[];
 };
 
 export type ShopifyCartOperation = {

@@ -258,12 +258,19 @@ const reshapeProduct = (
     return undefined;
   }
 
-  const { images, variants, ...rest } = product;
+  const { images, variants, media, ...rest } = product;
+
+  const model3dUrl = media
+    ? removeEdgesAndNodes(media)
+        .find((m) => m.mediaContentType === "MODEL_3D")
+        ?.sources?.find((s) => s.format === "glb")?.url
+    : undefined;
 
   return {
     ...rest,
     images: reshapeImages(images, product.title),
     variants: removeEdgesAndNodes(variants),
+    model3dUrl,
   };
 };
 
