@@ -98,7 +98,7 @@ export function ModelViewer360({
       exposure="0.9"
       interaction-prompt="none"
       touch-action="pan-y"
-      style={{ width: "100%", height: "100%" }}
+      style={{ width: "100%", height: "100%", backgroundColor: "#ffffff" }}
     />
   );
 }
