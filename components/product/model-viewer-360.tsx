@@ -27,6 +27,9 @@ declare global {
           "interaction-prompt"?: string;
           "touch-action"?: string;
           loading?: string;
+          "camera-orbit"?: string;
+          "min-camera-orbit"?: string;
+          "max-camera-orbit"?: string;
         };
       }
     }
@@ -91,6 +94,9 @@ export function ModelViewer360({
       poster={poster}
       alt={alt}
       camera-controls
+      camera-orbit="0deg 90deg auto"
+      min-camera-orbit="-Infinity 80deg auto"
+      max-camera-orbit="Infinity 100deg auto"
       auto-rotate
       auto-rotate-delay="1500"
       rotation-per-second="25deg"
