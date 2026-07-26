@@ -28,10 +28,16 @@ type Promo = {
   figures: Figure[];
   /**
    * Background treatment. Default is the comic sunburst + halftone. "pitch"
-   * swaps in the floodlit stadium scene (converging mown stripes, centre
-   * circle, crowd) used by the TCG slide.
+   * swaps in the floodlit stadium scene used by the TCG slide; "lab" swaps in
+   * Stark's workshop (holo table, blueprint grid, workbench) for the Funko
+   * slide.
    */
-  scene?: "pitch";
+  scene?: "pitch" | "lab" | "track";
+  /**
+   * Painted backdrop for the slide, drawn full-bleed behind the figures. Used
+   * where illustration beats anything CSS can draw (the lab interior).
+   */
+  sceneImage?: string;
 };
 
 // Shared figure base classes — anchored to the bottom, never intercept the
@@ -75,33 +81,50 @@ const PROMOS: Promo[] = [
     ],
   },
   {
-    id: "one-piece",
-    href: "/search/one-piece",
-    ariaLabel: "One Piece drop — new arrivals. Shop One Piece.",
+    id: "hot-wheels",
+    href: "/search/hot-wheels",
+    ariaLabel: "Hot Wheels die-cast — new arrivals. Shop Hot Wheels.",
+    scene: "track",
+    sceneImage: "/banners/hot-wheels-track.webp",
+    // Warm track orange behind the artwork; the art carries the scene.
     gradient:
-      "linear-gradient(100deg, #1ea7d6 0%, #1f7fd1 30%, #1b53b0 60%, #0f2f7a 100%)",
-    rays: "rgba(185,238,255,0.9)",
-    badge: "New Arrivals",
-    headline: "One Piece Drop",
+      "linear-gradient(160deg, #3a1405 0%, #7a2c07 44%, #c2560f 74%, #7a2c07 100%)",
+    rays: "rgba(255,196,120,0.55)",
+    badge: "Die-cast",
+    headline: "Hot Wheels",
     subtitle:
-      "Straw Hat Crew figures & Pops, fresh off the ship — grab the latest landings.",
-    cta: "Shop One Piece",
+      "Premium & mainline 1:64 — Car Culture, Boulevard and Real Riders, fresh off the peg.",
+    cta: "Shop Hot Wheels",
     figures: [
       {
-        src: "/banners/luffy-punch.png",
-        width: 944,
-        height: 1388,
-        className: `${FIG} left-[0%] z-20 h-[70%] sm:h-[86%] md:left-[3%] lg:h-[98%]`,
+        src: "/banners/hw-card-nissan.webp",
+        width: 474,
+        height: 620,
+        className: `${FIG_FREE} bottom-[9%] left-[5%] z-10 hidden h-[48%] sm:block lg:h-[54%]`,
+      },
+      {
+        src: "/banners/hw-card-bugatti.webp",
+        width: 412,
+        height: 620,
+        className: `${FIG_FREE} bottom-[9%] left-[33%] z-10 hidden h-[48%] md:block lg:h-[54%]`,
+      },
+      {
+        src: "/banners/hw-card-reventon.webp",
+        width: 502,
+        height: 620,
+        className: `${FIG_FREE} bottom-[6%] left-[17%] z-20 h-[50%] sm:h-[56%] lg:h-[62%]`,
       },
     ],
   },
   {
     id: "funko-vault",
     href: "/search/funko",
-    ariaLabel: "Funko Pop vault — exclusives. Shop Funko.",
+    ariaLabel: "Funko Pop vault — Marvel exclusives. Shop Funko.",
+    scene: "lab",
+    // Fallback under the scene; <LabScene/> paints the lab itself.
     gradient:
-      "linear-gradient(100deg, #c026d3 0%, #9d1fc9 35%, #6d28d9 70%, #4c1d95 100%)",
-    rays: "rgba(255,205,255,0.85)",
+      "linear-gradient(160deg, #0a1f34 0%, #123855 46%, #235a83 78%, #0a1f34 100%)",
+    rays: "rgba(120,210,250,0.42)",
     badge: "Exclusives",
     headline: "Funko Pop Vault",
     subtitle:
@@ -109,20 +132,288 @@ const PROMOS: Promo[] = [
     cta: "Shop Funko",
     figures: [
       {
-        src: "/banners/carrot-box.png",
-        width: 676,
-        height: 938,
-        className: `${FIG} left-[3%] z-10 hidden h-[60%] sm:block lg:h-[70%]`,
+        src: "/banners/pop-spiderman.webp",
+        width: 380,
+        height: 600,
+        className: `${FIG_FREE} bottom-[11%] left-[6%] z-10 hidden h-[44%] sm:block lg:h-[50%]`,
       },
       {
-        src: "/banners/carrot-pop.png",
-        width: 676,
-        height: 946,
-        className: `${FIG} left-[22%] z-20 h-[58%] sm:h-[72%] md:left-[24%] lg:h-[82%]`,
+        src: "/banners/pop-cap.webp",
+        width: 308,
+        height: 420,
+        className: `${FIG_FREE} bottom-[12%] left-[28%] z-10 hidden h-[38%] sm:block lg:h-[43%]`,
+      },
+      {
+        src: "/banners/pop-ironman.webp",
+        width: 379,
+        height: 640,
+        className: `${FIG_FREE} bottom-[8%] left-[17%] z-20 h-[46%] sm:h-[54%] lg:h-[61%]`,
       },
     ],
   },
 ];
+
+/**
+ * Egghead-style laboratory, drawn entirely in CSS: luminous cyan room with a
+ * white-hot energy vortex behind the figures, floating holographic panels,
+ * ribbed ceiling with recessed fixtures, wall console and a lit floor run.
+ * Figure placement mirrors the `figures` entries of the "lab" slide.
+ */
+function HoloPanel({
+  style,
+  kind,
+}: {
+  style: React.CSSProperties;
+  kind: "rows" | "bars" | "gauge";
+}) {
+  return (
+    <div
+      className="absolute rounded-[8px] border-[1.5px] border-[#8ff0ff]"
+      style={{
+        ...style,
+        background:
+          "linear-gradient(160deg, rgba(8,58,96,0.62) 0%, rgba(12,78,124,0.46) 60%, rgba(18,98,148,0.3) 100%)",
+        boxShadow:
+          "0 0 26px rgba(120,225,255,0.75), inset 0 0 26px rgba(120,225,255,0.4)",
+      }}
+    >
+      <span className="absolute left-[8%] top-[7%] h-[3px] w-[34%] rounded-full bg-[#d6faff]" />
+      {kind === "rows" &&
+        [24, 38, 52, 66, 80].map((t, i) => (
+          <span
+            key={t}
+            className="absolute left-[8%] h-[3.5px] rounded-full bg-[#9ff0ff]"
+            style={{ top: `${t}%`, width: `${[64, 42, 56, 32, 48][i]}%` }}
+          />
+        ))}
+      {kind === "bars" &&
+        [22, 36, 50, 64, 78].map((x, i) => (
+          <span
+            key={x}
+            className="absolute bottom-[14%] w-[8%] rounded-t bg-[#7fe9ff]"
+            style={{ left: `${x - 8}%`, height: `${[26, 48, 34, 62, 40][i]}%` }}
+          />
+        ))}
+      {kind === "gauge" && (
+        <>
+          <span className="absolute left-1/2 top-1/2 h-[54%] w-[54%] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#9ff0ff]" />
+          <span className="absolute left-1/2 top-1/2 h-[30%] w-[30%] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-dashed border-[#d6faff]" />
+        </>
+      )}
+    </div>
+  );
+}
+
+function LabScene({ rays }: { rays: string }) {
+  return (
+    <div aria-hidden className="absolute inset-0 overflow-hidden">
+      {/* Luminous room: white-hot core behind the figures out to steel navy */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(58% 92% at 26% 54%, #f6fdff 0%, #d3f1ff 16%, #93d4f2 34%, #4d97c8 54%, #235a83 72%, #123855 88%, #0a1f34 100%)",
+        }}
+      />
+      {/* Back wall panel seams */}
+      <div
+        className="absolute inset-x-0 top-0 h-[80%] opacity-30"
+        style={{
+          backgroundImage:
+            "linear-gradient(90deg, rgba(220,250,255,0.5) 1px, transparent 1px), linear-gradient(180deg, rgba(220,250,255,0.32) 1px, transparent 1px)",
+          backgroundSize: "116px 100%, 100% 58px",
+          maskImage:
+            "radial-gradient(70% 90% at 26% 54%, transparent 20%, black 70%)",
+          WebkitMaskImage:
+            "radial-gradient(70% 90% at 26% 54%, transparent 20%, black 70%)",
+        }}
+      />
+      {/* Ceiling: structural ribs + recessed fixtures with halos */}
+      <div className="absolute inset-x-0 top-0 h-[36%] overflow-hidden">
+        {[0, 1, 2].map((i) => (
+          <div
+            key={i}
+            className="absolute inset-x-[-22%] rounded-[50%] border-t-[12px] border-[#0f3050]"
+            style={{
+              top: `${-20 + i * 14}%`,
+              height: `${50 + i * 9}%`,
+              boxShadow: "inset 0 10px 0 rgba(150,235,255,0.5)",
+            }}
+          />
+        ))}
+        {[13, 33, 53, 73, 91].map((x, i) => (
+          <span key={x}>
+            <span
+              className="absolute h-[9%] w-[6%] -translate-x-1/2 rounded-[50%] bg-white"
+              style={{
+                left: `${x}%`,
+                top: `${18 + (i % 2) * 10}%`,
+                boxShadow: "0 0 40px 16px rgba(190,240,255,0.95)",
+              }}
+            />
+            <span
+              className="absolute h-[16%] w-[11%] -translate-x-1/2 rounded-[50%] border border-[rgba(190,240,255,0.5)]"
+              style={{ left: `${x}%`, top: `${14 + (i % 2) * 10}%` }}
+            />
+          </span>
+        ))}
+      </div>
+      {/* Energy vortex behind the centre figure */}
+      <div className="absolute bottom-[14%] left-[19%] h-[104%] w-[52%] -translate-x-1/2">
+        <div
+          className="absolute inset-0 rounded-[50%]"
+          style={{
+            background: `radial-gradient(closest-side, rgba(255,255,255,0.98) 0%, rgba(205,247,255,0.8) 22%, ${rays} 46%, rgba(60,150,220,0.16) 66%, transparent 80%)`,
+          }}
+        />
+        {[8, 18, 28, 38].map((i, n) => (
+          <div
+            key={i}
+            className={`absolute rounded-[50%] border-2 ${n % 2 ? "border-dashed" : ""}`}
+            style={{
+              inset: `${i}%`,
+              borderColor: `rgba(215,250,255,${0.85 - n * 0.15})`,
+              boxShadow: "0 0 30px rgba(160,235,255,0.85)",
+            }}
+          />
+        ))}
+        {/* Radial spokes, the vortex pulling inward */}
+        <div
+          className="absolute inset-[4%] rounded-[50%] opacity-70"
+          style={{
+            background:
+              "repeating-conic-gradient(from 0deg at 50% 50%, rgba(235,252,255,0.55) 0deg 1.2deg, transparent 1.2deg 9deg)",
+            maskImage:
+              "radial-gradient(closest-side, transparent 34%, black 62%, transparent 92%)",
+            WebkitMaskImage:
+              "radial-gradient(closest-side, transparent 34%, black 62%, transparent 92%)",
+          }}
+        />
+        {/* Lightning arcing off the core */}
+        {[14, 68, 132, 205, 262, 318].map((deg) => (
+          <span
+            key={deg}
+            className="absolute left-1/2 top-1/2 h-[52%] w-[6px] origin-top bg-white"
+            style={{
+              transform: `rotate(${deg}deg)`,
+              clipPath:
+                "polygon(38% 0, 62% 0, 44% 30%, 78% 34%, 30% 66%, 58% 70%, 20% 100%, 40% 66%, 12% 62%, 46% 32%, 22% 28%)",
+              boxShadow: "0 0 18px rgba(190,245,255,0.95)",
+              opacity: 0.9,
+            }}
+          />
+        ))}
+      </div>
+      {/* Wall consoles left and right */}
+      <div className="absolute bottom-[22%] left-0 hidden h-[26%] w-[13%] rounded-r-[10px] border-y-2 border-r-2 border-[rgba(180,240,255,0.5)] bg-[rgba(10,52,86,0.6)] sm:block">
+        <span className="absolute inset-x-[10%] top-[16%] h-[8%] rounded bg-[#8ff0ff]/80" />
+        <span className="absolute inset-x-[10%] top-[34%] h-[8%] w-[54%] rounded bg-[#8ff0ff]/60" />
+        <span className="absolute inset-x-[10%] bottom-[18%] h-[22%] rounded bg-[rgba(140,235,255,0.25)]" />
+      </div>
+      {/* Floating holo panels */}
+      <HoloPanel
+        kind="rows"
+        style={{
+          left: "2%",
+          top: "14%",
+          width: "16%",
+          height: "30%",
+          transform: "rotate(-7deg)",
+        }}
+      />
+      <HoloPanel
+        kind="bars"
+        style={{
+          left: "33%",
+          top: "10%",
+          width: "13%",
+          height: "26%",
+          transform: "rotate(6deg)",
+        }}
+      />
+      <HoloPanel
+        kind="gauge"
+        style={{
+          left: "42%",
+          top: "46%",
+          width: "10%",
+          height: "26%",
+          transform: "rotate(-5deg)",
+        }}
+      />
+      <HoloPanel
+        kind="rows"
+        style={{
+          left: "56%",
+          top: "20%",
+          width: "12%",
+          height: "24%",
+          transform: "rotate(4deg)",
+        }}
+      />
+      {/* Floor: console run with a lit lip, then perspective tiling */}
+      <div className="absolute inset-x-0 bottom-0 h-[24%]">
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(232,250,255,0.95) 0%, rgba(150,210,240,0.92) 34%, rgba(46,110,158,0.95) 100%)",
+          }}
+        />
+        <div className="absolute inset-x-0 top-0 h-[3px] bg-white shadow-[0_0_22px_7px_rgba(190,240,255,0.9)]" />
+        <div
+          className="absolute inset-0 opacity-45"
+          style={{
+            background:
+              "repeating-conic-gradient(from 0deg at 26% -46%, rgba(255,255,255,0.55) 0deg 0.5deg, transparent 0.5deg 6deg)",
+          }}
+        />
+      </div>
+      {/* Drifting shards */}
+      {[
+        [9, 28],
+        [24, 16],
+        [37, 62],
+        [49, 24],
+        [55, 70],
+        [64, 44],
+      ].map(([l, t], i) => (
+        <span
+          key={`${l}-${t}`}
+          className="absolute bg-white/80"
+          style={{
+            left: `${l}%`,
+            top: `${t}%`,
+            height: `${2 + (i % 3)}%`,
+            width: `${0.9 + (i % 2) * 0.6}%`,
+            transform: `rotate(${18 + i * 23}deg)`,
+            boxShadow: "0 0 14px rgba(210,248,255,0.95)",
+          }}
+        />
+      ))}
+      {/* Contact shadows seating each Pop on the floor run */}
+      {[
+        ["6%", "17%", "10%"],
+        ["28%", "12%", "11%"],
+        ["17%", "21%", "7%"],
+      ].map(([left, w, bottom]) => (
+        <div
+          key={left}
+          className="absolute hidden h-[3.5%] -translate-x-1/2 rounded-[50%] bg-[#0a2136]/45 blur-[7px] sm:block"
+          style={{ left: `calc(${left} + ${w} / 2)`, width: w, bottom }}
+        />
+      ))}
+      {/* Corner falloff so the core reads as the light source */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(118% 100% at 26% 54%, transparent 44%, rgba(6,26,46,0.6) 100%)",
+        }}
+      />
+    </div>
+  );
+}
 
 /**
  * Floodlit stadium scene, drawn entirely in CSS so it stays crisp at every
@@ -328,6 +619,8 @@ function PromoSlide({ promo, eager }: { promo: Promo; eager: boolean }) {
       {/* Sunburst rays behind the figures (left) — or the stadium scene */}
       {promo.scene === "pitch" ? (
         <PitchScene rays={promo.rays} />
+      ) : promo.scene === "lab" ? (
+        <LabScene rays={promo.rays} />
       ) : (
         <div
           aria-hidden
@@ -354,19 +647,30 @@ function PromoSlide({ promo, eager }: { promo: Promo; eager: boolean }) {
             "linear-gradient(to right, transparent 45%, black 82%)",
         }}
       />
-      {/* Stadium slide only: darken the right third so the copy stays legible
-          over the bright grass. */}
-      {promo.scene === "pitch" && (
+      {/* Scene slides: darken the right third so the copy stays legible. */}
+      {promo.scene && (
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0"
+          className="pointer-events-none absolute inset-0 z-[6]"
           style={{
             background:
-              "linear-gradient(to right, transparent 42%, rgba(4,16,30,0.5) 74%, rgba(4,16,30,0.72) 100%)",
+              "linear-gradient(to right, transparent 34%, rgba(6,18,34,0.58) 66%, rgba(6,18,34,0.8) 100%)",
           }}
         />
       )}
 
+      {/* Painted backdrop, where the slide uses artwork instead of CSS */}
+      {promo.sceneImage && (
+        <Image
+          src={promo.sceneImage}
+          alt=""
+          width={1600}
+          height={534}
+          priority={eager}
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-[5] h-full w-full object-cover"
+        />
+      )}
       {/* Figures bursting from the left */}
       {promo.figures.map((f) => (
         <Image
