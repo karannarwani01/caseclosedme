@@ -1,4 +1,5 @@
 import { GridTileImage } from "components/grid/tile";
+import { UnitsArrow } from "components/ui/units-arrow";
 import { WishlistButton } from "components/wishlist/wishlist-button";
 import { getCollectionProducts, getProducts } from "lib/shopify";
 import type { Product } from "lib/shopify/types";
@@ -273,9 +274,10 @@ function SectionShell({
         </h2>
         <Link
           href={ctaHref}
-          className="mt-1 inline-flex items-center gap-1 font-display text-sm font-extrabold uppercase tracking-wider text-anime-ink underline decoration-anime-pink decoration-[3px] underline-offset-4 hover:text-anime-pink"
+          className="cc-arrow-group mt-1 inline-flex items-center gap-1 font-display text-sm font-extrabold uppercase tracking-wider text-anime-ink underline decoration-anime-pink decoration-[3px] underline-offset-4 hover:text-anime-pink"
         >
-          {ctaText}
+          {ctaText.replace(/\s*→\s*$/, "")}
+          <UnitsArrow className="ml-0.5 no-underline" />
         </Link>
       </div>
       {children}

@@ -1,6 +1,8 @@
 "use client";
 
 import { subscribeDropAlert } from "app/membership/actions";
+import { UnitsArrow } from "components/ui/units-arrow";
+import { UnitsFill } from "components/ui/units-fill";
 import { useActionState } from "react";
 
 export function DropAlertForm() {
@@ -37,9 +39,11 @@ export function DropAlertForm() {
         <button
           type="submit"
           disabled={pending}
-          className="shrink-0 rounded-full border-[3px] border-anime-ink bg-anime-pink px-6 py-3.5 font-comic text-lg uppercase tracking-wider text-white shadow-[4px_4px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_0_var(--color-anime-ink)] disabled:cursor-not-allowed disabled:opacity-60"
+          className="cc-units cc-u-sunset inline-flex shrink-0 items-center gap-1.5 rounded-full border-[3px] border-anime-ink bg-anime-pink px-6 py-3.5 font-comic text-lg uppercase tracking-wider text-white shadow-[4px_4px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_0_var(--color-anime-ink)] disabled:cursor-not-allowed disabled:opacity-60"
         >
+          <UnitsFill />
           {pending ? "Joining…" : "Notify me"}
+          <UnitsArrow />
         </button>
       </div>
       {state && !state.ok ? (

@@ -3,6 +3,8 @@
 import { BoltIcon, MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { addItem, buyNow } from "components/cart/actions";
+import { UnitsArrow } from "components/ui/units-arrow";
+import { UnitsFill } from "components/ui/units-fill";
 import { Product, ProductVariant } from "lib/shopify/types";
 import { useSearchParams } from "next/navigation";
 import { useActionState, useState } from "react";
@@ -52,7 +54,7 @@ function SubmitButton({
   selectedVariantId: string | undefined;
 }) {
   const buttonClasses =
-    "relative flex w-full items-center justify-center gap-2 rounded-full border-[2.5px] border-anime-ink bg-anime-pink p-4 font-display text-sm font-extrabold uppercase tracking-wider text-white shadow-[5px_5px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[7px_7px_0_0_var(--color-anime-ink)]";
+    "cc-units cc-u-grape relative flex w-full items-center justify-center gap-2 rounded-full border-[2.5px] border-anime-ink bg-anime-pink p-4 font-display text-sm font-extrabold uppercase tracking-wider text-white shadow-[5px_5px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[7px_7px_0_0_var(--color-anime-ink)]";
   const disabledClasses =
     "cursor-not-allowed opacity-60 hover:translate-x-0 hover:translate-y-0 hover:shadow-[5px_5px_0_0_var(--color-anime-ink)]";
 
@@ -79,8 +81,10 @@ function SubmitButton({
 
   return (
     <button aria-label="Add to cart" className={buttonClasses}>
+      <UnitsFill />
       <PlusIcon className="h-5" strokeWidth={3} />
       Add to cart
+      <UnitsArrow className="ml-0.5" />
     </button>
   );
 }
@@ -93,7 +97,7 @@ function BuyNowButton({
   selectedVariantId: string | undefined;
 }) {
   const classes =
-    "relative flex w-full items-center justify-center gap-2 rounded-full border-[2.5px] border-anime-ink bg-anime-ink p-4 font-display text-sm font-extrabold uppercase tracking-wider text-white shadow-[5px_5px_0_0_var(--color-anime-pink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[7px_7px_0_0_var(--color-anime-pink)]";
+    "cc-units cc-u-ice relative flex w-full items-center justify-center gap-2 rounded-full border-[2.5px] border-anime-ink bg-anime-ink p-4 font-display text-sm font-extrabold uppercase tracking-wider text-white shadow-[5px_5px_0_0_var(--color-anime-pink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[7px_7px_0_0_var(--color-anime-pink)]";
   const disabled =
     "cursor-not-allowed opacity-60 hover:translate-x-0 hover:translate-y-0 hover:shadow-[5px_5px_0_0_var(--color-anime-pink)]";
   const blocked = !availableForSale || !selectedVariantId;
@@ -105,8 +109,10 @@ function BuyNowButton({
       aria-label="Buy it now"
       className={clsx(classes, blocked && disabled)}
     >
+      <UnitsFill />
       <BoltIcon className="h-5" strokeWidth={2.5} />
       Buy it now
+      <UnitsArrow className="ml-0.5" />
     </button>
   );
 }

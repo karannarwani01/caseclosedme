@@ -3,6 +3,8 @@
 import { ShoppingBagIcon } from "@heroicons/react/24/outline";
 import { addItem } from "components/cart/actions";
 import { useCart } from "components/cart/cart-context";
+import { UnitsArrow } from "components/ui/units-arrow";
+import { UnitsFill } from "components/ui/units-fill";
 import clsx from "clsx";
 import type { Product } from "lib/shopify/types";
 import { toast } from "sonner";
@@ -63,15 +65,17 @@ export function QuickAddButton({
       disabled={!available}
       aria-label={`Add ${product.title} to cart`}
       className={clsx(
-        "absolute inset-x-2 bottom-2 z-20 flex items-center justify-center gap-1.5 rounded-full border-[2.5px] border-anime-ink py-2 font-comic text-sm uppercase tracking-wide shadow-[3px_3px_0_0_var(--color-anime-ink)] transition-all duration-200 active:translate-y-[1px] active:shadow-[2px_2px_0_0_var(--color-anime-ink)]",
+        "cc-units cc-u-berry absolute inset-x-2 bottom-2 z-20 flex items-center justify-center gap-1.5 rounded-full border-[2.5px] border-anime-ink py-2 font-comic text-sm uppercase tracking-wide shadow-[3px_3px_0_0_var(--color-anime-ink)] transition-all duration-200 active:translate-y-[1px] active:shadow-[2px_2px_0_0_var(--color-anime-ink)]",
         "md:pointer-events-none md:translate-y-2 md:opacity-0 md:group-hover:pointer-events-auto md:group-hover:translate-y-0 md:group-hover:opacity-100",
         available
-          ? "bg-anime-pink text-white hover:bg-anime-purple"
+          ? "bg-anime-pink text-white"
           : "cursor-not-allowed bg-neutral-200 text-anime-ink/40",
       )}
     >
+      {available && <UnitsFill />}
       <ShoppingBagIcon className="h-4 w-4" strokeWidth={2.5} />
       {available ? "Add to Cart" : "Sold Out"}
+      {available && <UnitsArrow />}
     </button>
   );
 }

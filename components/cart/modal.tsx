@@ -5,6 +5,8 @@ import { Dialog, Transition } from "@headlessui/react";
 import { ShoppingCartIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import LoadingDots from "components/loading-dots";
 import Price from "components/price";
+import { UnitsArrow } from "components/ui/units-arrow";
+import { UnitsFill } from "components/ui/units-fill";
 import { DEFAULT_OPTION } from "lib/constants";
 import { createUrl } from "lib/utils";
 import Image from "next/image";
@@ -263,11 +265,19 @@ function CheckoutButton() {
 
   return (
     <button
-      className="block w-full rounded-full border-[2.5px] border-anime-ink bg-anime-pink p-3.5 text-center font-display text-sm font-extrabold uppercase tracking-wider text-white shadow-[4px_4px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_0_var(--color-anime-ink)] disabled:opacity-60"
+      className="cc-units cc-u-citrus flex w-full items-center justify-center gap-2 rounded-full border-[2.5px] border-anime-ink bg-anime-pink p-3.5 text-center font-display text-sm font-extrabold uppercase tracking-wider text-white shadow-[4px_4px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_0_var(--color-anime-ink)] disabled:opacity-60"
       type="submit"
       disabled={pending}
     >
-      {pending ? <LoadingDots className="bg-white" /> : "Proceed to checkout"}
+      <UnitsFill />
+      {pending ? (
+        <LoadingDots className="bg-white" />
+      ) : (
+        <>
+          Proceed to checkout
+          <UnitsArrow className="ml-0.5" />
+        </>
+      )}
     </button>
   );
 }

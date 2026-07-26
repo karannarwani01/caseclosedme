@@ -59,6 +59,10 @@ const atkinson = Atkinson_Hyperlegible({
 // Re-applies saved accessibility preferences to <html> before paint (no flash).
 const a11yInitScript = `(function(){try{var s=JSON.parse(localStorage.getItem('cc-a11y')||'{}');var m={contrast:'a11y-contrast',links:'a11y-links',biggerText:'a11y-bigger-text',spacing:'a11y-spacing',noMotion:'a11y-no-motion',hideImages:'a11y-hide-images',dyslexia:'a11y-dyslexia',lineHeight:'a11y-line-height'};var e=document.documentElement;for(var k in m){if(s[k])e.classList.add(m[k]);}}catch(e){}})();`;
 
+// units.gr button hover: track the cursor over any `.cc-units` element and
+// expose it as --mx/--my so the fill circle expands from the pointer position.
+const unitsHoverScript = `(function(){function u(e){var t=e.target&&e.target.closest&&e.target.closest('.cc-units');if(!t)return;var r=t.getBoundingClientRect();t.style.setProperty('--mx',(e.clientX-r.left)+'px');t.style.setProperty('--my',(e.clientY-r.top)+'px');}document.addEventListener('pointermove',u,{passive:true});document.addEventListener('pointerdown',u,{passive:true});})();`;
+
 const { SITE_NAME } = process.env;
 
 export const metadata = {
@@ -88,6 +92,7 @@ export default async function RootLayout({
     >
       <body className="flex min-h-screen flex-col overflow-x-clip bg-brand-bg text-brand-ink antialiased">
         <script dangerouslySetInnerHTML={{ __html: a11yInitScript }} />
+        <script dangerouslySetInnerHTML={{ __html: unitsHoverScript }} />
         <CartProvider cartPromise={cart}>
           <WishlistProvider>
             <PromoStrip />

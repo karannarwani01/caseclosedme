@@ -17,3 +17,4 @@ scripts/account-logo*.png
 .vercel
 .lh-*
 lh-*
+.env*

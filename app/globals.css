@@ -439,6 +439,144 @@ html.a11y-dyslexia * {
     var(--font-dyslexia), ui-sans-serif, system-ui, sans-serif !important;
 }
 
+/* ──────────────── units.gr-style button hover ────────────────
+   Layers on top of the existing pill buttons (keeps their border/shadow).
+   On hover a circle fills the button FROM THE CURSOR position (--mx/--my are
+   set per-element by the global pointer script in the root layout), the text
+   inverts, and the diagonal arrow swaps out top-right / in from bottom-left. */
+.cc-units {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  /* Layered fill: two colored waves that expand from the cursor and blend.
+     Retune by overriding these vars per-button (e.g. class or inline style). */
+  --u1: var(--color-anime-cyan); /* first wave (leads) */
+  --u-mid: #22c55e; /* middle wave (green) */
+  --u2: var(--color-anime-pink); /* last wave (follows + blends) */
+  --u-blend: multiply; /* how the waves mix where they overlap */
+  --u-delay: 0.16s; /* total stagger across the waves */
+  --u-dur: 0.55s;
+  --units-text: var(--color-anime-ink); /* text/arrow color once filled */
+}
+/* Three-layer fill (rendered by <UnitsFill/>): u1 → green → u2, each a blobby
+   circle that expands from the cursor. Staggered so the colors layer, and each
+   blob continuously morphs its radius so the leading edge undulates like a wave. */
+.cc-fill {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.cc-fill i {
+  position: absolute;
+  top: var(--my, 50%);
+  left: var(--mx, 50%);
+  width: 300%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  transform: scale(0);
+  transform-origin: center;
+  border-radius: 42% 58% 57% 43% / 45% 47% 53% 55%;
+  animation: cc-wave 3s ease-in-out infinite;
+  transition: transform var(--u-dur) cubic-bezier(0.45, 0.05, 0.2, 1);
+  /* three colours as concentric bands (centre u2 → green → outer u1) so every
+     layer stays visible when filled, and each button keeps its own palette. */
+  background: radial-gradient(
+    circle at center,
+    var(--u2) 0%,
+    var(--u2) 22%,
+    var(--u-mid) 45%,
+    var(--u1) 72%,
+    var(--u1) 100%
+  );
+}
+@keyframes cc-wave {
+  0%,
+  100% {
+    border-radius: 42% 58% 57% 43% / 45% 47% 53% 55%;
+  }
+  50% {
+    border-radius: 61% 39% 43% 57% / 56% 52% 48% 44%;
+  }
+}
+.cc-units:hover .cc-fill i,
+.cc-units:focus-visible .cc-fill i {
+  transform: scale(1);
+}
+.cc-units:hover,
+.cc-units:focus-visible {
+  color: var(--units-text);
+}
+.cc-units:disabled .cc-fill i {
+  transform: scale(0) !important;
+}
+.cc-units:disabled:hover,
+.cc-units:disabled:focus-visible {
+  color: inherit;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cc-fill i {
+    animation: none;
+    transition-duration: 0.001ms;
+  }
+}
+
+/* Per-button color pairs (units.gr cycles a different palette per button).
+   Add one of these alongside `.cc-units`. Defined after `.cc-units` so they
+   win the --u1/--u2 cascade. Multiply keeps every end-state dark → white text. */
+.cc-u-ice {
+  --u1: var(--color-anime-cyan);
+  --u2: var(--color-anime-pink);
+}
+.cc-u-grape {
+  --u1: var(--color-anime-purple);
+  --u2: var(--color-anime-cyan);
+}
+.cc-u-citrus {
+  --u1: var(--color-anime-lime);
+  --u2: var(--color-anime-purple);
+}
+.cc-u-sunset {
+  --u1: var(--color-anime-yellow);
+  --u2: var(--color-anime-orange);
+}
+.cc-u-berry {
+  --u1: var(--color-anime-pink);
+  --u2: var(--color-anime-purple);
+}
+
+/* Diagonal arrow that swaps on hover (two stacked glyphs in a clipped box). */
+.cc-arrow {
+  position: relative;
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  overflow: hidden;
+  flex: none;
+}
+.cc-arrow svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.cc-arrow svg:nth-child(2) {
+  transform: translate(-115%, 115%);
+}
+.cc-units:hover .cc-arrow svg:nth-child(1),
+.cc-units:focus-visible .cc-arrow svg:nth-child(1),
+.cc-arrow-group:hover .cc-arrow svg:nth-child(1),
+.cc-arrow-group:focus-visible .cc-arrow svg:nth-child(1) {
+  transform: translate(115%, -115%);
+}
+.cc-units:hover .cc-arrow svg:nth-child(2),
+.cc-units:focus-visible .cc-arrow svg:nth-child(2),
+.cc-arrow-group:hover .cc-arrow svg:nth-child(2),
+.cc-arrow-group:focus-visible .cc-arrow svg:nth-child(2) {
+  transform: translate(0, 0);
+}
+
 /* ──────────────── Lock the page to vertical scrolling ────────────────
    No horizontal page scroll, drift, or overscroll bounce — inner carousels
    keep their own horizontal scroll. `clip` (not `hidden`) so the sticky

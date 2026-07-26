@@ -4,6 +4,8 @@ import {
   submitReview,
   type ReviewState,
 } from "components/product/review-actions";
+import { UnitsArrow } from "components/ui/units-arrow";
+import { UnitsFill } from "components/ui/units-fill";
 import clsx from "clsx";
 import { useActionState, useState } from "react";
 
@@ -83,9 +85,11 @@ export function ReviewForm({ productHandle }: { productHandle: string }) {
         <button
           type="submit"
           disabled={pending}
-          className="rounded-full border-[2.5px] border-anime-ink bg-anime-pink px-6 py-2.5 font-comic text-base uppercase tracking-wider text-white shadow-[3px_3px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[5px_5px_0_0_var(--color-anime-ink)] disabled:cursor-not-allowed disabled:opacity-60"
+          className="cc-units cc-u-berry inline-flex items-center gap-1.5 rounded-full border-[2.5px] border-anime-ink bg-anime-pink px-6 py-2.5 font-comic text-base uppercase tracking-wider text-white shadow-[3px_3px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[5px_5px_0_0_var(--color-anime-ink)] disabled:cursor-not-allowed disabled:opacity-60"
         >
+          <UnitsFill />
           {pending ? "Posting…" : "Post review"}
+          <UnitsArrow />
         </button>
         {state && !state.ok ? (
           <p className={clsx("text-sm font-bold text-anime-pink")}>
