@@ -26,38 +26,51 @@ type Promo = {
   subtitle: string;
   cta: string;
   figures: Figure[];
+  /**
+   * Background treatment. Default is the comic sunburst + halftone. "pitch"
+   * swaps in the floodlit stadium scene (converging mown stripes, centre
+   * circle, crowd) used by the TCG slide.
+   */
+  scene?: "pitch";
 };
 
 // Shared figure base classes — anchored to the bottom, never intercept the
 // slide's link click, with a soft drop shadow so they pop off the burst.
 const FIG =
   "pointer-events-none absolute bottom-0 w-auto object-contain drop-shadow-[0_12px_16px_rgba(0,0,0,0.4)]";
+// Same, minus the bottom anchor — for figures that stand *on* the pitch and
+// set their own `bottom-[…]` so they land on the grass, not the slide edge.
+const FIG_FREE =
+  "pointer-events-none absolute w-auto object-contain drop-shadow-[0_16px_18px_rgba(0,0,0,0.45)]";
 
 const PROMOS: Promo[] = [
   {
-    id: "eid",
-    href: "/search",
-    ariaLabel: "Eid Super Sale — up to 50% off. Shop now.",
+    id: "op13",
+    href: "/search/trading-cards",
+    ariaLabel:
+      "One Piece Card Game OP-13, Carrying On His Will — English booster boxes. Shop trading cards.",
+    scene: "pitch",
+    // Night sky over the stands; the grass itself is drawn by <PitchScene/>.
     gradient:
-      "linear-gradient(100deg, #f6a31e 0%, #f3851d 25%, #ea5a1c 46%, #d2271b 67%, #b81818 100%)",
-    rays: "rgba(255,238,155,0.95)",
-    badge: "Up to 50% Off",
-    headline: "Eid Super Sale",
+      "linear-gradient(180deg, #04162b 0%, #0a2f52 30%, #0d4a6b 44%, #0d4a6b 100%)",
+    rays: "rgba(215,245,255,0.55)",
+    badge: "OP-13 · English",
+    headline: "One Piece TCG",
     subtitle:
-      "Funkos, slabbed cards & 1/4-scale figures — up to 50% off, this week only.",
-    cta: "Shop Now",
+      "‘Carrying On His Will’ booster boxes — 24 sealed packs, straight from Bandai.",
+    cta: "Shop Trading Cards",
     figures: [
       {
-        src: "/banners/carrot-pop.png",
-        width: 676,
-        height: 946,
-        className: `${FIG} left-[20%] z-10 hidden h-[50%] sm:block lg:h-[56%]`,
+        src: "/banners/luffy-football.webp",
+        width: 558,
+        height: 640,
+        className: `${FIG_FREE} bottom-[7%] left-[1%] z-20 hidden h-[56%] sm:block md:left-[4%] lg:h-[64%]`,
       },
       {
-        src: "/banners/luffy-run.png",
-        width: 745,
-        height: 1025,
-        className: `${FIG} left-[1%] z-20 h-[66%] sm:h-[82%] md:left-[4%] lg:h-[94%]`,
+        src: "/banners/op13-box.webp",
+        width: 563,
+        height: 600,
+        className: `${FIG_FREE} bottom-[13%] left-[22%] z-30 h-[42%] -translate-x-1/2 sm:left-[34%] sm:h-[50%] lg:h-[56%]`,
       },
     ],
   },
@@ -111,6 +124,194 @@ const PROMOS: Promo[] = [
   },
 ];
 
+/**
+ * Floodlit stadium scene, drawn entirely in CSS so it stays crisp at every
+ * breakpoint and costs no image bytes. Layers, back to front: floodlight
+ * beams → crowd → hoardings → grass with converging mown stripes → pitch
+ * markings → the bloom and contact shadow that seat the booster box on the
+ * turf. Figure placement mirrors the `figures` entries of the "pitch" slide,
+ * so move both together.
+ */
+function PitchScene({ rays }: { rays: string }) {
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0">
+      {/* Floodlight banks: two hard glares at the top corners plus a wide,
+          low-contrast wash — deliberately unlike the grass fan below, so the
+          slide doesn't read as one symmetrical starburst. */}
+      <div
+        className="absolute inset-x-0 top-0 h-[48%]"
+        style={{
+          background: `radial-gradient(closest-side at 16% -6%, ${rays} 0%, transparent 74%), radial-gradient(closest-side at 84% -6%, ${rays} 0%, transparent 74%), radial-gradient(140% 100% at 50% 0%, rgba(255,255,255,0.14) 0%, transparent 70%)`,
+          maskImage: "linear-gradient(to bottom, black 0, transparent 96%)",
+          WebkitMaskImage:
+            "linear-gradient(to bottom, black 0, transparent 96%)",
+        }}
+      />
+      {/* Stand roof line + the dark bowl of the stadium behind the crowd */}
+      <div
+        className="absolute inset-x-0 top-0 h-[40%]"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(2,10,22,0.94) 0%, rgba(3,18,34,0.6) 30%, rgba(6,30,52,0.15) 100%)",
+          maskImage:
+            "radial-gradient(150% 112% at 50% 0%, black 56%, transparent 84%)",
+          WebkitMaskImage:
+            "radial-gradient(150% 112% at 50% 0%, black 56%, transparent 84%)",
+        }}
+      />
+      {/* Crowd in the stands — dotted texture, blurred back into the dark */}
+      <div
+        className="absolute inset-x-0 top-[13%] h-[29%] opacity-55 blur-[1.6px]"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, rgba(255,255,255,0.95) 1.5px, transparent 2.1px), radial-gradient(circle, rgba(255,128,128,0.9) 1.5px, transparent 2.1px), radial-gradient(circle, rgba(255,216,110,0.85) 1.5px, transparent 2.1px), radial-gradient(circle, rgba(120,190,255,0.8) 1.5px, transparent 2.1px)",
+          backgroundSize: "9px 7px, 19px 14px, 31px 12px, 43px 17px",
+          backgroundPosition: "0 0, 4px 3px, 11px 5px, 17px 9px",
+          maskImage:
+            "linear-gradient(to bottom, transparent 0, black 26%, black 86%, transparent 100%)",
+          WebkitMaskImage:
+            "linear-gradient(to bottom, transparent 0, black 26%, black 86%, transparent 100%)",
+        }}
+      />
+      {/* Pitch-side advertising hoardings along the horizon */}
+      <div
+        className="absolute inset-x-0 top-[41%] h-[4.5%] border-y-[2px] border-black/50"
+        style={{
+          background:
+            "repeating-linear-gradient(90deg, #b81818 0 7%, #f2f2f2 7% 12%, #0d0a1a 12% 19%, #b81818 19% 26%)",
+          opacity: 0.85,
+        }}
+      />
+      {/* Grass: base tone + mown stripes converging to a vanishing point */}
+      <div className="absolute inset-x-0 bottom-0 top-[45.5%] overflow-hidden">
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, #10743a 0%, #158f45 42%, #0f7a38 100%)",
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "repeating-conic-gradient(from 0deg at 50% -14%, rgba(255,255,255,0.085) 0deg 5deg, transparent 5deg 10deg)",
+          }}
+        />
+        {/* Distance haze at the far end + warm light pooling near the camera */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(190,235,255,0.35) 0%, transparent 26%), radial-gradient(120% 80% at 50% 100%, rgba(255,245,200,0.18) 0%, transparent 60%)",
+          }}
+        />
+      </div>
+      {/* Goal at the far end — netting, posts, and the shadow it casts on the
+          six-yard box. Sits behind the booster box, which frames it. */}
+      <div className="absolute left-[22%] top-[31%] h-[16%] w-[38%] -translate-x-1/2 sm:left-[34%] sm:top-[29%] sm:h-[18%] sm:w-[40%]">
+        {/* Net: crosshatch over a slight darkening, so it reads against grass */}
+        <div
+          className="absolute inset-x-[4px] bottom-0 top-[6px]"
+          style={{
+            background:
+              "repeating-linear-gradient(48deg, rgba(255,255,255,0.42) 0 1px, transparent 1px 9px), repeating-linear-gradient(-48deg, rgba(255,255,255,0.42) 0 1px, transparent 1px 9px), linear-gradient(180deg, rgba(3,20,36,0.32) 0%, rgba(3,20,36,0.12) 100%)",
+          }}
+        />
+        {/* Crossbar + posts */}
+        <div className="absolute inset-x-0 top-0 h-[6px] rounded-[2px] bg-white/95 shadow-[0_2px_4px_rgba(0,0,0,0.45)]" />
+        <div className="absolute bottom-0 left-0 top-0 w-[6px] rounded-[2px] bg-white/95 shadow-[0_2px_4px_rgba(0,0,0,0.45)]" />
+        <div className="absolute bottom-0 right-0 top-0 w-[6px] rounded-[2px] bg-white/95 shadow-[0_2px_4px_rgba(0,0,0,0.45)]" />
+      </div>
+      {/* Six-yard box in front of the goal */}
+      <div className="absolute left-[22%] top-[47%] hidden h-[7%] w-[62%] -translate-x-1/2 border-x-[3px] border-b-[3px] border-white/40 sm:left-[34%] sm:block sm:w-[46%]" />
+      {/* Pitch markings: far touchline, centre circle, spot */}
+      <div className="absolute inset-x-0 top-[46.5%] h-[2px] bg-white/45" />
+      <div className="absolute bottom-[6%] left-[22%] h-[26%] w-[46%] -translate-x-1/2 rounded-[50%] border-[3px] border-white/45 sm:left-[34%] sm:w-[40%]" />
+      <div className="absolute bottom-[17%] left-[22%] h-[6px] w-[14px] -translate-x-1/2 rounded-[50%] bg-white/50 sm:left-[34%]" />
+      {/* Floodlight bloom behind the box */}
+      <div
+        className="absolute bottom-[8%] left-[22%] h-[62%] w-[70%] -translate-x-1/2 sm:left-[34%] sm:w-[56%]"
+        style={{
+          background:
+            "radial-gradient(closest-side, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.16) 45%, transparent 72%)",
+        }}
+      />
+      {/* Contact shadow so the box sits *on* the grass */}
+      <div className="absolute bottom-[10.5%] left-[22%] h-[6%] w-[30%] -translate-x-1/2 rounded-[50%] bg-black/55 blur-[8px] sm:left-[34%] sm:w-[24%]" />
+      {/* Cards bursting out of the box. The BVB × One Piece Luffy leader is the
+          football tie-in, so it gets the biggest, most upright placement. */}
+      <FloatingCard
+        src="/banners/op13-card-g4.webp"
+        ratio="350 / 470"
+        className="bottom-[68%] left-[19%] hidden h-[21%] -rotate-[19deg] md:block"
+      />
+      <FloatingCard
+        src="/banners/op13-card-ace.webp"
+        ratio="337 / 470"
+        className="bottom-[57%] left-[24%] hidden h-[23%] -rotate-[8deg] sm:block"
+      />
+      <FloatingCard
+        src="/banners/op13-card-bvb.webp"
+        ratio="336 / 470"
+        className="bottom-[13%] left-[43%] hidden h-[30%] rotate-[8deg] sm:block"
+        glow
+      />
+      <FloatingCard
+        src="/banners/op13-card-sabo.webp"
+        ratio="336 / 470"
+        className="bottom-[52%] left-[41%] hidden h-[20%] rotate-[22deg] md:block"
+      />
+      {/* Edge vignette to seat the whole scene */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(120% 90% at 50% 45%, transparent 52%, rgba(2,12,24,0.45) 100%)",
+        }}
+      />
+    </div>
+  );
+}
+
+/**
+ * A tilted OP-13 card bursting out of the box. The face is real set art
+ * (cropped from the box lid); the overlay is the foil sheen that makes it
+ * catch the floodlights. Sized by the caller's `h-[…]`, 5:7 card ratio.
+ */
+function FloatingCard({
+  src,
+  ratio,
+  className,
+  glow,
+}: {
+  src: string;
+  /** The scan's own w/h — the frame takes the image's exact shape, so the
+   *  whole card fits with nothing cropped off the sides or the bottom. */
+  ratio: string;
+  className: string;
+  glow?: boolean;
+}) {
+  return (
+    <span
+      className={`absolute z-20 overflow-hidden rounded-[5px] border-2 border-white/85 bg-[#961616] bg-contain bg-center bg-no-repeat ${
+        glow
+          ? "shadow-[0_0_0_3px_rgba(255,232,120,0.55),0_14px_24px_rgba(0,0,0,0.5)]"
+          : "shadow-[0_10px_16px_rgba(0,0,0,0.45)]"
+      } ${className}`}
+      style={{ backgroundImage: `url(${src})`, aspectRatio: ratio }}
+    >
+      <span
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(115deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.08) 26%, transparent 52%), linear-gradient(0deg, rgba(0,0,0,0.3) 0%, transparent 42%)",
+        }}
+      />
+    </span>
+  );
+}
+
 function PromoSlide({ promo, eager }: { promo: Promo; eager: boolean }) {
   return (
     <Link
@@ -124,18 +325,22 @@ function PromoSlide({ promo, eager }: { promo: Promo; eager: boolean }) {
         className="absolute inset-0"
         style={{ background: promo.gradient }}
       />
-      {/* Sunburst rays behind the figures (left) */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-y-[-30%] left-[-15%] w-[75%]"
-        style={{
-          background: `repeating-conic-gradient(from 0deg at 40% 50%, ${promo.rays} 0deg 4deg, transparent 4deg 11deg)`,
-          maskImage:
-            "radial-gradient(circle at 40% 50%, black 0 28%, transparent 68%)",
-          WebkitMaskImage:
-            "radial-gradient(circle at 40% 50%, black 0 28%, transparent 68%)",
-        }}
-      />
+      {/* Sunburst rays behind the figures (left) — or the stadium scene */}
+      {promo.scene === "pitch" ? (
+        <PitchScene rays={promo.rays} />
+      ) : (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-y-[-30%] left-[-15%] w-[75%]"
+          style={{
+            background: `repeating-conic-gradient(from 0deg at 40% 50%, ${promo.rays} 0deg 4deg, transparent 4deg 11deg)`,
+            maskImage:
+              "radial-gradient(circle at 40% 50%, black 0 28%, transparent 68%)",
+            WebkitMaskImage:
+              "radial-gradient(circle at 40% 50%, black 0 28%, transparent 68%)",
+          }}
+        />
+      )}
       {/* Halftone dots over the right side */}
       <div
         aria-hidden
@@ -149,6 +354,18 @@ function PromoSlide({ promo, eager }: { promo: Promo; eager: boolean }) {
             "linear-gradient(to right, transparent 45%, black 82%)",
         }}
       />
+      {/* Stadium slide only: darken the right third so the copy stays legible
+          over the bright grass. */}
+      {promo.scene === "pitch" && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to right, transparent 42%, rgba(4,16,30,0.5) 74%, rgba(4,16,30,0.72) 100%)",
+          }}
+        />
+      )}
 
       {/* Figures bursting from the left */}
       {promo.figures.map((f) => (
