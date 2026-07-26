@@ -1,7 +1,7 @@
 export function PromoStrip() {
   const messages = [
     "★ PRE-ORDERS — get a hold of it early on",
-    "✦ Worldwide shipping on orders $100+",
+    "✦ Best protectors for your collectables",
     "♛ Just dropped: Luffy Gear 5 Pop! #1525",
     "◆ Slabbed PSA cards, fresh from the safe",
     "☠ One Piece Pops in stock — Luffy, Zoro, Ace & more",
