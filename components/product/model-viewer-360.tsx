@@ -97,11 +97,11 @@ export function ModelViewer360({
       poster={poster}
       alt={alt}
       camera-controls
-      /* Opens on a three-quarter view: dead-on, a clear box shows almost
-         nothing, while a slight turn reveals the side walls, the corner
-         thickness and the four magnets along the top rim. */
-      camera-orbit="22deg 84deg auto"
-      min-camera-orbit="-Infinity 80deg auto"
+      /* Opens on the raised three-quarter view of a studio product shot: dead-on
+         a clear box shows almost nothing, while looking down into it reveals the
+         side walls, the corner thickness, the four magnets and the etched base. */
+      camera-orbit="35deg 58deg auto"
+      min-camera-orbit="-Infinity 45deg auto"
       max-camera-orbit="Infinity 100deg auto"
       auto-rotate
       auto-rotate-delay="1500"
@@ -119,7 +119,7 @@ export function ModelViewer360({
         width: "100%",
         height: "100%",
         background:
-          "linear-gradient(165deg, #e8e7e4 0%, #d6d5d1 45%, #c2c1bd 100%)",
+          "radial-gradient(ellipse at 50% 78%, #b4b5b9 0%, #9a9c9f 55%, #8c8e92 100%)",
       }}
     />
   );
