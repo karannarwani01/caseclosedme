@@ -119,7 +119,7 @@ export function ModelViewer360({
         width: "100%",
         height: "100%",
         background:
-          "radial-gradient(ellipse at 50% 78%, #b4b5b9 0%, #9a9c9f 55%, #8c8e92 100%)",
+          "radial-gradient(ellipse at 50% 78%, #6c6e73 0%, #525459 55%, #43454a 100%)",
       }}
     />
   );
