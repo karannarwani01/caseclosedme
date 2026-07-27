@@ -25,6 +25,7 @@ declare global {
           "shadow-intensity"?: string;
           "shadow-softness"?: string;
           "environment-image"?: string;
+          "tone-mapping"?: string;
           exposure?: string;
           "interaction-prompt"?: string;
           "touch-action"?: string;
@@ -102,21 +103,22 @@ export function ModelViewer360({
       auto-rotate
       auto-rotate-delay="1500"
       rotation-per-second="25deg"
-      /* Clear acrylic is nearly invisible on white: it has no colour of its own,
-         so it only reads through reflections and refracted edges. A neutral HDR
-         environment gives it something to reflect, a soft grey backdrop gives
-         the edges contrast, and a stronger contact shadow anchors it. */
-      environment-image="neutral"
-      shadow-intensity="1.6"
-      shadow-softness="0.7"
-      exposure="1.15"
+      /* Clear acrylic has no colour of its own - it only reads through the
+         reflections it catches and the contrast behind it. "legacy" is a harder,
+         more directional studio HDR than "neutral", which is what puts highlights
+         on the panel edges; the commerce tone map keeps them from blowing out. */
+      environment-image="legacy"
+      tone-mapping="commerce"
+      shadow-intensity="2"
+      shadow-softness="0.4"
+      exposure="1"
       interaction-prompt="none"
       touch-action="pan-y"
       style={{
         width: "100%",
         height: "100%",
         background:
-          "radial-gradient(circle at 50% 38%, #ffffff 0%, #f2f1ee 55%, #e2e0da 100%)",
+          "linear-gradient(165deg, #e8e7e4 0%, #d6d5d1 45%, #c2c1bd 100%)",
       }}
     />
   );
