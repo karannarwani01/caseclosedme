@@ -4,7 +4,7 @@ import { RefundRequestForm } from "components/refund-request-form";
 export const metadata = {
   title: "Refund Request Form",
   description:
-    "Submit a refund request for your caseclosed order. We reply to all requests within 1 business day.",
+    "Submit a refund request for your caseclosed order. We reply to all requests within 1–3 business days.",
 };
 
 export default function RefundRequestPage() {

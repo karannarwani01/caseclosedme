@@ -402,7 +402,7 @@ export function RefundRequestForm() {
       </button>
 
       <p className="text-sm text-anime-ink/60 sm:text-base">
-        We reply to all requests within 1 business day.
+        We reply to all requests within 1–3 business days.
       </p>
     </form>
   );
