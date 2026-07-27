@@ -1,7 +1,7 @@
 /**
  * Builds a hard-protector GLB at a given size from the style 1 model.
  *
- *   node build-case.js <out.glb> <lengthMM> <widthMM> <bodyHeightMM>
+ *   node build-case.js <out.glb> <lengthMM> <widthMM> <bodyHeightMM> [magnetsPerSide]
  *
  * The source model is in metres and already true to scale, so a case of
  * another size is the same shell moved outward - not scaled. That matters:
@@ -18,13 +18,17 @@ const fs = require("fs");
 const SRC = __dirname + "/acrylic-case-style-1.glb";
 const T = 0.006; // acrylic thickness, metres
 const BASE = { L: 0.13, W: 0.103, H: 0.172 }; // style 1, outer body
-const MAG = { x: 0.062, z: 0.03779, y: 0.13314 }; // magnet node translations
+const BODY_Y = -0.03886354714632034; // body node offset, for placing magnets
+const MAG_INSET = 0.0137; // outermost magnet, in from the corner
 
-const [out, LMM, WMM, HMM] = process.argv.slice(2);
+const [out, LMM, WMM, HMM, PER_SIDE] = process.argv.slice(2);
 if (!out || !LMM || !WMM || !HMM) {
-  console.error("usage: node build-case.js <out.glb> <lengthMM> <widthMM> <bodyHeightMM>");
+  console.error(
+    "usage: node build-case.js <out.glb> <lengthMM> <widthMM> <bodyHeightMM> [magnetsPerSide]",
+  );
   process.exit(1);
 }
+const perSide = Number(PER_SIDE || 2);
 const L = LMM / 1000,
   W = WMM / 1000,
   H = HMM / 1000;
@@ -46,7 +50,11 @@ const edit = (meshIndex, fn) => {
     hi = [-1e9, -1e9, -1e9];
   for (let i = 0; i < a.count; i++) {
     const o = base + i * 12;
-    const v = fn([bin.readFloatLE(o), bin.readFloatLE(o + 4), bin.readFloatLE(o + 8)]);
+    const v = fn([
+      bin.readFloatLE(o),
+      bin.readFloatLE(o + 4),
+      bin.readFloatLE(o + 8),
+    ]);
     for (let k = 0; k < 3; k++) {
       bin.writeFloatLE(v[k], o + k * 4);
       lo[k] = Math.min(lo[k], v[k]);
@@ -67,15 +75,45 @@ edit(2, ([x, y, z]) => [
 // Lid: same outward slide, lifted to sit on the taller walls.
 edit(1, ([x, y, z]) => [x + Math.sign(x) * dx, y + dy, z + Math.sign(z) * dz]);
 
-// Magnets keep their real size and their distance in from each corner.
-for (const n of j.nodes) {
-  if (n.mesh === 0 && n.translation) {
-    n.translation[0] += Math.sign(n.translation[0]) * dx;
-    n.translation[2] += Math.sign(n.translation[2]) * dz;
-    n.translation[1] += dy;
+// Magnets sit centred in the two long walls, along the top rim. They keep
+// their real size at every case size - a bigger case takes more of them, not
+// bigger ones - and the outermost pair stays a fixed distance in from the
+// corner, with any others spread evenly between.
+const magIdx = j.nodes
+  .map((n, i) => (n.mesh === 0 ? i : -1))
+  .filter((i) => i >= 0);
+const template = j.nodes[magIdx[0]];
+const span = W / 2 - MAG_INSET;
+const zs =
+  perSide === 1
+    ? [0]
+    : Array.from(
+        { length: perSide },
+        (_, i) => -span + (2 * span * i) / (perSide - 1),
+      );
+const spots = [];
+for (const sx of [-1, 1])
+  for (const z of zs) spots.push([sx * (L / 2 - T / 2), H + BODY_Y, z]);
+
+const scene = j.scenes[j.scene || 0];
+spots.forEach((t, i) => {
+  if (i < magIdx.length) {
+    j.nodes[magIdx[i]].translation = t;
+  } else {
+    j.nodes.push({ ...template, name: `Magnet ${i + 1}`, translation: t });
+    scene.nodes.push(j.nodes.length - 1);
   }
-  // Etched base logo scales with the footprint, limited by the shorter axis
-  // so it can never overhang the cavity.
+});
+// Any surplus is dropped from the scene; the node itself is left orphaned,
+// which glTF simply ignores.
+for (const i of magIdx.slice(spots.length)) {
+  const at = scene.nodes.indexOf(i);
+  if (at >= 0) scene.nodes.splice(at, 1);
+}
+
+// Etched base logo scales with the footprint, limited by the shorter axis so
+// it can never overhang the cavity.
+for (const n of j.nodes) {
   if (n.mesh === 3 && n.scale) {
     const k = Math.min(L / BASE.L, W / BASE.W);
     n.scale = n.scale.map((s) => s * k);
