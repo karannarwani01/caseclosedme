@@ -9,7 +9,7 @@ To restore one: upload the `.glb` via `stagedUploadsCreate` (resource
 `MODEL_3D`), attach it with `productCreateMedia`, delete the previous
 `Model3d`, then set the viewer settings listed below.
 
-## Style 1 - clear studio (approved 27 Jul 2026)
+## Style 1 - clear studio (LIVE, approved 27 Jul 2026)
 
 `acrylic-case-style-1.glb` - preview in `acrylic-case-style-1-preview.png`
 (the right-hand panel of the three).
@@ -47,13 +47,15 @@ Notes on why, so these don't get re-litigated:
 - **The backdrop has to stay dark.** Clear acrylic reads through its edge
   highlights, and those only carry against a darker background.
 
-## Style 2 - thick panels (live)
+## Style 2 - thick panels (tried, not chosen)
 
 `acrylic-case-style-2.glb` - preview in `acrylic-case-style-2-preview.png`
 (left to right: style 1, 1.5x, 2x; this is the 2x on the right).
 
 Style 1 with the panel geometry doubled in thickness, 0.006 -> 0.012 units.
-Materials and viewer settings are identical to style 1.
+Materials and viewer settings are identical to style 1. Compared side by side
+against style 1 and rejected - the thicker rim and base read heavier than the
+reference photo. Kept here in case it is wanted later.
 
 How the geometry was changed, in case it needs redoing at another thickness:
 
