@@ -46,3 +46,25 @@ Notes on why, so these don't get re-litigated:
   not cleaner - the layered inner surfaces are what give the walls body.
 - **The backdrop has to stay dark.** Clear acrylic reads through its edge
   highlights, and those only carry against a darker background.
+
+## Style 2 - thick panels (live)
+
+`acrylic-case-style-2.glb` - preview in `acrylic-case-style-2-preview.png`
+(left to right: style 1, 1.5x, 2x; this is the 2x on the right).
+
+Style 1 with the panel geometry doubled in thickness, 0.006 -> 0.012 units.
+Materials and viewer settings are identical to style 1.
+
+How the geometry was changed, in case it needs redoing at another thickness:
+
+- **Walls** move inward only - inner faces `|x| 0.0590 -> 0.0530` and
+  `|z| 0.0455 -> 0.0395`. Outer faces stay put, so the case keeps its
+  footprint and the four magnets stay embedded in the side walls.
+- **Base** grows downward, outer face `y 0 -> -0.006`. It cannot grow upward:
+  the etched logo decal sits just above the cavity floor at world y -0.0327,
+  so raising the floor would bury it inside the base.
+- **Lid** grows upward, top face `y 0.178 -> 0.184`, bottom stays seated on
+  the walls. The bevel band moves as a unit so its profile is preserved.
+
+Faces stay axis-aligned throughout, so the existing normals remain correct and
+nothing needs recomputing.
