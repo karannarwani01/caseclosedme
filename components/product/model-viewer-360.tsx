@@ -103,22 +103,19 @@ export function ModelViewer360({
       auto-rotate
       auto-rotate-delay="1500"
       rotation-per-second="25deg"
-      /* Clear acrylic has no colour of its own - it only reads through the
-         reflections it catches and the contrast behind it. "legacy" is a harder,
-         more directional studio HDR than "neutral", which is what puts highlights
-         on the panel edges; the commerce tone map keeps them from blowing out. */
-      environment-image="legacy"
-      tone-mapping="commerce"
-      shadow-intensity="2"
-      shadow-softness="0.4"
-      exposure="1"
+      /* Clear acrylic reads through reflections, so it needs an environment to
+         catch. No ground shadow: the case is open-bottomed and the shadow fell
+         straight across the etched base logo, muddying it. */
+      environment-image="neutral"
+      shadow-intensity="0"
+      exposure="1.15"
       interaction-prompt="none"
       touch-action="pan-y"
       style={{
         width: "100%",
         height: "100%",
         background:
-          "linear-gradient(165deg, #e8e7e4 0%, #d6d5d1 45%, #c2c1bd 100%)",
+          "radial-gradient(circle at 50% 38%, #ffffff 0%, #f2f1ee 55%, #e2e0da 100%)",
       }}
     />
   );
