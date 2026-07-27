@@ -106,16 +106,17 @@ export function ModelViewer360({
       /* Clear acrylic reads through reflections, so it needs an environment to
          catch. No ground shadow: the case is open-bottomed and the shadow fell
          straight across the etched base logo, muddying it. */
-      environment-image="neutral"
+      environment-image="legacy"
+      tone-mapping="commerce"
       shadow-intensity="0"
-      exposure="1.15"
+      exposure="1"
       interaction-prompt="none"
       touch-action="pan-y"
       style={{
         width: "100%",
         height: "100%",
         background:
-          "radial-gradient(circle at 50% 38%, #ffffff 0%, #f2f1ee 55%, #e2e0da 100%)",
+          "linear-gradient(165deg, #e8e7e4 0%, #d6d5d1 45%, #c2c1bd 100%)",
       }}
     />
   );
