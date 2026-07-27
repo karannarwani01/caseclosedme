@@ -299,22 +299,11 @@ if (divT > 0) {
 }
 
 // Etched base logo scales with the footprint, limited by the shorter axis so
-// it can never overhang the cavity.
-// Snapshot first: the divider case appends a node, and appending to the array
-// being walked would duplicate the logo forever.
+// it can never overhang the cavity. It stays centred on divided cases too -
+// the divider crosses it, which is what the real case does.
 for (const n of j.nodes.filter((n) => n.mesh === 3 && n.scale)) {
   const k = Math.min(L / BASE.L, W / BASE.W);
   n.scale = n.scale.map((s) => s * k);
-  // A centred logo would be sliced in half by the divider, so a divided case
-  // gets one per compartment instead.
-  if (divT > 0) {
-    const centre = divT / 2 + (L / 2 - T - divT / 2) / 2;
-    n.translation[0] = -centre;
-    const twin = { ...n, name: "Logo 2", translation: [...n.translation] };
-    twin.translation[0] = centre;
-    j.nodes.push(twin);
-    j.scenes[j.scene || 0].nodes.push(j.nodes.length - 1);
-  }
 }
 
 let njson = Buffer.from(JSON.stringify(j), "utf8");
