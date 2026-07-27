@@ -5,6 +5,7 @@ export type FacetField =
   | "type"
   | "feature"
   | "protector"
+  | "material"
   | "line"
   | "format"
   | "vendor"
@@ -190,6 +191,23 @@ function protectorTypeLabelsOf(p: Product): string[] {
   return [...labels];
 }
 
+// Rigid acrylic case vs flexible sleeve — the split shoppers care about most,
+// and the one thing the Type facet above can't express.
+const PROTECTOR_MATERIALS: Record<string, string> = {
+  "hard-protector": "Hard",
+  "soft-protector": "Soft",
+};
+const MATERIAL_ORDER = ["Hard", "Soft"];
+
+function materialLabelsOf(p: Product): string[] {
+  const labels = new Set<string>();
+  for (const t of p.tags) {
+    const label = PROTECTOR_MATERIALS[norm(t)];
+    if (label) labels.add(label);
+  }
+  return [...labels];
+}
+
 // Does a product match a chosen facet value?
 export function matchesFacet(
   p: Product,
@@ -199,6 +217,7 @@ export function matchesFacet(
   if (field === "type") return p.productType === value;
   if (field === "feature") return featureLabelsOf(p).includes(value);
   if (field === "protector") return protectorTypeLabelsOf(p).includes(value);
+  if (field === "material") return materialLabelsOf(p).includes(value);
   if (field === "line") return lineLabelsOf(p).includes(value);
   if (field === "format") return cardFormatLabelsOf(p).includes(value);
   if (field === "vendor") return prettyVendor(p.vendor) === value;
@@ -219,6 +238,7 @@ function tally(map: Map<string, number>): Facet[] {
 export function buildFacetGroups(products: Product[]): FacetGroup[] {
   const types = new Map<string, number>();
   const protectorTypes = new Map<string, number>();
+  const materials = new Map<string, number>();
   const lines = new Map<string, number>();
   const features = new Map<string, number>();
   const cardFormats = new Map<string, number>();
@@ -236,6 +256,7 @@ export function buildFacetGroups(products: Product[]): FacetGroup[] {
     bump(vendors, prettyVendor(p.vendor));
     bump(sizes, sizeOf(p));
     for (const label of protectorTypeLabelsOf(p)) bump(protectorTypes, label);
+    for (const label of materialLabelsOf(p)) bump(materials, label);
     for (const label of lineLabelsOf(p)) bump(lines, label);
     for (const label of featureLabelsOf(p)) bump(features, label);
     for (const label of cardFormatLabelsOf(p)) bump(cardFormats, label);
@@ -326,6 +347,22 @@ export function buildFacetGroups(products: Product[]): FacetGroup[] {
     // Only show Type when there's more than one productType to choose.
     push("type", "Type", "var(--color-anime-cyan)", "type", types, {
       minOptions: 2,
+    });
+  }
+  // Hard vs Soft, straight under Type on protector pages. Only worth showing
+  // when both are actually on the page - a hard-only feed shouldn't offer it.
+  if (materials.size > 1) {
+    groups.push({
+      key: "material",
+      title: "Protection",
+      accent: "var(--color-anime-pink)",
+      field: "material",
+      options: [...materials.entries()]
+        .map(([value, count]) => ({ value, label: value, count }))
+        .sort(
+          (a, b) =>
+            MATERIAL_ORDER.indexOf(a.label) - MATERIAL_ORDER.indexOf(b.label),
+        ),
     });
   }
   push(
