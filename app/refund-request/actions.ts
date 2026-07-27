@@ -8,7 +8,7 @@ import {
 
 const FORM_ENDPOINT =
   process.env.REFUND_FORM_ENDPOINT ||
-  "https://formsubmit.co/ajax/hello@caseclosedme.com";
+  "https://formsubmit.co/ajax/caseclosed.me@gmail.com";
 
 export type RefundFormState = {
   status: "idle" | "success" | "error";
@@ -210,13 +210,13 @@ export async function submitRefundRequest(
     return {
       status: "success",
       message:
-        "Refund request received. We'll reply within 1 business day to hello@caseclosedme.com.",
+        "Refund request received. We'll reply within 1-3 business days to the email you provided.",
     };
   }
 
   return {
     status: "error",
     message:
-      "We couldn't send your request. Please email hello@caseclosedme.com directly.",
+      "We couldn't send your request. Please email caseclosed.me@gmail.com directly.",
   };
 }

@@ -241,10 +241,10 @@ export default function ShopNowPayLaterPage() {
         <p className="mt-12 text-center text-base text-anime-ink/70 sm:text-lg">
           Question about BNPL on a specific order? Email{" "}
           <a
-            href="mailto:hello@caseclosedme.com"
+            href="mailto:caseclosed.me@gmail.com"
             className="font-semibold text-anime-pink underline-offset-2 hover:underline"
           >
-            hello@caseclosedme.com
+            caseclosed.me@gmail.com
           </a>
           .
         </p>

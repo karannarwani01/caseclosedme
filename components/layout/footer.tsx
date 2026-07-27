@@ -188,22 +188,16 @@ export default async function Footer() {
               Contact Us
             </h3>
             <a
-              href="tel:+18005550100"
+              href="tel:+971501269270"
               className="text-base text-white/70 transition-colors hover:text-anime-pink"
             >
-              +1 (800) 555-0100
+              +971 50 126 9270
             </a>
             <a
-              href="tel:+18005550101"
+              href="mailto:caseclosed.me@gmail.com"
               className="text-base text-white/70 transition-colors hover:text-anime-pink"
             >
-              +1 (800) 555-0101
-            </a>
-            <a
-              href="mailto:hello@caseclosedme.com"
-              className="text-base text-white/70 transition-colors hover:text-anime-pink"
-            >
-              hello@caseclosedme.com
+              caseclosed.me@gmail.com
             </a>
           </div>
 
