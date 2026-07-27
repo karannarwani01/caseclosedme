@@ -97,7 +97,10 @@ export function ModelViewer360({
       poster={poster}
       alt={alt}
       camera-controls
-      camera-orbit="0deg 90deg auto"
+      /* Opens on a three-quarter view: dead-on, a clear box shows almost
+         nothing, while a slight turn reveals the side walls, the corner
+         thickness and the four magnets along the top rim. */
+      camera-orbit="22deg 84deg auto"
       min-camera-orbit="-Infinity 80deg auto"
       max-camera-orbit="Infinity 100deg auto"
       auto-rotate
