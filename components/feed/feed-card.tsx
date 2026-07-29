@@ -1,6 +1,7 @@
 import { QuickAddButton } from "components/cart/quick-add-button";
 import { StarburstBadge } from "components/feed/starburst-badge";
 import Price from "components/price";
+import { SoldOutStamp } from "components/sold-out-stamp";
 import { WishlistButton } from "components/wishlist/wishlist-button";
 import { badgeForTags } from "lib/editorial";
 import { seriesOf } from "lib/feed-facets";
@@ -35,13 +36,7 @@ export function FeedCard({ product }: { product: Product }) {
   return (
     <article className="group relative flex flex-col">
       <div className="relative">
-        {soldOut ? (
-          <StarburstBadge
-            label="Sold Out"
-            bg="var(--color-anime-ink)"
-            color="#fff"
-          />
-        ) : badge ? (
+        {badge ? (
           <StarburstBadge
             label={badge.label}
             bg={badge.bg}
@@ -80,6 +75,8 @@ export function FeedCard({ product }: { product: Product }) {
               </span>
             </div>
           )}
+
+          {soldOut ? <SoldOutStamp className="w-[78%]" /> : null}
         </Link>
 
         {/* Wishlist heart + quick add-to-cart (siblings of the Link so they

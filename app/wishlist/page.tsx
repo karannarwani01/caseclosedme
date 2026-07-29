@@ -2,6 +2,7 @@
 
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import Price from "components/price";
+import { SoldOutStamp } from "components/sold-out-stamp";
 import { useWishlist } from "components/wishlist/wishlist-context";
 import Image from "next/image";
 import Link from "next/link";
@@ -98,9 +99,10 @@ export default function WishlistPage() {
                   />
 
                   {soldOut ? (
-                    <span className="absolute bottom-2 left-2 z-20 -rotate-3 rounded-full border-[2.5px] border-anime-ink bg-anime-ink px-2.5 py-0.5 font-comic text-xs uppercase tracking-wide text-white">
-                      Sold out
-                    </span>
+                    <>
+                      <SoldOutStamp className="w-[78%]" />
+                      <span className="sr-only">Sold out</span>
+                    </>
                   ) : null}
                 </Link>
 
