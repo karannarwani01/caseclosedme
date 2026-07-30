@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Wishlist",
   description:
     "The Funko Pops, blind boxes and trading cards you've saved on caseclosed.",
+  alternates: { canonical: "/wishlist" },
 };
 
 export default function WishlistLayout({

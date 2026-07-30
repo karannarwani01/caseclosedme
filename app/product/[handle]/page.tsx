@@ -34,6 +34,9 @@ export async function generateMetadata(props: {
   return {
     title: seoPageTitle(product.seo.title, product.title),
     description: product.seo.description || product.description,
+    // Gallery state is carried in ?image=N, so without this every product has
+    // as many crawlable URLs as it has photos.
+    alternates: { canonical: `/product/${product.handle}` },
     robots: {
       index: indexable,
       follow: indexable,

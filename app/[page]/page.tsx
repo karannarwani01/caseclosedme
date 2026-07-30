@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import Prose from "components/prose";
 import { getPage } from "lib/shopify";
+import { seoPageTitle } from "lib/seo-title";
 import { notFound } from "next/navigation";
 
 // Group the policy HTML into one box per section: each top-level <h2> heading
@@ -26,13 +27,16 @@ export async function generateMetadata(props: {
   if (!page) return notFound();
 
   return {
-    title: page.seo?.title || page.title,
+    // Same guard as products/collections: these titles come from Shopify and a
+    // merchant may well type the brand into one.
+    title: seoPageTitle(page.seo?.title, page.title),
     description: page.seo?.description || page.bodySummary,
     openGraph: {
       publishedTime: page.createdAt,
       modifiedTime: page.updatedAt,
       type: "article",
     },
+    alternates: { canonical: `/${params.page}` },
   };
 }
 
