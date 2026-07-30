@@ -70,13 +70,13 @@ const PROMOS: Promo[] = [
         src: "/banners/luffy-football.webp",
         width: 558,
         height: 640,
-        className: `${FIG_FREE} bottom-[7%] left-[1%] z-20 hidden h-[56%] sm:block md:left-[4%] lg:h-[64%]`,
+        className: `${FIG_FREE} bottom-[6%] right-[1%] z-20 h-[34%] sm:bottom-[7%] sm:left-[1%] sm:right-auto sm:h-[56%] md:left-[4%] lg:h-[64%]`,
       },
       {
         src: "/banners/op13-box.webp",
         width: 563,
         height: 600,
-        className: `${FIG_FREE} bottom-[13%] left-[22%] z-30 h-[42%] -translate-x-1/2 sm:left-[34%] sm:h-[50%] lg:h-[56%]`,
+        className: `${FIG_FREE} bottom-[10%] left-[22%] z-30 h-[38%] -translate-x-1/2 sm:bottom-[13%] sm:left-[34%] sm:h-[50%] lg:h-[56%]`,
       },
     ],
   },
@@ -100,7 +100,7 @@ const PROMOS: Promo[] = [
         src: "/banners/hw-card-nissan.webp",
         width: 474,
         height: 620,
-        className: `${FIG_FREE} bottom-[9%] left-[5%] z-10 hidden h-[48%] sm:block lg:h-[54%]`,
+        className: `${FIG_FREE} bottom-[8%] left-[1%] z-10 h-[30%] sm:bottom-[9%] sm:left-[5%] sm:h-[48%] lg:h-[54%]`,
       },
       {
         src: "/banners/hw-card-bugatti.webp",
@@ -112,7 +112,7 @@ const PROMOS: Promo[] = [
         src: "/banners/hw-card-reventon.webp",
         width: 502,
         height: 620,
-        className: `${FIG_FREE} bottom-[6%] left-[17%] z-20 h-[50%] sm:h-[56%] lg:h-[62%]`,
+        className: `${FIG_FREE} bottom-[5%] left-[40%] z-20 h-[38%] sm:bottom-[6%] sm:left-[17%] sm:h-[56%] lg:h-[62%]`,
       },
     ],
   },
@@ -135,19 +135,19 @@ const PROMOS: Promo[] = [
         src: "/banners/pop-spiderman.webp",
         width: 380,
         height: 600,
-        className: `${FIG_FREE} bottom-[11%] left-[6%] z-10 hidden h-[44%] sm:block lg:h-[50%]`,
+        className: `${FIG_FREE} bottom-[8%] left-[2%] z-10 h-[28%] sm:bottom-[11%] sm:left-[6%] sm:h-[44%] lg:h-[50%]`,
       },
       {
         src: "/banners/pop-cap.webp",
         width: 308,
         height: 420,
-        className: `${FIG_FREE} bottom-[12%] left-[28%] z-10 hidden h-[38%] sm:block lg:h-[43%]`,
+        className: `${FIG_FREE} bottom-[9%] left-[64%] z-10 h-[24%] sm:bottom-[12%] sm:left-[28%] sm:h-[38%] lg:h-[43%]`,
       },
       {
         src: "/banners/pop-ironman.webp",
         width: 379,
         height: 640,
-        className: `${FIG_FREE} bottom-[8%] left-[17%] z-20 h-[46%] sm:h-[54%] lg:h-[61%]`,
+        className: `${FIG_FREE} bottom-[6%] left-[32%] z-20 h-[34%] sm:bottom-[8%] sm:left-[17%] sm:h-[54%] lg:h-[61%]`,
       },
     ],
   },
@@ -545,7 +545,7 @@ function PitchScene({ rays }: { rays: string }) {
       <FloatingCard
         src="/banners/op13-card-bvb.webp"
         ratio="336 / 470"
-        className="bottom-[13%] left-[43%] hidden h-[30%] rotate-[8deg] sm:block"
+        className="bottom-[14%] left-[46%] h-[22%] rotate-[8deg] sm:bottom-[13%] sm:left-[43%] sm:h-[30%]"
         glow
       />
       <FloatingCard
