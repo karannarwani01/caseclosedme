@@ -665,6 +665,24 @@ export async function getNonEmptyCollectionHandles(): Promise<string[]> {
     .map((node) => node.handle);
 }
 
+// Shopify returns menu URLs as absolute links on the store's PRIMARY domain,
+// which is shop.caseclosedme.com — not the .myshopify.com domain we call the
+// API on. Stripping only SHOPIFY_STORE_DOMAIN therefore left the origin in
+// place, and every Shopify-sourced nav link pointed at
+// shop.caseclosedme.com/search/... That 404s on Shopify and only reaches the
+// right page because the bounce theme redirects, costing a cross-domain round
+// trip and showing crawlers a 404. Take the pathname so any origin is dropped,
+// whichever domain Shopify decides to hand back.
+function menuPath(url: string): string {
+  let path = url;
+  try {
+    path = new URL(url).pathname;
+  } catch {
+    // Already relative — use as-is.
+  }
+  return path.replace("/collections", "/search").replace("/pages", "");
+}
+
 export async function getMenu(handle: string): Promise<Menu[]> {
   "use cache";
   cacheTag(TAGS.collections);
@@ -685,10 +703,7 @@ export async function getMenu(handle: string): Promise<Menu[]> {
   return (
     res.body?.data?.menu?.items.map((item: { title: string; url: string }) => ({
       title: item.title,
-      path: item.url
-        .replace(domain, "")
-        .replace("/collections", "/search")
-        .replace("/pages", ""),
+      path: menuPath(item.url),
     })) || []
   );
 }
