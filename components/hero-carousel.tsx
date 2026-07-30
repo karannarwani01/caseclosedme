@@ -545,7 +545,7 @@ function PitchScene({ rays }: { rays: string }) {
       <FloatingCard
         src="/banners/op13-card-bvb.webp"
         ratio="336 / 470"
-        className="bottom-[52%] left-[62%] h-[20%] rotate-[8deg] sm:bottom-[13%] sm:left-[43%] sm:h-[30%]"
+        className="bottom-[45%] left-[62%] h-[20%] rotate-[8deg] sm:bottom-[13%] sm:left-[43%] sm:h-[30%]"
         glow
       />
       <FloatingCard
