@@ -608,7 +608,7 @@ function PromoSlide({ promo, eager }: { promo: Promo; eager: boolean }) {
     <Link
       href={promo.href}
       aria-label={promo.ariaLabel}
-      className="group relative z-10 block min-h-[42vh] w-full overflow-hidden md:min-h-[48vh] lg:min-h-[52vh]"
+      className="group relative z-10 block min-h-[46vh] w-full overflow-hidden md:min-h-[48vh] lg:min-h-[52vh]"
     >
       {/* Full-bleed themed background */}
       <div
@@ -651,7 +651,7 @@ function PromoSlide({ promo, eager }: { promo: Promo; eager: boolean }) {
       {promo.scene && (
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 z-[6]"
+          className="pointer-events-none absolute inset-0 z-[6] hidden md:block"
           style={{
             background:
               "linear-gradient(to right, transparent 34%, rgba(6,18,34,0.58) 66%, rgba(6,18,34,0.8) 100%)",
@@ -684,18 +684,25 @@ function PromoSlide({ promo, eager }: { promo: Promo; eager: boolean }) {
         />
       ))}
 
-      {/* Headline + CTA on the right */}
-      <div className="absolute inset-y-0 right-[4%] z-30 flex max-w-[60%] flex-col items-end justify-center gap-2 text-right md:right-[6%] md:gap-3">
-        <span className="-rotate-2 rounded-[3px] border-[2.5px] border-anime-ink bg-anime-yellow px-2.5 py-1 font-display text-xs font-extrabold uppercase tracking-tight text-anime-ink shadow-[3px_3px_0_0_rgba(13,10,26,0.55)] sm:text-base md:text-xl">
+      {/* Mobile: darken the top of the slide so the copy band reads over the
+          scene. Wider screens get the right-side scrim above instead. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 z-[28] h-[52%] bg-gradient-to-b from-[rgba(6,18,34,0.82)] via-[rgba(6,18,34,0.45)] to-transparent md:hidden"
+      />
+
+      {/* Headline + CTA. On phones this is a band across the top of the slide,
+          clear of the figures below; from sm up it returns to the right rail. */}
+      <div className="absolute inset-x-3 top-3 z-30 flex flex-col items-end gap-1.5 text-right sm:inset-x-5 sm:top-5 sm:gap-2 md:inset-x-auto md:inset-y-0 md:right-[6%] md:top-auto md:max-w-[60%] md:justify-center md:gap-3">
+        <span className="-rotate-2 rounded-[3px] border-2 border-anime-ink bg-anime-yellow px-2 py-0.5 font-display text-[10px] font-extrabold uppercase tracking-tight text-anime-ink shadow-[2px_2px_0_0_rgba(13,10,26,0.55)] sm:border-[2.5px] sm:px-2.5 sm:py-1 sm:text-base sm:shadow-[3px_3px_0_0_rgba(13,10,26,0.55)] md:text-xl">
           {promo.badge}
         </span>
         <h2
-          className="font-display font-extrabold uppercase italic leading-[0.82] text-white"
+          className="font-display font-extrabold uppercase italic leading-[0.82] text-white [-webkit-text-stroke:1.5px_#0d0a1a] sm:[-webkit-text-stroke:2.5px_#0d0a1a]"
           style={{
-            fontSize: "clamp(1.9rem, 7vw, 6.5rem)",
+            fontSize: "clamp(1.75rem, 8vw, 6.5rem)",
             transform: "skewX(-7deg)",
-            WebkitTextStroke: "2.5px #0d0a1a",
-            textShadow: "5px 6px 0 rgba(13,10,26,0.55)",
+            textShadow: "3px 4px 0 rgba(13,10,26,0.55)",
             letterSpacing: "-0.01em",
           }}
         >
@@ -704,7 +711,7 @@ function PromoSlide({ promo, eager }: { promo: Promo; eager: boolean }) {
         <p className="hidden max-w-[36ch] text-right text-sm font-semibold leading-snug text-white drop-shadow-[2px_2px_0_rgba(13,10,26,0.6)] sm:block md:text-base lg:text-lg">
           {promo.subtitle}
         </p>
-        <span className="mt-1 inline-flex items-center rounded-full border-[2.5px] border-anime-ink bg-gradient-to-b from-[#ff5151] to-[#c21212] px-6 py-2 font-display text-sm font-extrabold uppercase tracking-widest text-white shadow-[4px_4px_0_0_rgba(13,10,26,0.6)] transition-transform group-hover:-translate-y-[2px] sm:px-8 sm:py-2.5 md:text-xl">
+        <span className="mt-0.5 inline-flex items-center rounded-full border-2 border-anime-ink bg-gradient-to-b from-[#ff5151] to-[#c21212] px-4 py-1.5 font-display text-[11px] font-extrabold uppercase tracking-wider text-white shadow-[3px_3px_0_0_rgba(13,10,26,0.6)] transition-transform group-hover:-translate-y-[2px] sm:mt-1 sm:border-[2.5px] sm:px-8 sm:py-2.5 sm:text-sm sm:tracking-widest sm:shadow-[4px_4px_0_0_rgba(13,10,26,0.6)] md:text-xl">
           {promo.cta} →
         </span>
       </div>
@@ -747,20 +754,20 @@ export function HeroCarousel() {
       <button
         aria-label="Previous banner"
         onClick={() => setIdx((i) => (i - 1 + PROMOS.length) % PROMOS.length)}
-        className="absolute left-4 top-1/2 z-40 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border-[2.5px] border-anime-ink bg-white text-anime-ink shadow-[3px_3px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[1px] hover:-translate-y-[calc(50%+1px)] hover:shadow-[4px_4px_0_0_var(--color-anime-ink)] md:flex"
+        className="absolute left-2 top-1/2 z-40 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border-2 border-anime-ink bg-white/95 text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[1px] hover:-translate-y-[calc(50%+1px)] hover:shadow-[4px_4px_0_0_var(--color-anime-ink)] md:left-4 md:h-12 md:w-12 md:border-[2.5px] md:bg-white md:shadow-[3px_3px_0_0_var(--color-anime-ink)]"
       >
-        <ChevronLeftIcon className="h-6 w-6" strokeWidth={3} />
+        <ChevronLeftIcon className="h-5 w-5 md:h-6 md:w-6" strokeWidth={3} />
       </button>
       <button
         aria-label="Next banner"
         onClick={() => setIdx((i) => (i + 1) % PROMOS.length)}
-        className="absolute right-4 top-1/2 z-40 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border-[2.5px] border-anime-ink bg-white text-anime-ink shadow-[3px_3px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[1px] hover:-translate-y-[calc(50%+1px)] hover:shadow-[4px_4px_0_0_var(--color-anime-ink)] md:flex"
+        className="absolute right-2 top-1/2 z-40 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border-2 border-anime-ink bg-white/95 text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[1px] hover:-translate-y-[calc(50%+1px)] hover:shadow-[4px_4px_0_0_var(--color-anime-ink)] md:right-4 md:h-12 md:w-12 md:border-[2.5px] md:bg-white md:shadow-[3px_3px_0_0_var(--color-anime-ink)]"
       >
-        <ChevronRightIcon className="h-6 w-6" strokeWidth={3} />
+        <ChevronRightIcon className="h-5 w-5 md:h-6 md:w-6" strokeWidth={3} />
       </button>
 
       {/* Dot indicators */}
-      <div className="absolute bottom-6 left-1/2 z-40 flex -translate-x-1/2 gap-2">
+      <div className="absolute bottom-3 left-1/2 z-40 flex -translate-x-1/2 gap-2 sm:bottom-6">
         {PROMOS.map((p, i) => (
           <button
             key={p.id}
