@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Happy Collectors — Coming Soon | caseclosed",
+  // The root layout appends "| caseclosed" via its title template.
+  title: "Happy Collectors — Coming Soon",
   description:
     "The caseclosed wall of reviews. Real photos and ratings from UAE collectors who bought their Funko Pops, Labubu blind boxes and trading cards from us. Coming soon.",
   openGraph: { type: "website" },
