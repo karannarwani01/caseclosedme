@@ -100,19 +100,19 @@ const PROMOS: Promo[] = [
         src: "/banners/hw-card-nissan.webp",
         width: 474,
         height: 620,
-        className: `${FIG_FREE} bottom-[8%] left-[1%] z-10 h-[30%] sm:bottom-[9%] sm:left-[5%] sm:h-[48%] lg:h-[54%]`,
+        className: `${FIG_FREE} bottom-[8%] left-[0%] z-10 h-[26%] sm:bottom-[9%] sm:left-[5%] sm:h-[48%] lg:h-[54%]`,
       },
       {
         src: "/banners/hw-card-bugatti.webp",
         width: 412,
         height: 620,
-        className: `${FIG_FREE} bottom-[9%] left-[33%] z-10 hidden h-[48%] md:block lg:h-[54%]`,
+        className: `${FIG_FREE} bottom-[9%] left-[70%] z-10 h-[26%] md:bottom-[9%] md:left-[33%] md:h-[48%] lg:h-[54%]`,
       },
       {
         src: "/banners/hw-card-reventon.webp",
         width: 502,
         height: 620,
-        className: `${FIG_FREE} bottom-[5%] left-[40%] z-20 h-[38%] sm:bottom-[6%] sm:left-[17%] sm:h-[56%] lg:h-[62%]`,
+        className: `${FIG_FREE} bottom-[5%] left-[34%] z-20 h-[32%] sm:bottom-[6%] sm:left-[17%] sm:h-[56%] lg:h-[62%]`,
       },
     ],
   },
@@ -535,12 +535,12 @@ function PitchScene({ rays }: { rays: string }) {
       <FloatingCard
         src="/banners/op13-card-g4.webp"
         ratio="350 / 470"
-        className="bottom-[68%] left-[19%] hidden h-[21%] -rotate-[19deg] md:block"
+        className="bottom-[47%] left-[5%] h-[15%] -rotate-[19deg] sm:h-[17%] md:bottom-[68%] md:left-[19%] md:h-[21%]"
       />
       <FloatingCard
         src="/banners/op13-card-ace.webp"
         ratio="337 / 470"
-        className="bottom-[57%] left-[24%] hidden h-[23%] -rotate-[8deg] sm:block"
+        className="bottom-[54%] left-[28%] h-[16%] -rotate-[8deg] sm:h-[18%] md:bottom-[57%] md:left-[24%] md:h-[23%]"
       />
       <FloatingCard
         src="/banners/op13-card-bvb.webp"
@@ -551,7 +551,7 @@ function PitchScene({ rays }: { rays: string }) {
       <FloatingCard
         src="/banners/op13-card-sabo.webp"
         ratio="336 / 470"
-        className="bottom-[52%] left-[41%] hidden h-[20%] rotate-[22deg] md:block"
+        className="bottom-[46%] left-[63%] h-[14%] rotate-[22deg] sm:h-[16%] md:bottom-[52%] md:left-[41%] md:h-[20%]"
       />
       {/* Edge vignette to seat the whole scene */}
       <div
@@ -608,7 +608,7 @@ function PromoSlide({ promo, eager }: { promo: Promo; eager: boolean }) {
     <Link
       href={promo.href}
       aria-label={promo.ariaLabel}
-      className="group relative z-10 block min-h-[46vh] w-full overflow-hidden md:min-h-[48vh] lg:min-h-[52vh]"
+      className="group relative z-10 block min-h-[54vh] w-full overflow-hidden md:min-h-[48vh] lg:min-h-[52vh]"
     >
       {/* Full-bleed themed background */}
       <div
