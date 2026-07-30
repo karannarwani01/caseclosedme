@@ -760,19 +760,27 @@ export function HeroCarousel() {
       </button>
 
       {/* Dot indicators */}
-      <div className="absolute bottom-6 left-1/2 z-40 flex -translate-x-1/2 gap-2">
+      {/* The dot itself stays 12px, but the button around it is padded out to a
+          24px hit target (WCAG 2.5.8). Padding supplies the spacing, so the row
+          is gap-0. */}
+      <div className="absolute bottom-6 left-1/2 z-40 flex -translate-x-1/2">
         {PROMOS.map((p, i) => (
           <button
             key={p.id}
             aria-label={`Go to banner ${i + 1}`}
+            aria-current={i === idx ? "true" : undefined}
             onClick={() => setIdx(i)}
-            className={
-              "h-3 rounded-full border-[2px] border-anime-ink transition-all " +
-              (i === idx
-                ? "w-10 bg-white"
-                : "w-3 bg-white/50 hover:bg-white/80")
-            }
-          />
+            className="group grid h-6 place-items-center px-1.5"
+          >
+            <span
+              className={
+                "block h-3 rounded-full border-[2px] border-anime-ink transition-all " +
+                (i === idx
+                  ? "w-10 bg-white"
+                  : "w-3 bg-white/50 group-hover:bg-white/80")
+              }
+            />
+          </button>
         ))}
       </div>
     </section>

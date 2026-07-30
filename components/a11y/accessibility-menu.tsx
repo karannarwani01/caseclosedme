@@ -165,6 +165,9 @@ export function AccessibilityMenu() {
           open ? "" : "pointer-events-none",
         )}
         aria-hidden={!open}
+        // pointer-events-none only stops the mouse — without inert the toggles
+        // inside stay in the tab order while the sheet is closed.
+        inert={!open}
       >
         <div
           onClick={() => setOpen(false)}

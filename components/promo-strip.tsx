@@ -19,8 +19,10 @@ export function PromoStrip() {
   // is never a blank gap at the wrap point.
   const doubled = [...messages, ...messages];
 
+  // Ink on pink, not white: white on --color-anime-pink is only 3.46:1, which
+  // fails AA at this text size. Ink keeps the brand pink and hits 5.6:1.
   return (
-    <div className="relative z-30 overflow-hidden border-b-[2.5px] border-anime-ink bg-anime-pink py-4 text-white">
+    <div className="relative z-30 overflow-hidden border-b-[2.5px] border-anime-ink bg-anime-pink py-4 text-anime-ink">
       <div className="flex animate-marquee whitespace-nowrap font-display text-base font-extrabold uppercase tracking-[0.12em] md:text-lg">
         {doubled.map((msg, i) => (
           <span key={i} className="mx-10 flex-none">
