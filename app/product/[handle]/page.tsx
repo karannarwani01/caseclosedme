@@ -7,6 +7,7 @@ import { UpsellCarousel } from "components/product/upsell-carousel";
 import Prose from "components/prose";
 import { WishlistButton } from "components/wishlist/wishlist-button";
 import { HIDDEN_PRODUCT_TAG } from "lib/constants";
+import { seoPageTitle } from "lib/seo-title";
 import {
   getProduct,
   getProductRecommendations,
@@ -31,7 +32,7 @@ export async function generateMetadata(props: {
   const indexable = !product.tags.includes(HIDDEN_PRODUCT_TAG);
 
   return {
-    title: product.seo.title || product.title,
+    title: seoPageTitle(product.seo.title, product.title),
     description: product.seo.description || product.description,
     robots: {
       index: indexable,

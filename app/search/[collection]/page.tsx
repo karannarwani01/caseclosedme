@@ -9,6 +9,7 @@ import { notFound } from "next/navigation";
 import { FeedBrowse } from "components/feed/feed-browse";
 import { defaultSort, sorting } from "lib/constants";
 import { filterDemoByCollection, USE_DEMO_PRODUCTS } from "lib/demo-products";
+import { seoPageTitle } from "lib/seo-title";
 import type { Product } from "lib/shopify/types";
 import { loadMoreCollectionProducts } from "./actions";
 
@@ -39,7 +40,7 @@ export async function generateMetadata(props: {
   if (!collection) return notFound();
 
   return {
-    title: collection.seo?.title || collection.title,
+    title: seoPageTitle(collection.seo?.title, collection.title),
     description:
       collection.seo?.description ||
       collection.description ||
