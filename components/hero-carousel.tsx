@@ -76,7 +76,7 @@ const PROMOS: Promo[] = [
         src: "/banners/op13-box.webp",
         width: 563,
         height: 600,
-        className: `${FIG_FREE} bottom-[10%] left-[22%] z-30 h-[38%] -translate-x-1/2 sm:bottom-[13%] sm:left-[34%] sm:h-[50%] lg:h-[56%]`,
+        className: `${FIG_FREE} bottom-[9%] left-[27%] z-30 h-[48%] -translate-x-1/2 sm:bottom-[13%] sm:left-[34%] sm:h-[50%] lg:h-[56%]`,
       },
     ],
   },
@@ -112,7 +112,7 @@ const PROMOS: Promo[] = [
         src: "/banners/hw-card-reventon.webp",
         width: 502,
         height: 620,
-        className: `${FIG_FREE} bottom-[5%] left-[34%] z-20 h-[32%] sm:bottom-[6%] sm:left-[17%] sm:h-[56%] lg:h-[62%]`,
+        className: `${FIG_FREE} bottom-[4%] left-[31%] z-20 h-[42%] sm:bottom-[6%] sm:left-[17%] sm:h-[56%] lg:h-[62%]`,
       },
     ],
   },
@@ -500,7 +500,7 @@ function PitchScene({ rays }: { rays: string }) {
       </div>
       {/* Goal at the far end — netting, posts, and the shadow it casts on the
           six-yard box. Sits behind the booster box, which frames it. */}
-      <div className="absolute left-[22%] top-[31%] h-[16%] w-[38%] -translate-x-1/2 sm:left-[34%] sm:top-[29%] sm:h-[18%] sm:w-[40%]">
+      <div className="absolute left-[27%] top-[31%] h-[16%] w-[38%] -translate-x-1/2 sm:left-[34%] sm:top-[29%] sm:h-[18%] sm:w-[40%]">
         {/* Net: crosshatch over a slight darkening, so it reads against grass */}
         <div
           className="absolute inset-x-[4px] bottom-0 top-[6px]"
@@ -515,21 +515,21 @@ function PitchScene({ rays }: { rays: string }) {
         <div className="absolute bottom-0 right-0 top-0 w-[6px] rounded-[2px] bg-white/95 shadow-[0_2px_4px_rgba(0,0,0,0.45)]" />
       </div>
       {/* Six-yard box in front of the goal */}
-      <div className="absolute left-[22%] top-[47%] hidden h-[7%] w-[62%] -translate-x-1/2 border-x-[3px] border-b-[3px] border-white/40 sm:left-[34%] sm:block sm:w-[46%]" />
+      <div className="absolute left-[27%] top-[47%] hidden h-[7%] w-[62%] -translate-x-1/2 border-x-[3px] border-b-[3px] border-white/40 sm:left-[34%] sm:block sm:w-[46%]" />
       {/* Pitch markings: far touchline, centre circle, spot */}
       <div className="absolute inset-x-0 top-[46.5%] h-[2px] bg-white/45" />
-      <div className="absolute bottom-[6%] left-[22%] h-[26%] w-[46%] -translate-x-1/2 rounded-[50%] border-[3px] border-white/45 sm:left-[34%] sm:w-[40%]" />
-      <div className="absolute bottom-[17%] left-[22%] h-[6px] w-[14px] -translate-x-1/2 rounded-[50%] bg-white/50 sm:left-[34%]" />
+      <div className="absolute bottom-[6%] left-[27%] h-[26%] w-[46%] -translate-x-1/2 rounded-[50%] border-[3px] border-white/45 sm:left-[34%] sm:w-[40%]" />
+      <div className="absolute bottom-[17%] left-[27%] h-[6px] w-[14px] -translate-x-1/2 rounded-[50%] bg-white/50 sm:left-[34%]" />
       {/* Floodlight bloom behind the box */}
       <div
-        className="absolute bottom-[8%] left-[22%] h-[62%] w-[70%] -translate-x-1/2 sm:left-[34%] sm:w-[56%]"
+        className="absolute bottom-[8%] left-[27%] h-[62%] w-[70%] -translate-x-1/2 sm:left-[34%] sm:w-[56%]"
         style={{
           background:
             "radial-gradient(closest-side, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.16) 45%, transparent 72%)",
         }}
       />
       {/* Contact shadow so the box sits *on* the grass */}
-      <div className="absolute bottom-[10.5%] left-[22%] h-[6%] w-[30%] -translate-x-1/2 rounded-[50%] bg-black/55 blur-[8px] sm:left-[34%] sm:w-[24%]" />
+      <div className="absolute bottom-[10.5%] left-[27%] h-[6%] w-[30%] -translate-x-1/2 rounded-[50%] bg-black/55 blur-[8px] sm:left-[34%] sm:w-[24%]" />
       {/* Cards bursting out of the box. The BVB × One Piece Luffy leader is the
           football tie-in, so it gets the biggest, most upright placement. */}
       <FloatingCard
