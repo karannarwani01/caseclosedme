@@ -49,6 +49,13 @@ const FIG =
 const FIG_FREE =
   "pointer-events-none absolute w-auto object-contain drop-shadow-[0_16px_18px_rgba(0,0,0,0.45)]";
 
+// A figure that is `hidden` until the sm breakpoint never paints on a phone, so
+// preloading it there only competes for bandwidth with the figure that is
+// actually the mobile LCP. The className is the single source of truth for the
+// breakpoint, so read it rather than duplicating the flag on every figure.
+const hiddenOnMobile = (className: string) =>
+  /(?:^|\s)hidden(?:\s|$)/.test(className);
+
 const PROMOS: Promo[] = [
   {
     id: "op13",
@@ -679,7 +686,7 @@ function PromoSlide({ promo, eager }: { promo: Promo; eager: boolean }) {
           alt=""
           width={f.width}
           height={f.height}
-          priority={eager}
+          priority={eager && !hiddenOnMobile(f.className)}
           className={f.className}
         />
       ))}
