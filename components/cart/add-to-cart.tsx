@@ -70,8 +70,11 @@ function SubmitButton({
   availableForSale: boolean;
   selectedVariantId: string | undefined;
 }) {
+  // The panel's primary action. Sized to lead the stack — it used to be
+  // text-sm while the yellow Save It below it was text-xl, so the buy button
+  // was the smallest thing on the panel.
   const buttonClasses =
-    "cc-units cc-u-grape relative flex w-full items-center justify-center gap-2 rounded-full border-[2.5px] border-anime-ink bg-anime-pink p-4 font-display text-sm font-extrabold uppercase tracking-wider text-white shadow-[5px_5px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[7px_7px_0_0_var(--color-anime-ink)]";
+    "cc-units cc-u-grape relative flex w-full items-center justify-center gap-2.5 rounded-full border-[3px] border-anime-ink bg-anime-pink px-7 py-5 font-display text-lg font-extrabold uppercase tracking-wider text-white shadow-[5px_5px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[7px_7px_0_0_var(--color-anime-ink)] md:text-xl";
   const disabledClasses =
     "cursor-not-allowed opacity-60 hover:translate-x-0 hover:translate-y-0 hover:shadow-[5px_5px_0_0_var(--color-anime-ink)]";
 
@@ -90,7 +93,7 @@ function SubmitButton({
         disabled
         className={clsx(buttonClasses, disabledClasses)}
       >
-        <PlusIcon className="h-5" strokeWidth={3} />
+        <PlusIcon className="h-6" strokeWidth={3} />
         Add to cart
       </button>
     );
@@ -99,7 +102,7 @@ function SubmitButton({
   return (
     <button aria-label="Add to cart" className={buttonClasses}>
       <UnitsFill />
-      <PlusIcon className="h-5" strokeWidth={3} />
+      <PlusIcon className="h-6" strokeWidth={3} />
       Add to cart
       <UnitsArrow className="ml-0.5" />
     </button>
@@ -113,8 +116,10 @@ function BuyNowButton({
   availableForSale: boolean;
   selectedVariantId: string | undefined;
 }) {
+  // Secondary to Add to Cart: one step down in scale, still bigger than the
+  // old text-sm version.
   const classes =
-    "cc-units cc-u-ice relative flex w-full items-center justify-center gap-2 rounded-full border-[2.5px] border-anime-ink bg-anime-ink p-4 font-display text-sm font-extrabold uppercase tracking-wider text-white shadow-[5px_5px_0_0_var(--color-anime-pink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[7px_7px_0_0_var(--color-anime-pink)]";
+    "cc-units cc-u-ice relative flex w-full items-center justify-center gap-2 rounded-full border-[3px] border-anime-ink bg-anime-ink px-7 py-4 font-display text-base font-extrabold uppercase tracking-wider text-white shadow-[5px_5px_0_0_var(--color-anime-pink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[7px_7px_0_0_var(--color-anime-pink)] md:text-lg";
   const disabled =
     "cursor-not-allowed opacity-60 hover:translate-x-0 hover:translate-y-0 hover:shadow-[5px_5px_0_0_var(--color-anime-pink)]";
   const blocked = !availableForSale || !selectedVariantId;
@@ -127,7 +132,7 @@ function BuyNowButton({
       className={clsx(classes, blocked && disabled)}
     >
       <UnitsFill />
-      <BoltIcon className="h-5" strokeWidth={2.5} />
+      <BoltIcon className="h-6" strokeWidth={2.5} />
       Buy it now
       <UnitsArrow className="ml-0.5" />
     </button>
