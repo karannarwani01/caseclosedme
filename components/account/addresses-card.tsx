@@ -11,8 +11,10 @@ import { EMIRATES, emirateName } from "lib/emirates";
 import type { AccountAddress } from "lib/shopify/customer/account-api";
 import { useActionState, useEffect, useState } from "react";
 
+// 16px on phones, compact 14px from sm up: iOS Safari auto-zooms the whole
+// page when a focused input's font is under 16px, and never zooms back out.
 const inputClass =
-  "min-w-0 rounded-xl border-[2.5px] border-anime-ink bg-white px-4 py-2.5 font-display text-sm font-bold text-anime-ink shadow-[3px_3px_0_0_var(--color-anime-ink)] outline-none placeholder:text-anime-ink/35 focus-visible:ring-2 focus-visible:ring-anime-pink";
+  "min-w-0 rounded-xl border-[2.5px] border-anime-ink bg-white px-4 py-2.5 font-display text-base sm:text-sm font-bold text-anime-ink shadow-[3px_3px_0_0_var(--color-anime-ink)] outline-none placeholder:text-anime-ink/35 focus-visible:ring-2 focus-visible:ring-anime-pink";
 
 const smallButtonClass =
   "inline-flex items-center rounded-lg border-[2px] border-anime-ink px-2.5 py-1 font-display text-[11px] font-extrabold uppercase tracking-wide shadow-[2px_2px_0_0_var(--color-anime-ink)] transition-all hover:-translate-y-[1px] disabled:cursor-not-allowed disabled:opacity-60";
