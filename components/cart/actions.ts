@@ -22,10 +22,34 @@ export async function addItem(
   }
 
   try {
-    await addToCart([
-      { merchandiseId: selectedVariantId, quantity: Math.max(1, quantity) },
+    const requested = Math.max(1, quantity);
+
+    // Shopify silently clamps a line to available inventory instead of
+    // erroring (and this store's Storefront token can't read
+    // quantityAvailable up front). Compare the line before and after the add
+    // so the shopper hears about the clamp instead of wondering why 2 became
+    // 1. Line qty before:
+    const before = await getCart();
+    const prevQty =
+      before?.lines.find((l) => l.merchandise.id === selectedVariantId)
+        ?.quantity ?? 0;
+
+    const after = await addToCart([
+      { merchandiseId: selectedVariantId, quantity: requested },
     ]);
     updateTag(TAGS.cart);
+
+    const newQty =
+      after?.lines?.find((l) => l.merchandise.id === selectedVariantId)
+        ?.quantity ?? prevQty;
+    const actuallyAdded = newQty - prevQty;
+
+    if (actuallyAdded < requested) {
+      // Messages starting with "Only" are the clamp signal the client toasts.
+      return newQty > 0
+        ? `Only ${newQty} in stock — your cart has all of them.`
+        : "Out of stock — nothing was added.";
+    }
   } catch (e) {
     return "Error adding item to cart";
   }

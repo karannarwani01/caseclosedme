@@ -217,26 +217,24 @@ export default function CartModal() {
                         );
                       })}
                   </ul>
+                  {/* Two rows, per Karan: the goods subtotal, then shipping
+                      deferred to checkout. subtotalAmount, not totalAmount —
+                      once a customer has a saved default address Shopify
+                      preselects a delivery option and folds shipping into
+                      totalAmount. No Taxes row: prices are VAT-inclusive, so
+                      "Taxes 0.00" was noise. */}
                   <div className="py-4 text-sm text-brand-ink/60">
                     <div className="mb-3 flex items-center justify-between border-b border-brand-ink/10 pb-1">
-                      <p>Taxes</p>
+                      <p>Subtotal</p>
                       <Price
                         className="text-right text-base text-brand-ink"
-                        amount={cart.cost.totalTaxAmount.amount}
-                        currencyCode={cart.cost.totalTaxAmount.currencyCode}
+                        amount={cart.cost.subtotalAmount.amount}
+                        currencyCode={cart.cost.subtotalAmount.currencyCode}
                       />
                     </div>
                     <div className="mb-3 flex items-center justify-between border-b border-brand-ink/10 pb-1 pt-1">
                       <p>Shipping</p>
                       <p className="text-right">Calculated at checkout</p>
-                    </div>
-                    <div className="mb-3 flex items-center justify-between border-b border-brand-ink/10 pb-1 pt-1">
-                      <p>Total</p>
-                      <Price
-                        className="text-right text-base text-brand-ink"
-                        amount={cart.cost.totalAmount.amount}
-                        currencyCode={cart.cost.totalAmount.currencyCode}
-                      />
                     </div>
                   </div>
                   <form action={redirectToCheckout}>

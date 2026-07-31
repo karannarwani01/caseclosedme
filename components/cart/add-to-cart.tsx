@@ -7,7 +7,8 @@ import { UnitsArrow } from "components/ui/units-arrow";
 import { UnitsFill } from "components/ui/units-fill";
 import { Product, ProductVariant } from "lib/shopify/types";
 import { useSearchParams } from "next/navigation";
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
+import { toast } from "sonner";
 import { useCart } from "./cart-context";
 
 function QuantityStepper({
@@ -123,6 +124,18 @@ export function AddToCart({ product }: { product: Product }) {
   const searchParams = useSearchParams();
   const [message, formAction] = useActionState(addItem, null);
   const [quantity, setQuantity] = useState(1);
+
+  // Shopify clamps adds to available stock without erroring; the action
+  // reports it back ("Only N in stock…"). Say it out loud — silently turning
+  // 2 into 1 reads as a glitch.
+  useEffect(() => {
+    if (!message) return;
+    if (message.startsWith("Only") || message.startsWith("Out of stock")) {
+      toast(`😣 ${message}`);
+    } else {
+      toast(`⚠️ ${message}`);
+    }
+  }, [message]);
 
   const variant = variants.find((variant: ProductVariant) =>
     variant.selectedOptions.every(

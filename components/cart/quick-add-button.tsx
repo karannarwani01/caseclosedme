@@ -34,7 +34,13 @@ export function QuickAddButton({
       return;
     }
     addCartItem(v, product);
-    void addItem(null, { selectedVariantId: v.id, quantity: 1 });
+    // Optimistic toast now; if Shopify clamps the add to stock (the action
+    // reports "Only N in stock…"), follow up with the correction.
+    void addItem(null, { selectedVariantId: v.id, quantity: 1 }).then((msg) => {
+      if (msg && (msg.startsWith("Only") || msg.startsWith("Out of stock"))) {
+        toast(`😣 ${msg}`);
+      }
+    });
     toast("🛒 Added to cart!", { description: product.title });
   };
 
