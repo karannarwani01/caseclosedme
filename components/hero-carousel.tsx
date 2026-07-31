@@ -11,6 +11,10 @@ type Figure = {
   height: number;
   // Positioning + sizing classes for this figure within the slide.
   className: string;
+  /** The phone LCP element — the only figure that gets next/image priority. */
+  mobileLcp?: boolean;
+  /** Desktop's LCP element — gets a ≥640px media-scoped preload, no priority. */
+  desktopLcp?: boolean;
 };
 
 type Promo = {
@@ -49,15 +53,14 @@ const FIG =
 const FIG_FREE =
   "pointer-events-none absolute w-auto object-contain drop-shadow-[0_16px_18px_rgba(0,0,0,0.45)]";
 
-// Figures carrying `hidden … sm:block` don't paint below 640px. On desktop such
-// a figure can still be the LCP element, but on mobile preloading it only
-// competes with the figure that is. next/image's `priority` can't express "only
-// on desktop", so those get a media-scoped preload instead — measured both ways:
-// preloading everywhere costs mobile ~6 points, preloading nowhere costs desktop
-// ~6. The className is the single source of truth for the breakpoint.
+// LCP roles are declared per figure, not inferred from classes (the old
+// `hidden`-class heuristic died when the mobile hero redesign made every
+// figure visible on phones — after which BOTH slide-0 figures loaded with
+// priority and the real LCP image's load duration went 54ms -> 339ms from the
+// contention). `mobileLcp` = the phone LCP element, gets next/image priority.
+// `desktopLcp` = desktop's LCP element, gets a media-scoped preload only, so
+// phones never spend bandwidth on it early. Everything else loads normally.
 const SM_BREAKPOINT = "(min-width: 640px)";
-const hiddenOnMobile = (className: string) =>
-  /(?:^|\s)hidden(?:\s|$)/.test(className);
 
 const PROMOS: Promo[] = [
   {
@@ -81,12 +84,14 @@ const PROMOS: Promo[] = [
         width: 558,
         height: 640,
         className: `${FIG_FREE} bottom-[6%] right-[0%] z-20 h-[30%] sm:bottom-[7%] sm:left-[1%] sm:right-auto sm:h-[56%] md:left-[4%] lg:h-[64%]`,
+        desktopLcp: true,
       },
       {
         src: "/banners/op13-box.webp",
         width: 563,
         height: 600,
         className: `${FIG_FREE} bottom-[8%] left-[28%] z-30 h-[48%] -translate-x-1/2 sm:bottom-[13%] sm:left-[34%] sm:h-[50%] lg:h-[56%]`,
+        mobileLcp: true,
       },
     ],
   },
@@ -683,10 +688,9 @@ function PromoSlide({ promo, eager }: { promo: Promo; eager: boolean }) {
       )}
       {/* Figures bursting from the left */}
       {promo.figures.map((f) => {
-        const desktopOnly = hiddenOnMobile(f.className);
         return (
           <Fragment key={f.src}>
-            {eager && desktopOnly && (
+            {eager && f.desktopLcp && (
               // React hoists this into <head>; the media attribute keeps phones
               // from fetching it while desktop still gets the early hint.
               <link
@@ -701,7 +705,7 @@ function PromoSlide({ promo, eager }: { promo: Promo; eager: boolean }) {
               alt=""
               width={f.width}
               height={f.height}
-              priority={eager && !desktopOnly}
+              priority={eager && f.mobileLcp === true}
               className={f.className}
             />
           </Fragment>
