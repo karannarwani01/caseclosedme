@@ -1,4 +1,5 @@
 import CartModal from "components/cart/modal";
+import OpenCart from "components/cart/open-cart";
 import LogoLockup from "components/logo-lockup";
 import {
   getCollectionFeaturedImageUrls,
@@ -100,7 +101,19 @@ export async function Navbar() {
           <div className="hidden shrink-0 items-center gap-2 lg:flex">
             <AccountNav />
             <WishlistNavLink />
-            <CartModal />
+            {/* CartModal reads the private, cookie-backed cart, which can't be
+                prerendered — unwrapped it forced every route dynamic. The
+                fallback is the same trigger minus the quantity badge, so the
+                header looks identical until the count streams in. */}
+            <Suspense
+              fallback={
+                <button aria-label="Open cart">
+                  <OpenCart />
+                </button>
+              }
+            >
+              <CartModal />
+            </Suspense>
           </div>
         </div>
 

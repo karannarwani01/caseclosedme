@@ -12,6 +12,7 @@ import { useWishlist } from "components/wishlist/wishlist-context";
 import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Suspense } from "react";
 
 // Mobile-only thumb navigation, pinned to the bottom of the viewport. The five
 // things shoppers reach for most — Home, Search, Cart, Wishlist, Account — one
@@ -28,11 +29,19 @@ function Badge({ n }: { n: number }) {
   );
 }
 
+// useCart() calls use() on a "use cache: private" promise, which reads cookies
+// and so cannot be prerendered. Keeping it in the bar itself made every route
+// that renders the bar fully dynamic. Isolated here, the bar prerenders and
+// only the count streams in.
+function CartCountBadge() {
+  const { cart } = useCart();
+  const n = cart?.totalQuantity ?? 0;
+  return n > 0 ? <Badge n={n} /> : null;
+}
+
 export function BottomTabBar() {
   const pathname = usePathname();
-  const { cart } = useCart();
   const { count: wishCount, hydrated, account } = useWishlist();
-  const cartCount = cart?.totalQuantity ?? 0;
 
   const homeActive = pathname === "/";
   const searchActive = pathname.startsWith("/search");
@@ -82,11 +91,13 @@ export function BottomTabBar() {
         type="button"
         onClick={() => window.dispatchEvent(new Event("open-cart"))}
         className={cls(false)}
-        aria-label={`Open cart${cartCount > 0 ? ` (${cartCount} items)` : ""}`}
+        aria-label="Open cart"
       >
         <span className="relative">
           <ShoppingBagIcon className="h-6 w-6" strokeWidth={2.2} />
-          {cartCount > 0 ? <Badge n={cartCount} /> : null}
+          <Suspense fallback={null}>
+            <CartCountBadge />
+          </Suspense>
         </span>
         <span>Cart</span>
       </button>
