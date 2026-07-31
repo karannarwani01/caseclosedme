@@ -2,8 +2,9 @@
 
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { AddressesCard } from "components/account/addresses-card";
 import { PhoneCard } from "components/account/phone-card";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 type Order = {
   id: string;
@@ -26,7 +27,8 @@ type AccountData = {
   lastName: string | null;
   email: string | null;
   orders: Order[];
-  canSavePhone?: boolean;
+  phone: string | null;
+  addresses: import("lib/shopify/customer/account-api").AccountAddress[];
 };
 
 function money(t: Order["total"]): string {
@@ -52,7 +54,7 @@ export default function AccountPage() {
   const [data, setData] = useState<AccountData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const load = useCallback(() => {
     fetch("/api/account/data")
       .then((r) => {
         if (r.status === 401) {
@@ -67,6 +69,10 @@ export default function AccountPage() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   const name =
     [data?.firstName, data?.lastName].filter(Boolean).join(" ") ||
@@ -115,11 +121,38 @@ export default function AccountPage() {
               {loading ? "…" : data?.email || "—"}
             </dd>
           </div>
+          <div>
+            <dt className="font-comic text-[11px] uppercase tracking-wide text-anime-ink/60">
+              Mobile
+            </dt>
+            <dd className="font-display text-base font-bold text-anime-ink">
+              {loading ? (
+                "…"
+              ) : data?.phone ? (
+                data.phone
+              ) : (
+                <span className="text-anime-pink">Required — add below</span>
+              )}
+            </dd>
+          </div>
+          <div>
+            <dt className="font-comic text-[11px] uppercase tracking-wide text-anime-ink/60">
+              Sign-in
+            </dt>
+            <dd className="font-display text-base font-bold text-anime-ink">
+              One-time code by email — no password needed
+            </dd>
+          </div>
         </dl>
       </section>
 
-      {/* Only rendered once the Admin token can actually write it. */}
-      {data?.canSavePhone ? <PhoneCard /> : null}
+      {!loading && data ? (
+        <PhoneCard initialPhone={data.phone ?? null} />
+      ) : null}
+
+      {!loading && data ? (
+        <AddressesCard initialAddresses={data.addresses ?? []} onSaved={load} />
+      ) : null}
 
       {/* Order history */}
       <section className="mt-8">
