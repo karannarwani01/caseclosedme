@@ -47,6 +47,9 @@ export function QuickAddButton({
         aria-label={`Add ${product.title} to cart`}
         className={clsx(
           "absolute z-20 grid h-9 w-9 -rotate-6 place-items-center rounded-full border-[3px] border-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)] transition-all duration-150 hover:rotate-0 hover:-translate-y-0.5 hover:scale-110 active:scale-95",
+          // Same rule as the pill: on pointer devices the sticker only appears
+          // once the card is hovered; touch screens keep it permanently.
+          "[@media(hover:hover)]:md:pointer-events-none [@media(hover:hover)]:md:scale-90 [@media(hover:hover)]:md:opacity-0 md:group-hover:pointer-events-auto md:group-hover:scale-100 md:group-hover:opacity-100",
           positionClass,
           available
             ? "bg-anime-cyan text-anime-ink hover:bg-anime-lime"
@@ -66,7 +69,7 @@ export function QuickAddButton({
       aria-label={`Add ${product.title} to cart`}
       className={clsx(
         "cc-units cc-u-berry absolute inset-x-2 bottom-2 z-20 flex items-center justify-center gap-1.5 rounded-full border-[2.5px] border-anime-ink py-2 font-comic text-sm uppercase tracking-wide shadow-[3px_3px_0_0_var(--color-anime-ink)] transition-all duration-200 active:translate-y-[1px] active:shadow-[2px_2px_0_0_var(--color-anime-ink)]",
-        "md:pointer-events-none md:translate-y-2 md:opacity-0 md:group-hover:pointer-events-auto md:group-hover:translate-y-0 md:group-hover:opacity-100",
+        "[@media(hover:hover)]:md:pointer-events-none [@media(hover:hover)]:md:translate-y-2 [@media(hover:hover)]:md:opacity-0 md:group-hover:pointer-events-auto md:group-hover:translate-y-0 md:group-hover:opacity-100",
         available
           ? "bg-anime-pink text-white"
           : "cursor-not-allowed bg-neutral-200 text-anime-ink/40",

@@ -80,22 +80,12 @@ export function FeedCard({ product }: { product: Product }) {
         </Link>
 
         {/* Wishlist heart + quick add-to-cart (siblings of the Link so they
-          aren't nested interactives). Two quick-add treatments by breakpoint:
-          phones keep the full-width pill (bigger tap target, explicit label);
-          desktop gets the always-visible corner sticker that the homepage rows
-          use — the pill was hover-only there, so browsing showed no add-to-cart
-          at all. The wrappers gate visibility so only one renders per size. */}
+          aren't nested interactives). The pill stays put on phones, where a
+          bigger tap target and an explicit label beat a corner sticker; on
+          pointer devices it pops in on hover, so a browsing grid stays clean
+          until you single a product out. */}
         <WishlistButton product={product} variant="card" />
-        <span className="md:hidden">
-          <QuickAddButton product={product} />
-        </span>
-        <span className="hidden md:block">
-          <QuickAddButton
-            product={product}
-            variant="icon"
-            positionClass="right-2 top-2"
-          />
-        </span>
+        <QuickAddButton product={product} />
       </div>
 
       {/* Title block */}
