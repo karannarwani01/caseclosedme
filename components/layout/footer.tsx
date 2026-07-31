@@ -117,7 +117,16 @@ export default async function Footer() {
   const currentYear = new Date().getFullYear();
   const copyrightDate = 2026 + (currentYear > 2026 ? `-${currentYear}` : "");
   const copyrightName = COMPANY_NAME || SITE_NAME || "caseclosed";
-  const lastUpdated = "24/05/2026";
+  // Was hardcoded to "24/05/2026" and had gone stale by months while the site
+  // shipped changes daily. Derive it from the build so it tracks deploys and
+  // can't drift again. Fixed to Asia/Dubai so the date doesn't shift with the
+  // build machine's timezone.
+  const lastUpdated = new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    timeZone: "Asia/Dubai",
+  }).format(new Date());
 
   return (
     <>
