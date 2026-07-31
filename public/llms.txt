@@ -1,0 +1,33 @@
+# caseclosed
+
+> caseclosed (caseclosedme.com) is a UAE-based online store for anime figures,
+> Funko Pops, collectibles, and acrylic phone-case protectors. Prices are in AED
+> and include VAT. Flat-rate delivery of AED 20 across the UAE. Payments and
+> checkout run on Shopify.
+
+## What we sell
+
+- Anime figures (One Piece, Naruto, Dragon Ball, Jujutsu Kaisen, Demon Slayer, Bleach, and more): https://caseclosedme.com/search
+- Funko Pops (anime, Marvel, WWE, Harry Potter): https://caseclosedme.com/search/funko-pop
+- Acrylic protectors for Funko Pops: https://caseclosedme.com/search/protectors
+- Best sellers: https://caseclosedme.com/search/best-sellers
+
+## Key pages
+
+- Home: https://caseclosedme.com/
+- All products: https://caseclosedme.com/search
+- FAQ: https://caseclosedme.com/faq
+- Shipping policy: https://caseclosedme.com/shipping-policy
+- Returns / refunds / exchange: https://caseclosedme.com/returns
+- Pre-order policy: https://caseclosedme.com/pre-order-policy
+- About: https://caseclosedme.com/about
+- Reviews: https://caseclosedme.com/reviews
+
+## Facts
+
+- Region served: United Arab Emirates (Dubai, Abu Dhabi, Sharjah, and all Emirates)
+- Currency: AED (prices VAT-inclusive)
+- Delivery: flat AED 20 across the UAE
+- Contact: caseclosed.me@gmail.com
+- Instagram: https://instagram.com/caseclosed.me
+- Legal entity: Pumpy General Trading LLC
