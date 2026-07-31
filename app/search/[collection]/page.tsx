@@ -45,6 +45,8 @@ export async function generateMetadata(props: {
       collection.seo?.description ||
       collection.description ||
       `${collection.title} products`,
+    // Sort and filter state lives in the query string; keep one indexable URL.
+    alternates: { canonical: `/search/${params.collection}` },
   };
 }
 

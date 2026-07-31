@@ -1,6 +1,8 @@
 // Trust / delivery promises with custom comic-style icons (white-fill + ink
 // stroke on a colour-coded ink-bordered seal). Content reflects the UAE
-// defaults (COD, free UAE delivery over AED 100, 0% BNPL, worldwide).
+// defaults (COD, flat AED 20 UAE delivery, 0% BNPL, worldwide). Keep the
+// delivery badge in step with shopify-pages/shipping.html — they are the same
+// promise shown in two places.
 
 const INK = "var(--color-anime-ink)";
 
@@ -157,8 +159,8 @@ const TRUST = [
   {
     Icon: TruckIcon,
     bg: "bg-anime-orange",
-    title: "Free Delivery",
-    sub: "UAE orders AED 100+",
+    title: "Flat Rate Delivery",
+    sub: "AED 20 across the UAE",
   },
   {
     Icon: PercentIcon,

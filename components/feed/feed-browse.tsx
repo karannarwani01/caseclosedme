@@ -5,6 +5,7 @@ import { FeedCard } from "components/feed/feed-card";
 import { FeedFilters } from "components/feed/feed-filters";
 import { buildFacetGroups, matchesFacet } from "lib/feed-facets";
 import type { Product } from "lib/shopify/types";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 
 type SortKey =
@@ -250,15 +251,29 @@ export function FeedBrowse({
 
           {filtered.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-anime-ink/20 px-6 py-16 text-center text-anime-ink/50">
-              No products match these filters.
+              {/* An empty collection is not the same as filters excluding
+                  everything. Offering "Clear filters" when none are set (e.g.
+                  /search/barbie, which has 0 products) is a dead end. */}
+              {items.length === 0
+                ? "Nothing here yet — this drop hasn't landed."
+                : "No products match these filters."}
               <div className="mt-3">
-                <button
-                  type="button"
-                  onClick={clearAll}
-                  className="rounded-full bg-anime-ink px-4 py-2 font-sans text-sm font-semibold text-white"
-                >
-                  Clear filters
-                </button>
+                {items.length === 0 ? (
+                  <Link
+                    href="/search"
+                    className="inline-block rounded-full bg-anime-ink px-4 py-2 font-sans text-sm font-semibold text-white"
+                  >
+                    Browse everything
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={clearAll}
+                    className="rounded-full bg-anime-ink px-4 py-2 font-sans text-sm font-semibold text-white"
+                  >
+                    Clear filters
+                  </button>
+                )}
               </div>
             </div>
           ) : (

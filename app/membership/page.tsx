@@ -3,10 +3,12 @@ import Footer from "components/layout/footer";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Drop Alerts Membership — Coming Soon | caseclosed",
+  // The root layout appends "| caseclosed" via its title template.
+  title: "Drop Alerts Membership — Coming Soon",
   description:
     "Join the caseclosed Drop Alerts club. Be first to know when new Funko Pops, Pop Mart Labubu and trading-card drops land — plus member-only early access. Coming soon.",
   openGraph: { type: "website" },
+  alternates: { canonical: "/membership" },
 };
 
 const PERKS = [

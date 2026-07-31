@@ -5,6 +5,7 @@ export const metadata = {
   title: "Refund Request Form",
   description:
     "Submit a refund request for your caseclosed order. We reply to all requests within 1–3 business days.",
+  alternates: { canonical: "/refund-request" },
 };
 
 export default function RefundRequestPage() {

@@ -4,6 +4,7 @@ export const metadata = {
   title: "Shop Now, Pay Later",
   description:
     "Pay in installments at caseclosed with Tabby or Tamara. Interest-free, no hidden fees, available across the UAE.",
+  alternates: { canonical: "/shop-now-pay-later" },
 };
 
 type Provider = {

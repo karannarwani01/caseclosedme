@@ -11,6 +11,8 @@ import {
 export const metadata = {
   title: "Search",
   description: "Search for products in the store.",
+  // ?q= and ?sort= would otherwise spawn an unbounded set of indexable URLs.
+  alternates: { canonical: "/search" },
 };
 
 export default async function SearchPage(props: {

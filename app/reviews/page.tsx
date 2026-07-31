@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   description:
     "The caseclosed wall of reviews. Real photos and ratings from UAE collectors who bought their Funko Pops, Labubu blind boxes and trading cards from us. Coming soon.",
   openGraph: { type: "website" },
+  alternates: { canonical: "/reviews" },
 };
 
 const TEASERS = [

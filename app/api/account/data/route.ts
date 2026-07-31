@@ -2,6 +2,7 @@ import {
   fetchAccountData,
   type AccountOrder,
 } from "lib/shopify/customer/account-api";
+import { adminCanWriteCustomers } from "lib/shopify-admin";
 import { readSession } from "lib/shopify/customer/session";
 import { getFreshAccessToken } from "lib/shopify/customer/tokens";
 import { NextResponse } from "next/server";
@@ -31,11 +32,17 @@ export async function GET() {
     }
   }
 
+  // Drives whether the mobile-number field renders. Writing a phone onto the
+  // customer needs an Admin token with write_customers; until that scope is
+  // granted the field stays hidden rather than offering a save that can't work.
+  const canSavePhone = await adminCanWriteCustomers();
+
   return NextResponse.json({
     loggedIn: true,
     firstName,
     lastName,
     email,
     orders,
+    canSavePhone,
   });
 }

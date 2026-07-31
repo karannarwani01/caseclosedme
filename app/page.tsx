@@ -7,6 +7,7 @@ import {
   JustArrivedRow,
   TopTenSection,
 } from "components/section-row";
+import { baseUrl } from "lib/utils";
 
 export const metadata = {
   title: {
@@ -18,11 +19,56 @@ export const metadata = {
   openGraph: {
     type: "website",
   },
+  alternates: { canonical: "/" },
+};
+
+// Organization + WebSite markup. Gives search engines the brand entity and the
+// sitelinks search box; the site had no structured data outside product pages.
+const siteJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${baseUrl}/#organization`,
+      name: "caseclosed",
+      url: baseUrl,
+      logo: `${baseUrl}/logo-mark.png`,
+      email: "caseclosed.me@gmail.com",
+      telephone: "+971501269270",
+      areaServed: "AE",
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${baseUrl}/#website`,
+      url: baseUrl,
+      name: "caseclosed",
+      publisher: { "@id": `${baseUrl}/#organization` },
+      potentialAction: {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: `${baseUrl}/search?q={search_term_string}`,
+        },
+        "query-input": "required name=search_term_string",
+      },
+    },
+  ],
 };
 
 export default function HomePage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}
+      />
+      {/* The page's only h1. Visually hidden because the design opens straight
+          into the carousel, whose slide titles are h2s — but the document still
+          needs a top-level heading. */}
+      <h1 className="sr-only">
+        caseclosed — Funko Pops, Pop Mart Labubu, anime figures and trading
+        cards in the UAE
+      </h1>
       <HeroCarousel />
       <CategoryCircles />
       <TopTenSection />
