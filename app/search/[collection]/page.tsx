@@ -68,6 +68,7 @@ export default async function CategoryPage(props: {
   let products: Product[];
   let availableHandles: string[];
   let heading: string;
+  let description = "";
   let initialCursor: string | null = null;
   let initialHasMore = false;
 
@@ -93,6 +94,7 @@ export default async function CategoryPage(props: {
     products = page.products;
     availableHandles = handles;
     heading = collection?.title || params.collection;
+    description = collection?.description || "";
     initialCursor = isBestSellers ? null : page.endCursor;
     initialHasMore = isBestSellers ? false : page.hasNextPage;
   }
@@ -145,6 +147,7 @@ export default async function CategoryPage(props: {
         key={params.collection}
         products={products}
         heading={heading}
+        description={description}
         availableHandles={availableHandles}
         loadMore={
           USE_DEMO_PRODUCTS || isBestSellers

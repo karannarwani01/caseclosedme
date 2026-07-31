@@ -49,6 +49,7 @@ type LoadMoreResult = {
 export function FeedBrowse({
   products,
   heading,
+  description,
   availableHandles = [],
   loadMore,
   loadMoreArgs,
@@ -57,6 +58,9 @@ export function FeedBrowse({
 }: {
   products: Product[];
   heading?: string;
+  // Collection description from Shopify — rendered under the heading as
+  // crawlable on-page copy (it already feeds the meta description).
+  description?: string;
   availableHandles?: string[];
   // When provided, a "Load more" button fetches the next cursor page from the
   // server and appends it. Filters/sort still run client-side over whatever is
@@ -176,6 +180,11 @@ export function FeedBrowse({
         <h1 className="mb-6 font-display text-3xl font-extrabold uppercase tracking-tight text-anime-ink md:text-4xl">
           {heading}
         </h1>
+      ) : null}
+      {description ? (
+        <p className="-mt-3 mb-6 max-w-3xl text-sm leading-relaxed text-anime-ink/70 md:text-base">
+          {description}
+        </p>
       ) : null}
       <BannerTiles availableHandles={availableHandles} />
 
