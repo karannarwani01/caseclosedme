@@ -19,3 +19,4 @@ scripts/account-logo*.png
 lh-*
 .env*
 .lh-prod/
+.gstack/
