@@ -757,7 +757,7 @@ export function HeroCarousel() {
   }, [engaged]);
   useEffect(() => {
     if (!engaged) return;
-    const t = setInterval(() => setIdx((i) => (i + 1) % PROMOS.length), 8000);
+    const t = setInterval(() => setIdx((i) => (i + 1) % PROMOS.length), 4500);
     return () => clearInterval(t);
   }, [engaged]);
 
