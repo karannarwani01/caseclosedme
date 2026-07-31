@@ -6,6 +6,7 @@ import { ProductReviews } from "components/product/product-reviews";
 import { UpsellCarousel } from "components/product/upsell-carousel";
 import Prose from "components/prose";
 import { WishlistButton } from "components/wishlist/wishlist-button";
+import { toCardProduct } from "lib/card-product";
 import { HIDDEN_PRODUCT_TAG } from "lib/constants";
 import { seoPageTitle } from "lib/seo-title";
 import {
@@ -220,7 +221,7 @@ async function RelatedProducts({ id }: { id: string }) {
               className="relative block h-full w-full"
             >
               <GridTileImage
-                product={product}
+                product={toCardProduct(product)}
                 alt={product.title}
                 label={{
                   title: product.title,
@@ -232,7 +233,7 @@ async function RelatedProducts({ id }: { id: string }) {
                 sizes="(min-width: 1024px) 16vw, (min-width: 768px) 25vw, 50vw"
               />
             </Link>
-            <WishlistButton product={product} variant="card" />
+            <WishlistButton product={toCardProduct(product)} variant="card" />
           </li>
         ))}
       </UpsellCarousel>

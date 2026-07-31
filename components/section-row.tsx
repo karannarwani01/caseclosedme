@@ -2,6 +2,7 @@ import { GridTileImage } from "components/grid/tile";
 import { UnitsArrow } from "components/ui/units-arrow";
 import { WishlistButton } from "components/wishlist/wishlist-button";
 import { getCollectionProducts, getProducts } from "lib/shopify";
+import { toCardProduct } from "lib/card-product";
 import type { Product } from "lib/shopify/types";
 import Image from "next/image";
 import Link from "next/link";
@@ -44,7 +45,7 @@ export async function JustArrivedRow() {
               className="relative block h-full w-full"
             >
               <GridTileImage
-                product={p}
+                product={toCardProduct(p)}
                 src={p.featuredImage?.url ?? ""}
                 fill
                 sizes="(min-width: 1024px) 16vw, (min-width: 768px) 25vw, 50vw"
@@ -59,7 +60,7 @@ export async function JustArrivedRow() {
                 }}
               />
             </Link>
-            <WishlistButton product={p} variant="card" />
+            <WishlistButton product={toCardProduct(p)} variant="card" />
           </li>
         ))}
       </ul>
@@ -99,7 +100,7 @@ export async function ArrivingSoonRow() {
               className="relative block h-full w-full"
             >
               <GridTileImage
-                product={p}
+                product={toCardProduct(p)}
                 src={p.featuredImage?.url ?? ""}
                 fill
                 sizes="(min-width: 1024px) 16vw, (min-width: 768px) 25vw, 50vw"
@@ -114,7 +115,7 @@ export async function ArrivingSoonRow() {
                 }}
               />
             </Link>
-            <WishlistButton product={p} variant="card" />
+            <WishlistButton product={toCardProduct(p)} variant="card" />
           </li>
         ))}
       </ul>
@@ -150,7 +151,7 @@ export async function TopTenSection() {
           <li key={p.handle} className="relative flex flex-col">
             {/* heart in the card's top-left corner (rank crown sits top-center) */}
             <WishlistButton
-              product={p}
+              product={toCardProduct(p)}
               variant="card"
               positionClass="left-2 top-5"
             />
@@ -231,7 +232,7 @@ export async function ShopAllGrid() {
               className="relative block h-full w-full"
             >
               <GridTileImage
-                product={p}
+                product={toCardProduct(p)}
                 src={p.featuredImage?.url ?? ""}
                 fill
                 sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
@@ -245,7 +246,7 @@ export async function ShopAllGrid() {
                 }}
               />
             </Link>
-            <WishlistButton product={p} variant="card" />
+            <WishlistButton product={toCardProduct(p)} variant="card" />
           </li>
         ))}
       </ul>
