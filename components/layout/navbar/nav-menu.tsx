@@ -19,13 +19,14 @@ export type TopSellingTile = {
 
 export function NavMenu({
   links,
+  featuredImages = {},
   topSelling = [],
   nonEmpty = [],
 }: {
   links: LinkItem[];
-  // The store's current top sellers, shown in every mega's right-hand column
-  // in place of the old per-collection Featured tiles (which fell back to bare
-  // gradients whenever a collection had no imagery).
+  featuredImages?: Record<string, string[]>;
+  // Best-selling acrylic cases — shown ONLY in the Protectors mega, where they
+  // replace the Featured tiles. Every other mega keeps its Featured column.
   topSelling?: TopSellingTile[];
   // Handles of collections that currently have products; everything else is
   // hidden from the menus.
@@ -107,43 +108,91 @@ export function NavMenu({
               </div>
             ))}
 
-            {activeMega.featured &&
-              activeMega.featured.length > 0 &&
-              topSelling.length > 0 && (
-                <div className="flex flex-col gap-4">
-                  <h3 className="font-display text-sm font-extrabold uppercase tracking-[0.18em] text-anime-ink">
-                    Top selling
-                  </h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    {topSelling.map((p, i) => (
+            {/* Protectors alone shows best-selling acrylic cases; every other
+                mega keeps its curated Featured collection tiles. */}
+            {active?.toLowerCase() === "protectors" && topSelling.length > 0 ? (
+              <div className="flex flex-col gap-4">
+                <h3 className="font-display text-sm font-extrabold uppercase tracking-[0.18em] text-anime-ink">
+                  Top selling
+                </h3>
+                <div className="grid grid-cols-2 gap-4">
+                  {topSelling.map((p, i) => (
+                    <Link
+                      key={p.handle}
+                      href={`/product/${p.handle}`}
+                      className="group relative flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-2xl border-[2.5px] border-anime-ink bg-white p-3 shadow-[5px_5px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[7px_7px_0_0_var(--color-anime-pink)]"
+                    >
+                      <Image
+                        src={p.image}
+                        alt={p.title}
+                        fill
+                        sizes="220px"
+                        className="object-contain p-3 pb-16 transition-transform duration-300 ease-out group-hover:scale-105"
+                      />
+                      <div className="absolute left-3 top-3 z-10 inline-flex items-center rounded-full border-[2px] border-anime-ink bg-anime-yellow px-2.5 py-0.5 font-display text-[10px] font-extrabold uppercase tracking-wider text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)]">
+                        #{i + 1}
+                      </div>
+                      <div className="relative z-10 rounded-lg border-[2px] border-anime-ink bg-white px-3 py-2 shadow-[2px_2px_0_0_var(--color-anime-ink)]">
+                        <p className="line-clamp-2 font-display text-xs font-extrabold leading-tight text-anime-ink [hyphens:none]">
+                          {p.title}
+                        </p>
+                        <p className="mt-1 font-display text-[11px] font-extrabold uppercase tracking-wider text-anime-pink">
+                          AED {Number(p.amount).toFixed(0)} →
+                        </p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ) : activeMega.featured && activeMega.featured.length > 0 ? (
+              <div className="flex flex-col gap-4">
+                <h3 className="font-display text-sm font-extrabold uppercase tracking-[0.18em] text-anime-ink">
+                  Featured
+                </h3>
+                <div className="grid grid-cols-2 gap-4">
+                  {activeMega.featured.map((f, i) => {
+                    const img = featuredImages[f.collection]?.[i];
+                    return (
                       <Link
-                        key={p.handle}
-                        href={`/product/${p.handle}`}
-                        className="group relative flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-2xl border-[2.5px] border-anime-ink bg-white p-3 shadow-[5px_5px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[7px_7px_0_0_var(--color-anime-pink)]"
+                        key={f.title}
+                        href={`/search/${f.collection}`}
+                        className="group relative flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-2xl border-[2.5px] border-anime-ink p-4 shadow-[5px_5px_0_0_var(--color-anime-ink)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[7px_7px_0_0_var(--color-anime-pink)]"
+                        style={{ background: f.bg }}
                       >
-                        <Image
-                          src={p.image}
-                          alt={p.title}
-                          fill
-                          sizes="220px"
-                          className="object-contain p-3 pb-16 transition-transform duration-300 ease-out group-hover:scale-105"
-                        />
-                        <div className="absolute left-3 top-3 z-10 inline-flex items-center rounded-full border-[2px] border-anime-ink bg-anime-yellow px-2.5 py-0.5 font-display text-[10px] font-extrabold uppercase tracking-wider text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)]">
-                          #{i + 1}
-                        </div>
+                        {img ? (
+                          <>
+                            <Image
+                              src={img}
+                              alt={f.title}
+                              fill
+                              sizes="220px"
+                              className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+                            />
+                            <div
+                              aria-hidden
+                              className="absolute inset-0 bg-gradient-to-t from-anime-ink/70 via-anime-ink/10 to-transparent"
+                            />
+                          </>
+                        ) : null}
+                        {f.badge ? (
+                          <div className="absolute right-3 top-3 z-10 inline-flex items-center rounded-full border-[2px] border-anime-ink bg-white px-2.5 py-0.5 font-display text-[10px] font-extrabold uppercase tracking-wider text-anime-ink shadow-[2px_2px_0_0_var(--color-anime-ink)]">
+                            {f.badge}
+                          </div>
+                        ) : null}
                         <div className="relative z-10 rounded-lg border-[2px] border-anime-ink bg-white px-3 py-2 shadow-[2px_2px_0_0_var(--color-anime-ink)]">
-                          <p className="line-clamp-2 font-display text-xs font-extrabold leading-tight text-anime-ink [hyphens:none]">
-                            {p.title}
+                          <p className="font-display text-xs font-extrabold leading-tight text-anime-ink [hyphens:none]">
+                            {f.title}
                           </p>
                           <p className="mt-1 font-display text-[11px] font-extrabold uppercase tracking-wider text-anime-pink">
-                            AED {Number(p.amount).toFixed(0)} →
+                            Shop now →
                           </p>
                         </div>
                       </Link>
-                    ))}
-                  </div>
+                    );
+                  })}
                 </div>
-              )}
+              </div>
+            ) : null}
           </div>
         </div>
       )}
