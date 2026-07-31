@@ -272,7 +272,6 @@ async function RelatedProducts({ id }: { id: string }) {
           >
             <Link
               href={`/product/${product.handle}`}
-              prefetch={true}
               className="relative block h-full w-full"
             >
               <GridTileImage

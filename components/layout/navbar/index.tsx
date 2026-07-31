@@ -97,7 +97,6 @@ export async function Navbar() {
         <div className="flex flex-1 items-center justify-center gap-3 lg:gap-6">
           <Link
             href="/"
-            prefetch={true}
             className="flex shrink-0 items-center"
             aria-label="caseclosed home"
           >

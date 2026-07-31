@@ -48,7 +48,6 @@ export default function WishlistPage() {
               >
                 <Link
                   href={`/product/${item.handle}`}
-                  prefetch={true}
                   className={`relative block aspect-square overflow-hidden rounded-2xl border-[3px] border-anime-ink bg-white transition-all duration-200 ease-out ${TILT[i % TILT.length]} group-hover:rotate-0 group-hover:-translate-y-1.5`}
                   style={{ boxShadow: `6px 6px 0 0 ${shadow}` }}
                 >

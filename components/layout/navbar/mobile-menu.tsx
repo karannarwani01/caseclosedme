@@ -166,7 +166,6 @@ export default function MobileMenu({
                         ) : (
                           <Link
                             href={it.path}
-                            prefetch={true}
                             onClick={closeMobileMenu}
                             className="block px-5 py-4 font-display text-base font-extrabold uppercase tracking-wide text-anime-ink"
                           >

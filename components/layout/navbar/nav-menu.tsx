@@ -71,7 +71,6 @@ export function NavMenu({
           <li key={l.title} onMouseEnter={() => openMenu(l.title)}>
             <Link
               href={l.path}
-              prefetch={true}
               className="inline-block whitespace-nowrap text-anime-ink transition-colors duration-100 hover:text-anime-pink"
             >
               {l.title}
@@ -97,7 +96,6 @@ export function NavMenu({
                     <li key={link.title}>
                       <Link
                         href={link.path}
-                        prefetch={true}
                         className="text-sm font-semibold text-anime-ink/80 transition-colors hover:text-anime-pink"
                       >
                         {link.title}

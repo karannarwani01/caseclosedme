@@ -46,7 +46,6 @@ export function FeedCard({ product }: { product: Product }) {
 
         <Link
           href={`/product/${product.handle}`}
-          prefetch={true}
           className="relative block aspect-square overflow-hidden rounded-2xl border border-black/5 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-all duration-200 ease-out group-hover:-translate-y-1 group-hover:shadow-[0_12px_28px_rgba(0,0,0,0.14)]"
         >
           {product.featuredImage?.url ? (

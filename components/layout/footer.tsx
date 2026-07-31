@@ -102,7 +102,6 @@ function LinkColumn({
           <li key={l.title}>
             <Link
               href={l.path}
-              prefetch={true}
               className="text-base leading-snug text-white/70 transition-colors hover:text-anime-pink"
             >
               {l.title}
@@ -149,7 +148,6 @@ export default async function Footer() {
           <div className="flex flex-col gap-5">
             <Link
               href="/"
-              prefetch={true}
               className="flex items-center gap-3"
               aria-label="caseclosed home"
             >
