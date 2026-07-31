@@ -2,15 +2,15 @@ import CartModal from "components/cart/modal";
 import OpenCart from "components/cart/open-cart";
 import LogoLockup from "components/logo-lockup";
 import {
-  getCollectionFeaturedImageUrls,
+  getCollectionProducts,
   getMenu,
   getNonEmptyCollectionHandles,
+  getProducts,
 } from "lib/shopify";
 import { Menu } from "lib/shopify/types";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AccountNav } from "./account-nav";
-import { FEATURED_COLLECTION_HANDLES } from "./featured-collections";
 import { megaHasContent } from "./mega-config";
 import MobileMenu from "./mobile-menu";
 import { NavMenu } from "./nav-menu";
@@ -23,15 +23,26 @@ export async function Navbar() {
     getNonEmptyCollectionHandles(),
   ]);
 
-  // Resolve a representative photo for each mega-menu featured collection.
-  // Uses a minimal featured-image-only query (not the full product listing).
-  const featuredEntries = await Promise.all(
-    FEATURED_COLLECTION_HANDLES.map(async (handle) => {
-      const urls = await getCollectionFeaturedImageUrls(handle);
-      return [handle, urls] as const;
-    }),
-  );
-  const featuredImages = Object.fromEntries(featuredEntries);
+  // Top sellers for the mega-menu "Top selling" column — same source as the
+  // homepage Top 10 (curated top-10 collection, best-sellers as fallback).
+  // Replaces the old per-collection "Featured" tiles, which rendered as bare
+  // gradients whenever their collections had no usable imagery.
+  let topProducts = await getCollectionProducts({
+    collection: "top-10",
+    first: 4,
+  });
+  if (!topProducts.length) {
+    topProducts = (await getProducts({ sortKey: "BEST_SELLING" })).slice(0, 4);
+  }
+  const topSelling = topProducts
+    .filter((p) => p.featuredImage?.url)
+    .slice(0, 4)
+    .map((p) => ({
+      handle: p.handle,
+      title: p.title,
+      image: p.featuredImage!.url,
+      amount: p.priceRange.maxVariantPrice.amount,
+    }));
 
   const links: Menu[] = menu.length
     ? menu
@@ -86,7 +97,7 @@ export async function Navbar() {
           </Link>
           <NavMenu
             links={visibleLinks}
-            featuredImages={featuredImages}
+            topSelling={topSelling}
             nonEmpty={nonEmpty}
           />
           <div className="hidden w-full min-w-[140px] max-w-xs md:block">
