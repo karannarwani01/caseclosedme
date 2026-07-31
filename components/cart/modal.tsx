@@ -225,7 +225,12 @@ export default function CartModal() {
                       "Taxes 0.00" was noise. */}
                   <div className="py-4 text-sm text-brand-ink/60">
                     <div className="mb-3 flex items-center justify-between border-b border-brand-ink/10 pb-1">
-                      <p>Subtotal</p>
+                      <p>
+                        Subtotal{" "}
+                        <span className="text-[11px] text-brand-ink/40">
+                          (VAT included)
+                        </span>
+                      </p>
                       <Price
                         className="text-right text-base text-brand-ink"
                         amount={cart.cost.subtotalAmount.amount}

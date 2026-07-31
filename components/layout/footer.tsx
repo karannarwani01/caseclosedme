@@ -220,7 +220,7 @@ export default async function Footer() {
 
         <div className="border-t-[2.5px] border-white/10">
           <div className="mx-auto flex w-full max-w-[1800px] flex-col gap-1 px-4 py-5 text-sm text-white/60 md:flex-row md:items-center md:justify-between lg:px-8">
-            <p>Website last updated: {lastUpdated}</p>
+            <p>Website last updated: {lastUpdated} · All prices include VAT</p>
             <p>
               &copy; {copyrightDate} {copyrightName}. All rights reserved.
             </p>

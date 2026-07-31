@@ -55,11 +55,17 @@ export function ProductDescription({
             </span>
           </a>
         ) : null}
-        <Price
-          className="mr-auto rotate-[-2deg] rounded-full border-[2.5px] border-anime-ink bg-anime-lime px-4 py-1.5 font-display text-xl font-extrabold tabular-nums text-anime-ink shadow-[3px_3px_0_0_var(--color-anime-ink)]"
-          amount={amount}
-          currencyCode={currencyCode}
-        />
+        <div className="mr-auto flex flex-col items-start gap-1">
+          <Price
+            className="rotate-[-2deg] rounded-full border-[2.5px] border-anime-ink bg-anime-lime px-4 py-1.5 font-display text-xl font-extrabold tabular-nums text-anime-ink shadow-[3px_3px_0_0_var(--color-anime-ink)]"
+            amount={amount}
+            currencyCode={currencyCode}
+          />
+          {/* Prices are tax-inclusive storewide (shop.taxesIncluded=true). */}
+          <span className="pl-2 font-comic text-[11px] uppercase tracking-wide text-anime-ink/50">
+            VAT included
+          </span>
+        </div>
       </div>
 
       <StockBar available={product.availableForSale} quantity={totalQty} />
