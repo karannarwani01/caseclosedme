@@ -3,7 +3,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 type Figure = {
   src: string;
@@ -48,6 +48,16 @@ const FIG =
 // set their own `bottom-[…]` so they land on the grass, not the slide edge.
 const FIG_FREE =
   "pointer-events-none absolute w-auto object-contain drop-shadow-[0_16px_18px_rgba(0,0,0,0.45)]";
+
+// Figures carrying `hidden … sm:block` don't paint below 640px. On desktop such
+// a figure can still be the LCP element, but on mobile preloading it only
+// competes with the figure that is. next/image's `priority` can't express "only
+// on desktop", so those get a media-scoped preload instead — measured both ways:
+// preloading everywhere costs mobile ~6 points, preloading nowhere costs desktop
+// ~6. The className is the single source of truth for the breakpoint.
+const SM_BREAKPOINT = "(min-width: 640px)";
+const hiddenOnMobile = (className: string) =>
+  /(?:^|\s)hidden(?:\s|$)/.test(className);
 
 const PROMOS: Promo[] = [
   {
@@ -672,17 +682,31 @@ function PromoSlide({ promo, eager }: { promo: Promo; eager: boolean }) {
         />
       )}
       {/* Figures bursting from the left */}
-      {promo.figures.map((f) => (
-        <Image
-          key={f.src}
-          src={f.src}
-          alt=""
-          width={f.width}
-          height={f.height}
-          priority={eager}
-          className={f.className}
-        />
-      ))}
+      {promo.figures.map((f) => {
+        const desktopOnly = hiddenOnMobile(f.className);
+        return (
+          <Fragment key={f.src}>
+            {eager && desktopOnly && (
+              // React hoists this into <head>; the media attribute keeps phones
+              // from fetching it while desktop still gets the early hint.
+              <link
+                rel="preload"
+                as="image"
+                href={f.src}
+                media={SM_BREAKPOINT}
+              />
+            )}
+            <Image
+              src={f.src}
+              alt=""
+              width={f.width}
+              height={f.height}
+              priority={eager && !desktopOnly}
+              className={f.className}
+            />
+          </Fragment>
+        );
+      })}
 
       {/* Headline + CTA on the right */}
       <div className="absolute inset-y-0 right-[4%] z-30 flex max-w-[60%] flex-col items-end justify-center gap-2 text-right md:right-[6%] md:gap-3">
