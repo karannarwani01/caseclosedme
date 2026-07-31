@@ -9,7 +9,9 @@ import {
 } from "lib/shopify-admin";
 import {
   createCustomerAddress,
+  deleteCustomerAddress,
   fetchAccountData,
+  updateCustomerAddress,
 } from "lib/shopify/customer/account-api";
 import { readSession } from "lib/shopify/customer/session";
 import { getFreshAccessToken } from "lib/shopify/customer/tokens";
@@ -76,62 +78,144 @@ export async function savePhoneAction(
   return { ok: true, message: `Saved ${phone}` };
 }
 
-export async function addAddressAction(
-  _prev: AddressState,
-  formData: FormData,
-): Promise<AddressState> {
-  const who = await signedInAccount();
-  if (!who) {
-    return {
-      ok: false,
-      message: "Couldn't confirm your account. Please sign in again.",
-    };
-  }
-
+// Shared parse for the add and edit forms. Returns null with a message when a
+// required field is missing.
+function parseAddressForm(formData: FormData): {
+  firstName: string;
+  lastName: string;
+  address1: string;
+  address2?: string;
+  city: string;
+  zoneCode: string;
+  zip?: string;
+  phoneNumber?: string;
+  territoryCode: string;
+} | null {
   const s = (k: string) => String(formData.get(k) ?? "").trim();
   const firstName = s("firstName");
   const lastName = s("lastName");
   const address1 = s("address1");
   const zoneCode = s("zoneCode");
   if (!firstName || !lastName || !address1 || !isEmirateCode(zoneCode)) {
-    return {
-      ok: false,
-      message: "Name, address and emirate are required.",
-    };
+    return null;
   }
+  return {
+    firstName,
+    lastName,
+    address1,
+    address2: s("address2") || undefined,
+    // Shopify wants a city as well as the zone; when the shopper leaves the
+    // area blank, the emirate's name is the city for all practical purposes.
+    city: s("city") || emirateName(zoneCode)!,
+    zoneCode,
+    zip: s("zip") || undefined,
+    // Optional phone rides along on the address when it parses.
+    phoneNumber: normalizePhone(s("phone")) ?? undefined,
+    // The store ships from and sells into the UAE; the form fixes the country.
+    territoryCode: "AE",
+  };
+}
 
-  // Shopify wants a city as well as the zone; when the shopper leaves the
-  // area blank, the emirate's name is the city for all practical UAE purposes.
-  const city = s("city") || emirateName(zoneCode)!;
+const NOT_SIGNED_IN: AddressState = {
+  ok: false,
+  message: "Couldn't confirm your account. Please sign in again.",
+};
 
-  // Optional phone rides along on the address when it parses.
-  const phoneNumber = normalizePhone(s("phone")) ?? undefined;
+function addressFailure(error?: string): AddressState {
+  return {
+    ok: false,
+    message: error
+      ? `Couldn't save the address: ${error}`
+      : "Couldn't save the address. Please try again.",
+  };
+}
+
+export async function addAddressAction(
+  _prev: AddressState,
+  formData: FormData,
+): Promise<AddressState> {
+  const who = await signedInAccount();
+  if (!who) return NOT_SIGNED_IN;
+
+  const address = parseAddressForm(formData);
+  if (!address) {
+    return { ok: false, message: "Name, address and emirate are required." };
+  }
 
   const res = await createCustomerAddress(
     who.token,
-    {
-      firstName,
-      lastName,
-      address1,
-      address2: s("address2") || undefined,
-      city,
-      zoneCode,
-      zip: s("zip") || undefined,
-      phoneNumber,
-      // The store ships from and sells into the UAE; the form fixes the country.
-      territoryCode: "AE",
-    },
+    address,
     formData.get("makeDefault") === "on",
   );
+  if (!res.ok) return addressFailure(res.error);
+  return { ok: true, message: "Address saved." };
+}
 
+export async function updateAddressAction(
+  _prev: AddressState,
+  formData: FormData,
+): Promise<AddressState> {
+  const who = await signedInAccount();
+  if (!who) return NOT_SIGNED_IN;
+
+  const addressId = String(formData.get("addressId") ?? "");
+  if (!addressId) return addressFailure("missing address id");
+
+  const address = parseAddressForm(formData);
+  if (!address) {
+    return { ok: false, message: "Name, address and emirate are required." };
+  }
+
+  // The id comes from the client, but Shopify scopes the mutation to the
+  // signed-in customer's own addresses, so it cannot reach anyone else's.
+  const res = await updateCustomerAddress(
+    who.token,
+    addressId,
+    address,
+    formData.get("makeDefault") === "on" ? true : undefined,
+  );
+  if (!res.ok) return addressFailure(res.error);
+  return { ok: true, message: "Address updated." };
+}
+
+export async function setDefaultAddressAction(
+  _prev: AddressState,
+  formData: FormData,
+): Promise<AddressState> {
+  const who = await signedInAccount();
+  if (!who) return NOT_SIGNED_IN;
+
+  const addressId = String(formData.get("addressId") ?? "");
+  if (!addressId) return addressFailure("missing address id");
+
+  const res = await updateCustomerAddress(
+    who.token,
+    addressId,
+    undefined,
+    true,
+  );
+  if (!res.ok) return addressFailure(res.error);
+  return { ok: true, message: "Default address updated." };
+}
+
+export async function deleteAddressAction(
+  _prev: AddressState,
+  formData: FormData,
+): Promise<AddressState> {
+  const who = await signedInAccount();
+  if (!who) return NOT_SIGNED_IN;
+
+  const addressId = String(formData.get("addressId") ?? "");
+  if (!addressId) return addressFailure("missing address id");
+
+  const res = await deleteCustomerAddress(who.token, addressId);
   if (!res.ok) {
     return {
       ok: false,
       message: res.error
-        ? `Couldn't save the address: ${res.error}`
-        : "Couldn't save the address. Please try again.",
+        ? `Couldn't delete the address: ${res.error}`
+        : "Couldn't delete the address. Please try again.",
     };
   }
-
-  return { ok: true, message: "Address saved." };
+  return { ok: true, message: "Address deleted." };
 }

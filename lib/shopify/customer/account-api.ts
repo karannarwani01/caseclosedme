@@ -202,3 +202,74 @@ export async function createCustomerAddress(
     return { ok: false, error: "no address returned" };
   return { ok: true, id: r.customerAddress.id };
 }
+
+// Update an address (fields, default flag, or both). Shopify scopes the
+// mutation to the signed-in customer, so an addressId from the client can only
+// ever touch that customer's own addresses.
+export async function updateCustomerAddress(
+  accessToken: string,
+  addressId: string,
+  address:
+    | {
+        firstName: string;
+        lastName: string;
+        address1: string;
+        address2?: string;
+        city: string;
+        zoneCode: string;
+        zip?: string;
+        phoneNumber?: string;
+        territoryCode: string;
+      }
+    | undefined,
+  makeDefault: boolean | undefined,
+): Promise<{ ok: boolean; error?: string }> {
+  type Res = {
+    customerAddressUpdate: {
+      customerAddress: { id: string } | null;
+      userErrors: { message: string }[];
+    } | null;
+  };
+  const data = await customerGraphQL<Res>(
+    accessToken,
+    `mutation UpdateAddress($addressId: ID!, $address: CustomerAddressInput, $defaultAddress: Boolean) {
+      customerAddressUpdate(addressId: $addressId, address: $address, defaultAddress: $defaultAddress) {
+        customerAddress { id }
+        userErrors { field message }
+      }
+    }`,
+    { addressId, address, defaultAddress: makeDefault },
+  );
+  const r = data?.customerAddressUpdate;
+  if (!r) return { ok: false, error: "request failed" };
+  if (r.userErrors?.length)
+    return { ok: false, error: r.userErrors[0]!.message };
+  return { ok: true };
+}
+
+export async function deleteCustomerAddress(
+  accessToken: string,
+  addressId: string,
+): Promise<{ ok: boolean; error?: string }> {
+  type Res = {
+    customerAddressDelete: {
+      deletedAddressId: string | null;
+      userErrors: { message: string }[];
+    } | null;
+  };
+  const data = await customerGraphQL<Res>(
+    accessToken,
+    `mutation DeleteAddress($addressId: ID!) {
+      customerAddressDelete(addressId: $addressId) {
+        deletedAddressId
+        userErrors { field message }
+      }
+    }`,
+    { addressId },
+  );
+  const r = data?.customerAddressDelete;
+  if (!r) return { ok: false, error: "request failed" };
+  if (r.userErrors?.length)
+    return { ok: false, error: r.userErrors[0]!.message };
+  return { ok: true };
+}
