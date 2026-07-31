@@ -2,6 +2,7 @@
 
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { PhoneCard } from "components/account/phone-card";
 import { useEffect, useState } from "react";
 
 type Order = {
@@ -25,6 +26,7 @@ type AccountData = {
   lastName: string | null;
   email: string | null;
   orders: Order[];
+  canSavePhone?: boolean;
 };
 
 function money(t: Order["total"]): string {
@@ -115,6 +117,9 @@ export default function AccountPage() {
           </div>
         </dl>
       </section>
+
+      {/* Only rendered once the Admin token can actually write it. */}
+      {data?.canSavePhone ? <PhoneCard /> : null}
 
       {/* Order history */}
       <section className="mt-8">

@@ -13,6 +13,9 @@ export type AccountOrder = {
 };
 
 export type AccountData = {
+  /** Shopify customer GID. The only trustworthy source of who is signed in —
+   *  never take this from the client when writing back to the customer. */
+  id: string | null;
   firstName: string | null;
   lastName: string | null;
   email: string | null;
@@ -21,6 +24,7 @@ export type AccountData = {
 
 const QUERY = `query AccountDashboard {
   customer {
+    id
     firstName
     lastName
     emailAddress { emailAddress }
@@ -77,6 +81,7 @@ export async function fetchAccountData(
       }),
     );
     return {
+      id: c.id ?? null,
       firstName: c.firstName ?? null,
       lastName: c.lastName ?? null,
       email: c.emailAddress?.emailAddress ?? null,

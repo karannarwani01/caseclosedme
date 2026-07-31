@@ -338,3 +338,76 @@ export async function createProductReview(input: {
     throw new Error(`metaobjectCreate failed: ${JSON.stringify(errs)}`);
   }
 }
+
+// --- Customer phone -------------------------------------------------------
+// Shopify's Customer Account API cannot set a phone number: CustomerUpdateInput
+// only accepts firstName/lastName, and Customer.phoneNumber is read-only there.
+// So the number has to be written onto the customer record with the Admin API,
+// which needs write_customers — a scope the current custom app does not have.
+//
+// Rather than hide this behind an env flag someone has to remember to flip, ask
+// Shopify what the token is actually allowed to do. The field appears on the
+// account page by itself once the scope is granted and the token rotated, with
+// no redeploy.
+let customerScopeCache: { checkedAt: number; allowed: boolean } | null = null;
+const SCOPE_CACHE_MS = 10 * 60 * 1000;
+
+export async function adminCanWriteCustomers(): Promise<boolean> {
+  if (!isAdminConfigured()) return false;
+  if (
+    customerScopeCache &&
+    Date.now() - customerScopeCache.checkedAt < SCOPE_CACHE_MS
+  ) {
+    return customerScopeCache.allowed;
+  }
+  try {
+    const host = STORE_DOMAIN.replace(/^https?:\/\//, "");
+    const res = await fetch(`https://${host}/admin/oauth/access_scopes.json`, {
+      headers: { "X-Shopify-Access-Token": ADMIN_TOKEN },
+      cache: "no-store",
+    });
+    if (!res.ok) throw new Error(String(res.status));
+    const json = (await res.json()) as {
+      access_scopes?: { handle: string }[];
+    };
+    const allowed = (json.access_scopes ?? []).some(
+      (s) => s.handle === "write_customers",
+    );
+    customerScopeCache = { checkedAt: Date.now(), allowed };
+    return allowed;
+  } catch {
+    // Treat an unreachable/failed probe as "not available" so the UI stays
+    // hidden rather than offering a save that would fail.
+    customerScopeCache = { checkedAt: Date.now(), allowed: false };
+    return false;
+  }
+}
+
+// `customerId` must come from the signed-in session, never from form input —
+// otherwise this would let anyone rewrite any customer's phone number.
+export async function setCustomerPhone(
+  customerId: string,
+  phone: string,
+): Promise<{ ok: boolean; error?: string }> {
+  try {
+    const data = await adminGraphQL<{
+      customerUpdate: {
+        customer: { id: string } | null;
+        userErrors: { field: string[] | null; message: string }[];
+      };
+    }>(
+      `mutation SetCustomerPhone($id: ID!, $phone: String!) {
+        customerUpdate(input: { id: $id, phone: $phone }) {
+          customer { id defaultPhoneNumber { phoneNumber } }
+          userErrors { field message }
+        }
+      }`,
+      { id: customerId, phone },
+    );
+    const errs = data.customerUpdate?.userErrors ?? [];
+    if (errs.length) return { ok: false, error: errs[0]!.message };
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "unknown" };
+  }
+}
