@@ -10,6 +10,7 @@ import { FeedBrowse } from "components/feed/feed-browse";
 import { defaultSort, sorting } from "lib/constants";
 import { filterDemoByCollection, USE_DEMO_PRODUCTS } from "lib/demo-products";
 import { seoPageTitle } from "lib/seo-title";
+import { baseUrl } from "lib/utils";
 import type { Product } from "lib/shopify/types";
 import { loadMoreCollectionProducts } from "./actions";
 
@@ -96,20 +97,64 @@ export default async function CategoryPage(props: {
     initialHasMore = isBestSellers ? false : page.hasNextPage;
   }
 
+  // CollectionPage + breadcrumb + a capped ItemList of the collection's
+  // products. Collections had no structured data at all; they're the bulk of
+  // the site's indexable URLs.
+  const collectionJsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        name: heading,
+        url: `${baseUrl}/search/${params.collection}`,
+        isPartOf: { "@id": `${baseUrl}/#website` },
+        mainEntity: {
+          "@type": "ItemList",
+          numberOfItems: products.length,
+          itemListElement: products.slice(0, 20).map((p, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            url: `${baseUrl}/product/${p.handle}`,
+            name: p.title,
+          })),
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: baseUrl },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Shop",
+            item: `${baseUrl}/search`,
+          },
+          { "@type": "ListItem", position: 3, name: heading },
+        ],
+      },
+    ],
+  };
+
   return (
-    <FeedBrowse
-      key={params.collection}
-      products={products}
-      heading={heading}
-      availableHandles={availableHandles}
-      loadMore={
-        USE_DEMO_PRODUCTS || isBestSellers
-          ? undefined
-          : loadMoreCollectionProducts
-      }
-      loadMoreArgs={{ collection: params.collection, sortKey, reverse }}
-      initialCursor={initialCursor}
-      initialHasMore={initialHasMore}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }}
+      />
+      <FeedBrowse
+        key={params.collection}
+        products={products}
+        heading={heading}
+        availableHandles={availableHandles}
+        loadMore={
+          USE_DEMO_PRODUCTS || isBestSellers
+            ? undefined
+            : loadMoreCollectionProducts
+        }
+        loadMoreArgs={{ collection: params.collection, sortKey, reverse }}
+        initialCursor={initialCursor}
+        initialHasMore={initialHasMore}
+      />
+    </>
   );
 }
