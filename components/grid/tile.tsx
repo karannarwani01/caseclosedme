@@ -1,8 +1,10 @@
 "use client";
 
+import { QuickAddButton } from "components/cart/quick-add-button";
 import clsx from "clsx";
+import type { Product } from "lib/shopify/types";
 import Image from "next/image";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Label from "../label";
 
 export function GridTileImage({
@@ -12,6 +14,7 @@ export function GridTileImage({
   swatch,
   badge,
   zoom = false,
+  product,
   ...props
 }: {
   isInteractive?: boolean;
@@ -20,6 +23,9 @@ export function GridTileImage({
   badge?: string;
   // When true, the photo magnifies and pans under the cursor on hover.
   zoom?: boolean;
+  // When provided, a small quick-add sticker renders in the top-right corner.
+  // The wishlist heart owns the top-left, Badge sits under it.
+  product?: Product;
   label?: {
     title: string;
     amount: string;
@@ -101,6 +107,20 @@ export function GridTileImage({
       ) : null}
 
       {badge ? <Badge text={badge} /> : null}
+
+      {/* QuickAddButton reads the cookie-backed cart via useCart(), which
+          suspends — without this boundary every tile carrying it would punch a
+          hole in the homepage's prerendered shell (the ◐ that took mobile LCP
+          from 6.2s to 5.0s). The sticker streams in; the card never waits. */}
+      {product ? (
+        <Suspense fallback={null}>
+          <QuickAddButton
+            product={product}
+            variant="icon"
+            positionClass="right-2 top-2"
+          />
+        </Suspense>
+      ) : null}
 
       {label ? (
         <Label

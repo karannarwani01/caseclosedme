@@ -220,6 +220,7 @@ async function RelatedProducts({ id }: { id: string }) {
               className="relative block h-full w-full"
             >
               <GridTileImage
+                product={product}
                 alt={product.title}
                 label={{
                   title: product.title,
