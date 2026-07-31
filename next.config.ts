@@ -2,15 +2,14 @@ export default {
   // Allow viewing the dev server from phones/other devices on the LAN without
   // the cross-origin /_next/* dev warning. Dev-only; ignored in production.
   allowedDevOrigins: ["192.168.0.139", "localhost"],
-  experimental: {
-    ppr: true,
-    // NOTE: `inlineCss` is intentionally disabled. When enabled, Next inlines the
-    // next/font `@font-face` rules into each page's HTML, where their relative
-    // `src: url(../media/…)` resolves against the page URL (e.g. /terms-conditions
-    // -> /media/… = 404) instead of /_next/static/media/…. That makes every
-    // webfont fail to load and the whole site falls back to system fonts.
-    useCache: true,
-  },
+  // Next 16 merged `experimental.ppr` + `experimental.useCache` into this one
+  // flag: Partial Prerendering and "use cache" are both enabled by it.
+  // NOTE: `experimental.inlineCss` stays intentionally disabled. When enabled,
+  // Next inlines the next/font `@font-face` rules into each page's HTML, where
+  // their relative `src: url(../media/…)` resolves against the page URL (e.g.
+  // /terms-conditions -> /media/… = 404) instead of /_next/static/media/….
+  // That makes every webfont fail to load site-wide.
+  cacheComponents: true,
   images: {
     // Serve images via a custom loader (lib/shopify-image-loader) that resizes
     // through Shopify's own CDN, bypassing Vercel's /_next/image optimizer.

@@ -3,10 +3,7 @@
 // uploads to Shopify Files. Server-only; never import into a client component.
 
 import { createHash } from "crypto";
-import {
-  unstable_cacheLife as cacheLife,
-  unstable_cacheTag as cacheTag,
-} from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 
 const ADMIN_API_VERSION = "2026-04";
 const STORE_DOMAIN =

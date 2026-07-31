@@ -13,7 +13,7 @@ import {
   Space_Grotesk,
 } from "next/font/google";
 import { getCart } from "lib/shopify";
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 import { Toaster } from "sonner";
 import "./globals.css";
 import { baseUrl } from "lib/utils";
@@ -101,8 +101,15 @@ export default async function RootLayout({
               {children}
               <Toaster closeButton />
             </main>
-            <BottomTabBar />
-            <SearchOverlay />
+            {/* Both suspend on request data (cart cookie / search params);
+                Next 16 requires that inside a boundary. Fixed-position UI, so
+                a null fallback causes no layout shift. */}
+            <Suspense fallback={null}>
+              <BottomTabBar />
+            </Suspense>
+            <Suspense fallback={null}>
+              <SearchOverlay />
+            </Suspense>
             <AccessibilityMenu />
           </WishlistProvider>
         </CartProvider>
