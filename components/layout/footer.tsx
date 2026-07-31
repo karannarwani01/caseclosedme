@@ -157,27 +157,10 @@ export default async function Footer() {
               >
                 <SocialIcon name="instagram" />
               </a>
-              <a
-                href="https://facebook.com"
-                aria-label="Facebook"
-                className="transition-colors hover:text-anime-pink"
-              >
-                <SocialIcon name="facebook" />
-              </a>
-              <a
-                href="https://youtube.com"
-                aria-label="YouTube"
-                className="transition-colors hover:text-anime-pink"
-              >
-                <SocialIcon name="youtube" />
-              </a>
-              <a
-                href="https://tiktok.com"
-                aria-label="TikTok"
-                className="transition-colors hover:text-anime-pink"
-              >
-                <SocialIcon name="tiktok" />
-              </a>
+              {/* Facebook/YouTube/TikTok hidden until the accounts exist —
+                  they pointed at the platforms' bare homepages. SocialIcon
+                  still supports all four names; re-add the anchors with real
+                  handles to bring them back. */}
             </div>
 
             <Link
