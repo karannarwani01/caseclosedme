@@ -151,7 +151,7 @@ export default async function Footer() {
 
             <div className="flex items-center gap-3 text-white/80">
               <a
-                href="https://instagram.com"
+                href="https://instagram.com/caseclosed.me"
                 aria-label="Instagram"
                 className="transition-colors hover:text-anime-pink"
               >
