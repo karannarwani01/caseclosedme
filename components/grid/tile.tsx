@@ -4,7 +4,7 @@ import { QuickAddButton } from "components/cart/quick-add-button";
 import clsx from "clsx";
 import type { Product } from "lib/shopify/types";
 import Image from "next/image";
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import Label from "../label";
 
 export function GridTileImage({
@@ -108,18 +108,15 @@ export function GridTileImage({
 
       {badge ? <Badge text={badge} /> : null}
 
-      {/* QuickAddButton reads the cookie-backed cart via useCart(), which
-          suspends — without this boundary every tile carrying it would punch a
-          hole in the homepage's prerendered shell (the ◐ that took mobile LCP
-          from 6.2s to 5.0s). The sticker streams in; the card never waits. */}
+      {/* No Suspense needed: QuickAddButton no longer touches the cart at
+          render time, so the sticker prerenders straight into the static
+          shell instead of streaming in late. */}
       {product ? (
-        <Suspense fallback={null}>
-          <QuickAddButton
-            product={product}
-            variant="icon"
-            positionClass="right-2 top-2"
-          />
-        </Suspense>
+        <QuickAddButton
+          product={product}
+          variant="icon"
+          positionClass="right-2 top-2"
+        />
       ) : null}
 
       {label ? (

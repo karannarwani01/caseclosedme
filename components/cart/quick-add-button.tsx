@@ -2,16 +2,22 @@
 
 import { ShoppingBagIcon } from "@heroicons/react/24/outline";
 import { addItem } from "components/cart/actions";
-import { useCart } from "components/cart/cart-context";
 import { UnitsArrow } from "components/ui/units-arrow";
 import { UnitsFill } from "components/ui/units-fill";
 import clsx from "clsx";
 import type { Product } from "lib/shopify/types";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 // Quick add-to-cart for product cards. `pill` = wide bar across the card image
 // bottom (feed cards). `icon` = small corner sticker (homepage grid tiles that
 // already have a bottom label). Adds the first available variant.
+//
+// Deliberately does NOT use useCart(): that hook suspends on the cookie-backed
+// cart promise, which pushed every card's button out of the static shell —
+// twelve stickers popping in late took homepage Speed Index from 3.2s to 7.1s.
+// Instead the click fires the server action and router.refresh() re-syncs the
+// badge/drawer from the server (~a beat later; the toast is instant).
 export function QuickAddButton({
   product,
   variant = "pill",
@@ -21,7 +27,7 @@ export function QuickAddButton({
   variant?: "pill" | "icon";
   positionClass?: string;
 }) {
-  const { addCartItem } = useCart();
+  const router = useRouter();
   const v =
     product.variants.find((x) => x.availableForSale) ?? product.variants[0];
   const available = product.availableForSale && Boolean(v);
@@ -33,13 +39,13 @@ export function QuickAddButton({
       toast("😣 Out of stock");
       return;
     }
-    addCartItem(v, product);
     // Optimistic toast now; if Shopify clamps the add to stock (the action
     // reports "Only N in stock…"), follow up with the correction.
     void addItem(null, { selectedVariantId: v.id, quantity: 1 }).then((msg) => {
       if (msg && (msg.startsWith("Only") || msg.startsWith("Out of stock"))) {
         toast(`😣 ${msg}`);
       }
+      router.refresh();
     });
     toast("🛒 Added to cart!", { description: product.title });
   };
