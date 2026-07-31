@@ -2,6 +2,7 @@
 // as app-owned metaobjects (type "$app:refund_request"), including photo
 // uploads to Shopify Files. Server-only; never import into a client component.
 
+import { createHash } from "crypto";
 import {
   unstable_cacheLife as cacheLife,
   unstable_cacheTag as cacheTag,
@@ -409,5 +410,77 @@ export async function setCustomerPhone(
     return { ok: true };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "unknown" };
+  }
+}
+
+// --- Customer phone records (metaobject) ----------------------------------
+// The interim home for collected mobile numbers. The Customer Account API
+// cannot write a phone at all, and putting it on the customer record needs
+// write_customers, which this token doesn't have yet — but it CAN write
+// app-owned metaobjects (same as refunds/wishlist). One record per customer,
+// handle = sha1 of the customer GID, so saves are idempotent upserts. The
+// definition ($app:customer_phone) was created once via the API on 2026-07-31.
+// When write_customers lands, savePhoneAction also pushes onto the customer
+// record; these records then double as the backfill source.
+const PHONE_TYPE = "$app:customer_phone";
+
+function phoneHandleFor(customerId: string): string {
+  return createHash("sha1").update(customerId).digest("hex");
+}
+
+export async function upsertPhoneRecord(
+  customerId: string,
+  email: string | null,
+  phone: string,
+): Promise<{ ok: boolean; error?: string }> {
+  try {
+    const data = await adminGraphQL<{
+      metaobjectUpsert: {
+        metaobject: { id: string } | null;
+        userErrors: { message: string }[];
+      };
+    }>(
+      `mutation($h: MetaobjectHandleInput!, $m: MetaobjectUpsertInput!) {
+        metaobjectUpsert(handle: $h, metaobject: $m) {
+          metaobject { id }
+          userErrors { message }
+        }
+      }`,
+      {
+        h: { type: PHONE_TYPE, handle: phoneHandleFor(customerId) },
+        m: {
+          fields: [
+            { key: "phone", value: phone },
+            { key: "email", value: email ?? "" },
+            { key: "customer_id", value: customerId },
+            { key: "updated_at", value: new Date().toISOString() },
+          ],
+        },
+      },
+    );
+    const errs = data.metaobjectUpsert?.userErrors ?? [];
+    if (errs.length) return { ok: false, error: errs[0]!.message };
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "unknown" };
+  }
+}
+
+export async function getPhoneRecord(
+  customerId: string,
+): Promise<string | null> {
+  try {
+    const data = await adminGraphQL<{
+      metaobjectByHandle: { fields: { key: string; value: string }[] } | null;
+    }>(
+      `query($h: MetaobjectHandleInput!) {
+        metaobjectByHandle(handle: $h) { fields { key value } }
+      }`,
+      { h: { type: PHONE_TYPE, handle: phoneHandleFor(customerId) } },
+    );
+    const f = data.metaobjectByHandle?.fields?.find((x) => x.key === "phone");
+    return f?.value || null;
+  } catch {
+    return null;
   }
 }

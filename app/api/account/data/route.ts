@@ -1,8 +1,9 @@
 import {
   fetchAccountData,
+  type AccountAddress,
   type AccountOrder,
 } from "lib/shopify/customer/account-api";
-import { adminCanWriteCustomers } from "lib/shopify-admin";
+import { getPhoneRecord } from "lib/shopify-admin";
 import { readSession } from "lib/shopify/customer/session";
 import { getFreshAccessToken } from "lib/shopify/customer/tokens";
 import { NextResponse } from "next/server";
@@ -20,6 +21,8 @@ export async function GET() {
   let lastName: string | null = null;
   let email: string | null = session.email || null;
   let orders: AccountOrder[] = [];
+  let addresses: AccountAddress[] = [];
+  let phone: string | null = null;
 
   const token = await getFreshAccessToken();
   if (token) {
@@ -29,13 +32,14 @@ export async function GET() {
       lastName = data.lastName;
       email = data.email || email;
       orders = data.orders;
+      addresses = data.addresses;
+      if (data.id) {
+        // The number lives in an app-owned metaobject (the Admin token can't
+        // read customer records), keyed by customer GID.
+        phone = await getPhoneRecord(data.id);
+      }
     }
   }
-
-  // Drives whether the mobile-number field renders. Writing a phone onto the
-  // customer needs an Admin token with write_customers; until that scope is
-  // granted the field stays hidden rather than offering a save that can't work.
-  const canSavePhone = await adminCanWriteCustomers();
 
   return NextResponse.json({
     loggedIn: true,
@@ -43,6 +47,7 @@ export async function GET() {
     lastName,
     email,
     orders,
-    canSavePhone,
+    addresses,
+    phone,
   });
 }
