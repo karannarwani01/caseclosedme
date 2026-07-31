@@ -232,10 +232,16 @@ export default function CartModal() {
                     </div>
                     <div className="mb-3 flex items-center justify-between border-b border-brand-ink/10 pb-1 pt-1">
                       <p>Total</p>
+                      {/* subtotalAmount, not totalAmount: once a customer has a
+                          saved default address Shopify preselects a delivery
+                          option and folds shipping into totalAmount — while the
+                          row above still says "Calculated at checkout". The
+                          drawer total is the goods total; checkout owns
+                          shipping. */}
                       <Price
                         className="text-right text-base text-brand-ink"
-                        amount={cart.cost.totalAmount.amount}
-                        currencyCode={cart.cost.totalAmount.currencyCode}
+                        amount={cart.cost.subtotalAmount.amount}
+                        currencyCode={cart.cost.subtotalAmount.currencyCode}
                       />
                     </div>
                   </div>
