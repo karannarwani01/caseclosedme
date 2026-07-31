@@ -73,7 +73,7 @@ export function QuickAddButton({
       disabled={!available}
       aria-label={`Add ${product.title} to cart`}
       className={clsx(
-        "cc-units cc-u-berry absolute inset-x-2 bottom-2 z-20 flex items-center justify-center gap-1.5 rounded-full border-[2.5px] border-anime-ink py-2 font-comic text-sm uppercase tracking-wide shadow-[3px_3px_0_0_var(--color-anime-ink)] transition-all duration-200 active:translate-y-[1px] active:shadow-[2px_2px_0_0_var(--color-anime-ink)]",
+        "cc-units cc-u-berry absolute inset-x-2 bottom-2 z-20 flex items-center justify-center gap-2 rounded-full border-[3px] border-anime-ink py-3 font-comic text-base uppercase tracking-wide shadow-[3px_3px_0_0_var(--color-anime-ink)] transition-all duration-200 active:translate-y-[1px] active:shadow-[2px_2px_0_0_var(--color-anime-ink)]",
         // Always visible on every breakpoint — this used to be hover-revealed
         // on desktop, which read as "no add to cart" while browsing.
         available
@@ -82,7 +82,7 @@ export function QuickAddButton({
       )}
     >
       {available && <UnitsFill />}
-      <ShoppingBagIcon className="h-4 w-4" strokeWidth={2.5} />
+      <ShoppingBagIcon className="h-5 w-5" strokeWidth={2.5} />
       {available ? "Add to Cart" : "Sold Out"}
       {available && <UnitsArrow />}
     </button>
