@@ -149,7 +149,20 @@ export async function shopifyFetch<T>({
         const body = await result.json();
 
         if (body.errors) {
-          throw body.errors[0];
+          // quantityAvailable is requested by the product fragments but the
+          // Storefront token may not have the inventory scope yet. Shopify
+          // then returns the FULL data payload with the field nulled, plus an
+          // access-denied error alongside it. Treat exactly that case as
+          // success (the null field is handled downstream); the moment the
+          // scope is granted on the Headless channel the error disappears and
+          // stock numbers flow — no code change needed. Anything else throws
+          // as before.
+          const realErrors = (body.errors as { message?: string }[]).filter(
+            (e) => !(e.message ?? "").includes("quantityAvailable"),
+          );
+          if (realErrors.length > 0 || !body.data) {
+            throw body.errors[0];
+          }
         }
 
         return {

@@ -44,6 +44,7 @@ export async function JustArrivedRow() {
               className="relative block h-full w-full"
             >
               <GridTileImage
+                product={p}
                 src={p.featuredImage?.url ?? ""}
                 fill
                 sizes="(min-width: 1024px) 16vw, (min-width: 768px) 25vw, 50vw"
@@ -98,6 +99,7 @@ export async function ArrivingSoonRow() {
               className="relative block h-full w-full"
             >
               <GridTileImage
+                product={p}
                 src={p.featuredImage?.url ?? ""}
                 fill
                 sizes="(min-width: 1024px) 16vw, (min-width: 768px) 25vw, 50vw"
@@ -229,6 +231,7 @@ export async function ShopAllGrid() {
               className="relative block h-full w-full"
             >
               <GridTileImage
+                product={p}
                 src={p.featuredImage?.url ?? ""}
                 fill
                 sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"

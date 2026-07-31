@@ -80,10 +80,10 @@ export function FeedCard({ product }: { product: Product }) {
         </Link>
 
         {/* Wishlist heart + quick add-to-cart (siblings of the Link so they
-          aren't nested interactives). The pill stays put on phones, where a
-          bigger tap target and an explicit label beat a corner sticker; on
-          pointer devices it pops in on hover, so a browsing grid stays clean
-          until you single a product out. */}
+          aren't nested interactives). One treatment everywhere: the full-width
+          pill across the card's bottom edge — always visible, aligned to the
+          card. (The desktop corner sticker read as too small; the hover-only
+          pill before that read as no add-to-cart at all.) */}
         <WishlistButton product={product} variant="card" />
         <QuickAddButton product={product} />
       </div>
