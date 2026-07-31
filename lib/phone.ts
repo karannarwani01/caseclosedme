@@ -14,6 +14,10 @@ export function normalizePhone(raw: string): string | null {
   if (digits.startsWith("+")) {
     const rest = digits.slice(1);
     if (!/^\d{8,15}$/.test(rest)) return null;
+    // No country code starts with 0, so anything that does is a typo rather
+    // than an international number — "0000000000" would otherwise sail through
+    // the 00-means-+ rule above and reach Shopify as "+00000000".
+    if (rest.startsWith("0")) return null;
     return `+${rest}`;
   }
 
