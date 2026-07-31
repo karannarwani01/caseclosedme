@@ -8,6 +8,7 @@ import Prose from "components/prose";
 import { WishlistButton } from "components/wishlist/wishlist-button";
 import { toCardProduct } from "lib/card-product";
 import { HIDDEN_PRODUCT_TAG } from "lib/constants";
+import { baseUrl } from "lib/utils";
 import { seoPageTitle } from "lib/seo-title";
 import {
   getProduct,
@@ -77,6 +78,7 @@ export default async function ProductPage(props: {
     name: product.title,
     description: product.description,
     image: product.featuredImage?.url,
+    brand: { "@type": "Brand", name: product.vendor || "caseclosed" },
     offers: {
       "@type": "AggregateOffer",
       availability: product.availableForSale
@@ -85,7 +87,54 @@ export default async function ProductPage(props: {
       priceCurrency: product.priceRange.minVariantPrice.currencyCode,
       highPrice: product.priceRange.maxVariantPrice.amount,
       lowPrice: product.priceRange.minVariantPrice.amount,
+      // Prices are VAT-inclusive; delivery is a flat AED 20 across the UAE.
+      shippingDetails: {
+        "@type": "OfferShippingDetails",
+        shippingRate: {
+          "@type": "MonetaryAmount",
+          value: 20,
+          currency: "AED",
+        },
+        shippingDestination: {
+          "@type": "DefinedRegion",
+          addressCountry: "AE",
+        },
+      },
+      hasMerchantReturnPolicy: {
+        "@type": "MerchantReturnPolicy",
+        applicableCountry: "AE",
+        returnPolicyCategory:
+          "https://schema.org/MerchantReturnFiniteReturnWindow",
+        merchantReturnDays: 7,
+        returnMethod: "https://schema.org/ReturnByMail",
+        returnFees: "https://schema.org/ReturnFeesCustomerResponsibility",
+      },
     },
+    // Only claim ratings when real reviews exist — Google penalizes empty ones.
+    ...(reviewData.count > 0
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: reviewData.average,
+            reviewCount: reviewData.count,
+          },
+        }
+      : {}),
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: baseUrl },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Shop",
+        item: `${baseUrl}/search`,
+      },
+      { "@type": "ListItem", position: 3, name: product.title },
+    ],
   };
 
   return (
@@ -94,6 +143,12 @@ export default async function ProductPage(props: {
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(productJsonLd),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbJsonLd),
         }}
       />
       <div className="mx-auto w-full min-w-0 max-w-(--breakpoint-2xl) px-4 py-6 md:py-10">

@@ -28,14 +28,24 @@ const siteJsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "Organization",
+      // OnlineStore is a schema.org subtype of Organization — same entity,
+      // richer e-commerce semantics for search/AI engines.
+      "@type": "OnlineStore",
       "@id": `${baseUrl}/#organization`,
       name: "caseclosed",
+      legalName: "Pumpy General Trading LLC",
       url: baseUrl,
       logo: `${baseUrl}/logo-mark.png`,
       email: "caseclosed.me@gmail.com",
       telephone: "+971501269270",
       areaServed: "AE",
+      currenciesAccepted: "AED",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Dubai",
+        addressCountry: "AE",
+      },
+      sameAs: ["https://www.instagram.com/caseclosed.me"],
     },
     {
       "@type": "WebSite",
