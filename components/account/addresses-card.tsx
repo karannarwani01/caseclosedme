@@ -1,6 +1,7 @@
 "use client";
 
 import { addAddressAction, type AddressState } from "app/account/actions";
+import { EMIRATES, emirateName } from "lib/emirates";
 import type { AccountAddress } from "lib/shopify/customer/account-api";
 import { useActionState, useEffect, useState } from "react";
 
@@ -8,11 +9,15 @@ const inputClass =
   "min-w-0 rounded-xl border-[2.5px] border-anime-ink bg-white px-4 py-2.5 font-display text-sm font-bold text-anime-ink shadow-[3px_3px_0_0_var(--color-anime-ink)] outline-none placeholder:text-anime-ink/35 focus-visible:ring-2 focus-visible:ring-anime-pink";
 
 function formatLines(a: AccountAddress): string[] {
+  const emirate = emirateName(a.zoneCode);
   return [
     [a.firstName, a.lastName].filter(Boolean).join(" "),
     a.address1 ?? "",
     a.address2 ?? "",
-    [a.city, a.zip].filter(Boolean).join(" "),
+    // Skip a duplicated "Dubai, Dubai" when the city is just the emirate.
+    [a.city !== emirate ? a.city : null, emirate, a.zip]
+      .filter(Boolean)
+      .join(", "),
     a.territoryCode === "AE" ? "United Arab Emirates" : (a.territoryCode ?? ""),
     a.phoneNumber ?? "",
   ].filter(Boolean);
@@ -122,11 +127,27 @@ export function AddressesCard({
             placeholder="Apartment, floor (optional)"
             className={`${inputClass} sm:col-span-2`}
           />
+          <select
+            name="zoneCode"
+            required
+            defaultValue=""
+            autoComplete="address-level1"
+            aria-label="Emirate"
+            className={inputClass}
+          >
+            <option value="" disabled>
+              Emirate
+            </option>
+            {EMIRATES.map((e) => (
+              <option key={e.code} value={e.code}>
+                {e.name}
+              </option>
+            ))}
+          </select>
           <input
             name="city"
-            required
             autoComplete="address-level2"
-            placeholder="City / Emirate"
+            placeholder="Area / city (optional)"
             className={inputClass}
           />
           <input
@@ -135,7 +156,7 @@ export function AddressesCard({
             inputMode="tel"
             autoComplete="tel"
             placeholder="Phone for this address (optional)"
-            className={inputClass}
+            className={`${inputClass} sm:col-span-2`}
           />
           <p className="font-comic text-[12px] text-anime-ink/60 sm:col-span-2">
             Country: United Arab Emirates

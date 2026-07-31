@@ -1,5 +1,6 @@
 "use server";
 
+import { emirateName, isEmirateCode } from "lib/emirates";
 import { normalizePhone } from "lib/phone";
 import {
   adminCanWriteCustomers,
@@ -91,13 +92,17 @@ export async function addAddressAction(
   const firstName = s("firstName");
   const lastName = s("lastName");
   const address1 = s("address1");
-  const city = s("city");
-  if (!firstName || !lastName || !address1 || !city) {
+  const zoneCode = s("zoneCode");
+  if (!firstName || !lastName || !address1 || !isEmirateCode(zoneCode)) {
     return {
       ok: false,
-      message: "Name, address and city are required.",
+      message: "Name, address and emirate are required.",
     };
   }
+
+  // Shopify wants a city as well as the zone; when the shopper leaves the
+  // area blank, the emirate's name is the city for all practical UAE purposes.
+  const city = s("city") || emirateName(zoneCode)!;
 
   // Optional phone rides along on the address when it parses.
   const phoneNumber = normalizePhone(s("phone")) ?? undefined;
@@ -110,6 +115,7 @@ export async function addAddressAction(
       address1,
       address2: s("address2") || undefined,
       city,
+      zoneCode,
       zip: s("zip") || undefined,
       phoneNumber,
       // The store ships from and sells into the UAE; the form fixes the country.

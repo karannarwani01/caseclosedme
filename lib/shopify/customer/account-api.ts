@@ -19,6 +19,8 @@ export type AccountAddress = {
   address1: string | null;
   address2: string | null;
   city: string | null;
+  /** Emirate code for AE addresses (DU, AZ, SH, …). Shopify requires it. */
+  zoneCode: string | null;
   zip: string | null;
   territoryCode: string | null;
   phoneNumber: string | null;
@@ -52,6 +54,7 @@ const QUERY = `query AccountDashboard {
           address1
           address2
           city
+          zoneCode
           zip
           territoryCode
           phoneNumber
@@ -167,6 +170,8 @@ export async function createCustomerAddress(
     address1: string;
     address2?: string;
     city: string;
+    /** Required by Shopify for AE: the emirate code (DU, AZ, SH, …). */
+    zoneCode: string;
     zip?: string;
     phoneNumber?: string;
     territoryCode: string;
