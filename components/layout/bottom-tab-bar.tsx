@@ -67,6 +67,7 @@ export function BottomTabBar() {
       className="fixed inset-x-0 bottom-0 z-50 flex border-t-[2.5px] border-anime-ink bg-white pb-[env(safe-area-inset-bottom)] shadow-[0_-3px_12px_rgba(0,0,0,0.08)] lg:hidden"
     >
       <Link
+        prefetch={false}
         href="/"
         className={cls(homeActive)}
         aria-current={homeActive ? "page" : undefined}
@@ -103,6 +104,7 @@ export function BottomTabBar() {
       </button>
 
       <Link
+        prefetch={false}
         href="/wishlist"
         className={cls(wishActive)}
         aria-current={wishActive ? "page" : undefined}

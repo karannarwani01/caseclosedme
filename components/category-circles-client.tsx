@@ -75,6 +75,7 @@ export function CategoryCirclesClient({ items }: { items: CategoryItem[] }) {
 
         return (
           <Link
+            prefetch={false}
             key={cat.slug}
             href={`/search/${cat.slug}`}
             ref={(el) => {

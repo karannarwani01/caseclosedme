@@ -621,6 +621,7 @@ function FloatingCard({
 function PromoSlide({ promo, eager }: { promo: Promo; eager: boolean }) {
   return (
     <Link
+      prefetch={false}
       href={promo.href}
       aria-label={promo.ariaLabel}
       className="group relative z-10 block min-h-[54vh] w-full overflow-hidden md:min-h-[48vh] lg:min-h-[52vh]"
