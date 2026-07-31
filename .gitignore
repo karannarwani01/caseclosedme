@@ -20,3 +20,4 @@ lh-*
 .env*
 .lh-prod/
 .gstack/
+.gbrain-source
