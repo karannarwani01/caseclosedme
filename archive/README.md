@@ -27,19 +27,19 @@ Two traps that caught earlier attempts:
 
 Leftovers from the Next.js Commerce starter that the redesign replaced.
 
-| file | exports | replaced by |
-|---|---|---|
-| `components/carousel.tsx` | `Carousel` | `components/hero-carousel.tsx`, `components/scroll-row.tsx` |
-| `components/editorial/browse-masthead.tsx` | `BrowseMasthead` | `components/feed/*` |
-| `components/grid/three-items.tsx` | `ThreeItemGrid` | `components/section-row.tsx` |
-| `components/icons/logo.tsx` | `LogoIcon` | `components/logo-square.tsx`, `components/logo-lockup.tsx` |
-| `components/layout/footer-menu.tsx` | `FooterMenu`, `FooterMenuItem` | hardcoded columns in `components/layout/footer.tsx` |
-| `components/layout/product-grid-items.tsx` | `ProductGridItems` | `components/feed/feed-card.tsx` |
-| `components/layout/search/collections.tsx` | `Collections` | `components/feed/feed-filters.tsx` |
-| `components/layout/search/filter/index.tsx` | `FilterList` | `components/feed/feed-filters.tsx` |
-| `components/layout/search/filter/item.tsx` | `FilterItem` | `components/feed/feed-filters.tsx` |
-| `components/layout/search/filter/dropdown.tsx` | `FilterItemDropdown` | `components/feed/feed-filters.tsx` |
-| `components/welcome-toast.tsx` | `WelcomeToast` | never used on this store |
+| file                                           | exports                        | replaced by                                                 |
+| ---------------------------------------------- | ------------------------------ | ----------------------------------------------------------- |
+| `components/carousel.tsx`                      | `Carousel`                     | `components/hero-carousel.tsx`, `components/scroll-row.tsx` |
+| `components/editorial/browse-masthead.tsx`     | `BrowseMasthead`               | `components/feed/*`                                         |
+| `components/grid/three-items.tsx`              | `ThreeItemGrid`                | `components/section-row.tsx`                                |
+| `components/icons/logo.tsx`                    | `LogoIcon`                     | `components/logo-square.tsx`, `components/logo-lockup.tsx`  |
+| `components/layout/footer-menu.tsx`            | `FooterMenu`, `FooterMenuItem` | hardcoded columns in `components/layout/footer.tsx`         |
+| `components/layout/product-grid-items.tsx`     | `ProductGridItems`             | `components/feed/feed-card.tsx`                             |
+| `components/layout/search/collections.tsx`     | `Collections`                  | `components/feed/feed-filters.tsx`                          |
+| `components/layout/search/filter/index.tsx`    | `FilterList`                   | `components/feed/feed-filters.tsx`                          |
+| `components/layout/search/filter/item.tsx`     | `FilterItem`                   | `components/feed/feed-filters.tsx`                          |
+| `components/layout/search/filter/dropdown.tsx` | `FilterItemDropdown`           | `components/feed/feed-filters.tsx`                          |
+| `components/welcome-toast.tsx`                 | `WelcomeToast`                 | never used on this store                                    |
 
 The `search/filter/*` tree came out as a unit: only `search/collections.tsx`
 imported it, and nothing imported that.

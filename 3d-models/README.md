@@ -17,11 +17,11 @@ To restore one: upload the `.glb` via `stagedUploadsCreate` (resource
 Geometry is the original export, untouched. Only the materials differ from the
 file supplied:
 
-| Material         | Setting                                                |
-| ---------------- | ------------------------------------------------------ |
+| Material         | Setting                                                                                                               |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------- |
 | PBR_Glass (x2)   | baseColor `[0.95, 0.965, 0.98, 0.96]`, metallic 0, roughness 0.04, ior 1.49, doubleSided, no metallicRoughnessTexture |
-| Neodymium magnet | metallic 1.0, roughness 0.35                           |
-| 6-Photoroom      | untouched - this is the etched CASE CLOSED base decal  |
+| Neodymium magnet | metallic 1.0, roughness 0.35                                                                                          |
+| 6-Photoroom      | untouched - this is the etched CASE CLOSED base decal                                                                 |
 
 Viewer settings:
 

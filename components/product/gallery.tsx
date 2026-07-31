@@ -41,8 +41,7 @@ export function Gallery({
   };
 
   const nextImageIndex = imageIndex + 1 < slideCount ? imageIndex + 1 : 0;
-  const previousImageIndex =
-    imageIndex === 0 ? slideCount - 1 : imageIndex - 1;
+  const previousImageIndex = imageIndex === 0 ? slideCount - 1 : imageIndex - 1;
 
   // Swipe support: drag left → next image, drag right → previous (and don't
   // trigger the tap-to-enlarge).
@@ -247,7 +246,9 @@ export function Gallery({
                 onClick={(e) => {
                   e.stopPropagation();
                   updateImage(
-                    ((imageIndex === 0 ? images.length : imageIndex) - 1).toString(),
+                    (
+                      (imageIndex === 0 ? images.length : imageIndex) - 1
+                    ).toString(),
                   );
                 }}
                 aria-label="Previous image"
