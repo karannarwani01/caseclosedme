@@ -24,6 +24,23 @@ function verify(rawBody: string, hmacHeader: string | null): boolean {
   }
 }
 
+// Shopify Flow's "Send HTTP request" action can't sign with the webhook HMAC,
+// so Flow authenticates with a shared-secret header instead. Flow is the
+// delivery path because a Dev Dashboard bug blocks granting read_orders to
+// the custom app (no scope = no orders/fulfilled webhook subscription).
+const FLOW_SECRET = process.env.SHOPIFY_REVALIDATION_SECRET || "";
+
+function verifyFlowSecret(header: string | null): boolean {
+  if (!FLOW_SECRET || !header) return false;
+  try {
+    const a = Buffer.from(FLOW_SECRET);
+    const b = Buffer.from(header);
+    return a.length === b.length && timingSafeEqual(a, b);
+  } catch {
+    return false;
+  }
+}
+
 // orders/fulfilled webhook: enqueue a review-request record for the daily
 // cron (app/api/cron/review-requests) to email once the delay has passed.
 // Idempotent — the queue record's handle is derived from the order id, so
@@ -31,7 +48,10 @@ function verify(rawBody: string, hmacHeader: string | null): boolean {
 export async function POST(req: NextRequest) {
   const raw = await req.text();
 
-  if (!verify(raw, req.headers.get("x-shopify-hmac-sha256"))) {
+  if (
+    !verify(raw, req.headers.get("x-shopify-hmac-sha256")) &&
+    !verifyFlowSecret(req.headers.get("x-cc-webhook-secret"))
+  ) {
     return new NextResponse("unauthorized", { status: 401 });
   }
 
