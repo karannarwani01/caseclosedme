@@ -751,6 +751,32 @@ function PromoSlide({ promo, eager }: { promo: Promo; eager: boolean }) {
 export function HeroCarousel() {
   const [idx, setIdx] = useState(0);
 
+  // Warm every slide's artwork once the page has finished loading, so a
+  // rotation or swipe never shows a CSS scene with its figures still
+  // downloading. Local /banners assets bypass the Shopify loader (same URL at
+  // every width), so these fetches fill the exact cache entry next/image
+  // reads when the slide mounts. Waiting for `load` keeps this traffic from
+  // competing with the first slide's LCP image.
+  useEffect(() => {
+    const warm = () => {
+      for (const p of PROMOS) {
+        const srcs = p.figures.map((f) => f.src);
+        if (p.sceneImage) srcs.push(p.sceneImage);
+        for (const src of srcs) {
+          const img = new window.Image();
+          img.decoding = "async";
+          img.src = src;
+        }
+      }
+    };
+    if (document.readyState === "complete") {
+      warm();
+      return;
+    }
+    window.addEventListener("load", warm, { once: true });
+    return () => window.removeEventListener("load", warm);
+  }, []);
+
   // Auto-rotate only after the visitor first interacts (scroll/touch/pointer).
   // A carousel that rotates before the user has engaged repeatedly re-claims
   // the page's Largest Contentful Paint (each new slide = a fresh, larger
