@@ -17,7 +17,7 @@ export function NewsletterForm() {
 
   if (state?.ok) {
     return (
-      <p className="rounded-xl border-2 border-anime-lime bg-anime-lime/10 px-4 py-3 text-sm font-semibold text-anime-lime">
+      <p className="inline-flex -rotate-1 items-center gap-2 rounded-xl border-[2.5px] border-anime-ink bg-anime-lime px-4 py-3 font-display text-sm font-extrabold uppercase tracking-wide text-anime-ink shadow-[3px_3px_0_0_var(--color-anime-pink)]">
         {state.message}
       </p>
     );
@@ -34,21 +34,21 @@ export function NewsletterForm() {
         aria-hidden="true"
         className="hidden"
       />
-      <div className="flex gap-2">
+      <div className="flex gap-2.5">
         <input
           type="email"
           name="email"
           required
           placeholder="your@email.com"
           aria-label="Email address for the newsletter"
-          className="min-w-0 flex-1 rounded-full border-2 border-white/25 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white outline-none placeholder:text-white/40 focus:border-anime-pink"
+          className="min-w-0 flex-1 rounded-xl border-[2.5px] border-anime-ink bg-anime-paper px-4 py-2.5 text-sm font-bold text-anime-ink shadow-[3px_3px_0_0_var(--color-anime-pink)] outline-none placeholder:text-anime-ink/40 focus:shadow-[3px_3px_0_0_var(--color-anime-cyan)]"
         />
         <button
           type="submit"
           disabled={pending}
-          className="shrink-0 rounded-full border-2 border-anime-ink bg-anime-pink px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wider text-white shadow-[2px_2px_0_0_rgba(255,255,255,0.25)] transition-transform hover:-translate-y-[1px] disabled:cursor-not-allowed disabled:opacity-60"
+          className="shrink-0 rounded-xl border-[2.5px] border-anime-ink bg-anime-pink px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wider text-white shadow-[3px_3px_0_0_var(--color-anime-lime)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[4px_4px_0_0_var(--color-anime-lime)] disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {pending ? "Joining…" : "Join"}
+          {pending ? "Joining…" : "★ Join"}
         </button>
       </div>
       {state && !state.ok ? (
