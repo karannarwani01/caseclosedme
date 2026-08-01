@@ -42,6 +42,15 @@ export function ReviewForm({ productHandle }: { productHandle: string }) {
       </p>
       <input type="hidden" name="productHandle" value={productHandle} />
       <input type="hidden" name="rating" value={rating} />
+      {/* Honeypot — hidden from real users, checked server-side. */}
+      <input
+        type="text"
+        name="website"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="hidden"
+      />
 
       {/* Star picker */}
       <div className="flex items-center gap-1" onMouseLeave={() => setHover(0)}>

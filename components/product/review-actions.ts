@@ -14,6 +14,15 @@ export async function submitReview(
   const author = String(formData.get("author") || "").trim();
   const body = String(formData.get("body") || "").trim();
 
+  // Honeypot: invisible to humans, bots fill it. Pretend success so the bot
+  // moves on without learning it was caught.
+  if (String(formData.get("website") || "").trim()) {
+    return {
+      ok: true,
+      message: "Thanks! Your review will appear once it's checked. ✅",
+    };
+  }
+
   if (!productHandle) return { ok: false, message: "Something went wrong." };
   if (!(rating >= 1 && rating <= 5))
     return { ok: false, message: "Pick a star rating." };
@@ -26,5 +35,8 @@ export async function submitReview(
   } catch {
     return { ok: false, message: "Couldn't submit — please try again." };
   }
-  return { ok: true, message: "Thanks! Your review is live. 🎉" };
+  return {
+    ok: true,
+    message: "Thanks! Your review will appear once it's checked. ✅",
+  };
 }

@@ -281,7 +281,14 @@ export async function getProductReviews(
     fields.find((f) => f.key === key)?.value ?? "";
 
   const reviews: ProductReview[] = data.metaobjects.nodes
-    .filter((n) => val(n.fields, "product_handle") === productHandle)
+    .filter(
+      (n) =>
+        val(n.fields, "product_handle") === productHandle &&
+        // Moderation: only approved reviews render. New submissions are
+        // written as "pending" and flipped in Shopify Admin (Content →
+        // Metaobjects → Product Review → Status).
+        val(n.fields, "status") === "approved",
+    )
     .map((n) => ({
       id: n.id,
       rating: Math.max(1, Math.min(5, parseInt(val(n.fields, "rating")) || 0)),
@@ -327,6 +334,7 @@ export async function createProductReview(input: {
           { key: "author", value: input.author },
           { key: "body", value: input.body },
           { key: "created_at", value: new Date().toISOString() },
+          { key: "status", value: "pending" },
         ],
       },
     },
