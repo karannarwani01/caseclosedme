@@ -1,6 +1,7 @@
 import { cacheLife } from "next/cache";
 import Link from "next/link";
 import LogoSquare from "components/logo-square";
+import { NewsletterForm } from "components/newsletter/newsletter-form";
 import { ACCOUNT_URL } from "lib/constants";
 
 const { COMPANY_NAME, SITE_NAME } = process.env;
@@ -177,6 +178,13 @@ export default async function Footer() {
             >
               ★ See our happy collectors
             </Link>
+
+            <div className="flex flex-col gap-2">
+              <h3 className="font-display text-sm font-extrabold uppercase tracking-[0.18em] text-white/90">
+                Get the drops first
+              </h3>
+              <NewsletterForm />
+            </div>
           </div>
 
           <LinkColumn title="Customer Service" links={customerService} />
