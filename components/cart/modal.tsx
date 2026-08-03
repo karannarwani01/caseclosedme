@@ -183,6 +183,18 @@ export default function CartModal() {
                                         {item.merchandise.title}
                                       </p>
                                     ) : null}
+                                    {/* Without this a subscription line and a
+                                        one-time line of the same variant look
+                                        identical in the drawer. */}
+                                    {item.sellingPlanAllocation ? (
+                                      <span className="mt-1 inline-flex w-fit items-center rounded-full border-[2px] border-anime-ink bg-anime-cyan px-2 py-0.5 font-display text-[10px] font-extrabold uppercase tracking-wider text-anime-ink">
+                                        🔁{" "}
+                                        {
+                                          item.sellingPlanAllocation.sellingPlan
+                                            .name
+                                        }
+                                      </span>
+                                    ) : null}
                                   </div>
                                 </Link>
                               </div>

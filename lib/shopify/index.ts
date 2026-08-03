@@ -267,7 +267,7 @@ const reshapeProduct = (
     return undefined;
   }
 
-  const { images, variants, media, ...rest } = product;
+  const { images, variants, media, sellingPlanGroups, ...rest } = product;
 
   const model3dUrl = media
     ? removeEdgesAndNodes(media)
@@ -280,6 +280,13 @@ const reshapeProduct = (
     images: reshapeImages(images, product.title),
     variants: removeEdgesAndNodes(variants),
     model3dUrl,
+    // Only the PDP query selects this; everywhere else it stays undefined.
+    sellingPlanGroups: sellingPlanGroups
+      ? removeEdgesAndNodes(sellingPlanGroups).map((group) => ({
+          ...group,
+          sellingPlans: removeEdgesAndNodes(group.sellingPlans),
+        }))
+      : undefined,
   };
 };
 
@@ -354,7 +361,7 @@ export async function createCart(): Promise<Cart> {
 }
 
 export async function addToCart(
-  lines: { merchandiseId: string; quantity: number }[],
+  lines: { merchandiseId: string; quantity: number; sellingPlanId?: string }[],
 ): Promise<Cart> {
   if (!endpoint) {
     return emptyMockCart();
@@ -387,7 +394,12 @@ export async function removeFromCart(lineIds: string[]): Promise<Cart> {
 }
 
 export async function updateCart(
-  lines: { id: string; merchandiseId: string; quantity: number }[],
+  lines: {
+    id: string;
+    merchandiseId: string;
+    quantity: number;
+    sellingPlanId?: string;
+  }[],
 ): Promise<Cart> {
   if (!endpoint) {
     return emptyMockCart();

@@ -29,6 +29,13 @@ const cartFragment = /* GraphQL */ `
               currencyCode
             }
           }
+          sellingPlanAllocation {
+            sellingPlan {
+              id
+              name
+              recurringDeliveries
+            }
+          }
           merchandise {
             ... on ProductVariant {
               id

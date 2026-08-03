@@ -42,13 +42,14 @@ export function EditItemQuantityButton({
   const payload = {
     merchandiseId: item.merchandise.id,
     quantity: type === "plus" ? item.quantity + 1 : item.quantity - 1,
+    sellingPlanId: item.sellingPlanAllocation?.sellingPlan.id,
   };
   const updateItemQuantityAction = formAction.bind(null, payload);
 
   return (
     <form
       action={async () => {
-        optimisticUpdate(payload.merchandiseId, type);
+        optimisticUpdate(payload.merchandiseId, type, payload.sellingPlanId);
         updateItemQuantityAction();
       }}
     >

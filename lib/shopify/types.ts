@@ -19,12 +19,45 @@ export type CartProduct = {
   featuredImage: Image;
 };
 
+export type SellingPlanPriceAdjustment = {
+  adjustmentValue:
+    | { adjustmentPercentage: number }
+    | { adjustmentAmount: Money }
+    | { price: Money }
+    // Shopify can return an adjustment type we don't model; treat as "no
+    // displayable discount" rather than letting the PDP throw.
+    | Record<string, never>;
+};
+
+export type SellingPlan = {
+  id: string;
+  name: string;
+  description?: string | null;
+  recurringDeliveries: boolean;
+  priceAdjustments: SellingPlanPriceAdjustment[];
+};
+
+export type ShopifySellingPlanGroup = {
+  appName?: string | null;
+  name: string;
+  options: { name: string; values: string[] }[];
+  sellingPlans: Connection<SellingPlan>;
+};
+
+export type SellingPlanGroup = Omit<ShopifySellingPlanGroup, "sellingPlans"> & {
+  sellingPlans: SellingPlan[];
+};
+
 export type CartItem = {
   id: string | undefined;
   quantity: number;
   cost: {
     totalAmount: Money;
   };
+  /** Present only on subscription lines; null/absent on one-time purchases. */
+  sellingPlanAllocation?: {
+    sellingPlan: { id: string; name: string; recurringDeliveries: boolean };
+  } | null;
   merchandise: {
     id: string;
     title: string;
@@ -68,9 +101,14 @@ export type Page = {
   updatedAt: string;
 };
 
-export type Product = Omit<ShopifyProduct, "variants" | "images" | "media"> & {
+export type Product = Omit<
+  ShopifyProduct,
+  "variants" | "images" | "media" | "sellingPlanGroups"
+> & {
   variants: ProductVariant[];
   images: Image[];
+  /** Only the PDP query fetches these; listing/recommendation nodes omit it. */
+  sellingPlanGroups?: SellingPlanGroup[];
   /** URL of the product's GLB 3D model, when one is uploaded as media. */
   model3dUrl?: string;
 };
@@ -145,6 +183,7 @@ export type ShopifyProduct = {
   };
   updatedAt: string;
   media?: Connection<ShopifyMedia>;
+  sellingPlanGroups?: Connection<ShopifySellingPlanGroup>;
 };
 
 export type ShopifyMedia = {
@@ -180,6 +219,7 @@ export type ShopifyAddToCartOperation = {
     lines: {
       merchandiseId: string;
       quantity: number;
+      sellingPlanId?: string;
     }[];
   };
 };
@@ -208,6 +248,7 @@ export type ShopifyUpdateCartOperation = {
       id: string;
       merchandiseId: string;
       quantity: number;
+      sellingPlanId?: string;
     }[];
   };
 };

@@ -8,21 +8,27 @@ import {
   removeFromCart,
   updateCart,
 } from "lib/shopify";
+import { cartItemKey, cartLineKey } from "lib/shopify/cart-line";
 import { updateTag } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export async function addItem(
   prevState: any,
-  payload: { selectedVariantId: string | undefined; quantity?: number },
+  payload: {
+    selectedVariantId: string | undefined;
+    quantity?: number;
+    sellingPlanId?: string;
+  },
 ) {
-  const { selectedVariantId, quantity = 1 } = payload;
+  const { selectedVariantId, quantity = 1, sellingPlanId } = payload;
   if (!selectedVariantId) {
     return "Error adding item to cart";
   }
 
   try {
     const requested = Math.max(1, quantity);
+    const key = cartLineKey(selectedVariantId, sellingPlanId);
 
     // Shopify silently clamps a line to available inventory instead of
     // erroring (and this store's Storefront token can't read
@@ -31,17 +37,19 @@ export async function addItem(
     // 1. Line qty before:
     const before = await getCart();
     const prevQty =
-      before?.lines.find((l) => l.merchandise.id === selectedVariantId)
-        ?.quantity ?? 0;
+      before?.lines.find((l) => cartItemKey(l) === key)?.quantity ?? 0;
 
     const after = await addToCart([
-      { merchandiseId: selectedVariantId, quantity: requested },
+      {
+        merchandiseId: selectedVariantId,
+        quantity: requested,
+        ...(sellingPlanId ? { sellingPlanId } : {}),
+      },
     ]);
     updateTag(TAGS.cart);
 
     const newQty =
-      after?.lines?.find((l) => l.merchandise.id === selectedVariantId)
-        ?.quantity ?? prevQty;
+      after?.lines?.find((l) => cartItemKey(l) === key)?.quantity ?? prevQty;
     const actuallyAdded = newQty - prevQty;
 
     if (actuallyAdded < requested) {
@@ -59,12 +67,17 @@ export async function addItem(
 export async function buyNow(payload: {
   selectedVariantId: string | undefined;
   quantity?: number;
+  sellingPlanId?: string;
 }) {
-  const { selectedVariantId, quantity = 1 } = payload;
+  const { selectedVariantId, quantity = 1, sellingPlanId } = payload;
   if (!selectedVariantId) return;
 
   await addToCart([
-    { merchandiseId: selectedVariantId, quantity: Math.max(1, quantity) },
+    {
+      merchandiseId: selectedVariantId,
+      quantity: Math.max(1, quantity),
+      ...(sellingPlanId ? { sellingPlanId } : {}),
+    },
   ]);
   updateTag(TAGS.cart);
 
@@ -72,7 +85,12 @@ export async function buyNow(payload: {
   if (cart?.checkoutUrl) redirect(cart.checkoutUrl);
 }
 
-export async function removeItem(prevState: any, merchandiseId: string) {
+export async function removeItem(
+  prevState: any,
+  payload: { merchandiseId: string; sellingPlanId?: string },
+) {
+  const { merchandiseId, sellingPlanId } = payload;
+
   try {
     const cart = await getCart();
 
@@ -80,9 +98,8 @@ export async function removeItem(prevState: any, merchandiseId: string) {
       return "Error fetching cart";
     }
 
-    const lineItem = cart.lines.find(
-      (line) => line.merchandise.id === merchandiseId,
-    );
+    const key = cartLineKey(merchandiseId, sellingPlanId);
+    const lineItem = cart.lines.find((line) => cartItemKey(line) === key);
 
     if (lineItem && lineItem.id) {
       await removeFromCart([lineItem.id]);
@@ -100,9 +117,10 @@ export async function updateItemQuantity(
   payload: {
     merchandiseId: string;
     quantity: number;
+    sellingPlanId?: string;
   },
 ) {
-  const { merchandiseId, quantity } = payload;
+  const { merchandiseId, quantity, sellingPlanId } = payload;
 
   try {
     const cart = await getCart();
@@ -111,9 +129,8 @@ export async function updateItemQuantity(
       return "Error fetching cart";
     }
 
-    const lineItem = cart.lines.find(
-      (line) => line.merchandise.id === merchandiseId,
-    );
+    const key = cartLineKey(merchandiseId, sellingPlanId);
+    const lineItem = cart.lines.find((line) => cartItemKey(line) === key);
 
     if (lineItem && lineItem.id) {
       if (quantity === 0) {
@@ -124,12 +141,21 @@ export async function updateItemQuantity(
             id: lineItem.id,
             merchandiseId,
             quantity,
+            // Omitting this on a subscription line would strip the plan and
+            // silently convert it to a one-time purchase.
+            ...(sellingPlanId ? { sellingPlanId } : {}),
           },
         ]);
       }
     } else if (quantity > 0) {
       // If the item doesn't exist in the cart and quantity > 0, add it
-      await addToCart([{ merchandiseId, quantity }]);
+      await addToCart([
+        {
+          merchandiseId,
+          quantity,
+          ...(sellingPlanId ? { sellingPlanId } : {}),
+        },
+      ]);
     }
 
     updateTag(TAGS.cart);

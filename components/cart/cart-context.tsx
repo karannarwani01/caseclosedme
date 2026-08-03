@@ -1,10 +1,12 @@
 "use client";
 
+import { cartItemKey, cartLineKey } from "lib/shopify/cart-line";
 import type {
   Cart,
   CartItem,
   Product,
   ProductVariant,
+  SellingPlan,
 } from "lib/shopify/types";
 import React, {
   createContext,
@@ -19,11 +21,19 @@ type UpdateType = "plus" | "minus" | "delete";
 type CartAction =
   | {
       type: "UPDATE_ITEM";
-      payload: { merchandiseId: string; updateType: UpdateType };
+      payload: {
+        merchandiseId: string;
+        sellingPlanId?: string;
+        updateType: UpdateType;
+      };
     }
   | {
       type: "ADD_ITEM";
-      payload: { variant: ProductVariant; product: Product };
+      payload: {
+        variant: ProductVariant;
+        product: Product;
+        sellingPlan?: SellingPlan;
+      };
     };
 
 type CartContextType = {
@@ -69,8 +79,12 @@ function createOrUpdateCartItem(
   existingItem: CartItem | undefined,
   variant: ProductVariant,
   product: Product,
+  sellingPlan?: SellingPlan,
 ): CartItem {
   const quantity = existingItem ? existingItem.quantity + 1 : 1;
+  // Optimistic total uses the variant's one-time price even on a subscription
+  // line — the plan's price adjustment is applied by Shopify, so the real
+  // total lands when the server cart resolves a moment later.
   const totalAmount = calculateItemCost(quantity, variant.price.amount);
 
   return {
@@ -82,6 +96,15 @@ function createOrUpdateCartItem(
         currencyCode: variant.price.currencyCode,
       },
     },
+    sellingPlanAllocation: sellingPlan
+      ? {
+          sellingPlan: {
+            id: sellingPlan.id,
+            name: sellingPlan.name,
+            recurringDeliveries: sellingPlan.recurringDeliveries,
+          },
+        }
+      : null,
     merchandise: {
       id: variant.id,
       title: variant.title,
@@ -135,10 +158,11 @@ function cartReducer(state: Cart | undefined, action: CartAction): Cart {
 
   switch (action.type) {
     case "UPDATE_ITEM": {
-      const { merchandiseId, updateType } = action.payload;
+      const { merchandiseId, sellingPlanId, updateType } = action.payload;
+      const targetKey = cartLineKey(merchandiseId, sellingPlanId);
       const updatedLines = currentCart.lines
         .map((item) =>
-          item.merchandise.id === merchandiseId
+          cartItemKey(item) === targetKey
             ? updateCartItem(item, updateType)
             : item,
         )
@@ -163,19 +187,21 @@ function cartReducer(state: Cart | undefined, action: CartAction): Cart {
       };
     }
     case "ADD_ITEM": {
-      const { variant, product } = action.payload;
+      const { variant, product, sellingPlan } = action.payload;
+      const targetKey = cartLineKey(variant.id, sellingPlan?.id);
       const existingItem = currentCart.lines.find(
-        (item) => item.merchandise.id === variant.id,
+        (item) => cartItemKey(item) === targetKey,
       );
       const updatedItem = createOrUpdateCartItem(
         existingItem,
         variant,
         product,
+        sellingPlan,
       );
 
       const updatedLines = existingItem
         ? currentCart.lines.map((item) =>
-            item.merchandise.id === variant.id ? updatedItem : item,
+            cartItemKey(item) === targetKey ? updatedItem : item,
           )
         : [...currentCart.lines, updatedItem];
 
@@ -216,15 +242,26 @@ export function useCart() {
     cartReducer,
   );
 
-  const updateCartItem = (merchandiseId: string, updateType: UpdateType) => {
+  const updateCartItem = (
+    merchandiseId: string,
+    updateType: UpdateType,
+    sellingPlanId?: string,
+  ) => {
     updateOptimisticCart({
       type: "UPDATE_ITEM",
-      payload: { merchandiseId, updateType },
+      payload: { merchandiseId, sellingPlanId, updateType },
     });
   };
 
-  const addCartItem = (variant: ProductVariant, product: Product) => {
-    updateOptimisticCart({ type: "ADD_ITEM", payload: { variant, product } });
+  const addCartItem = (
+    variant: ProductVariant,
+    product: Product,
+    sellingPlan?: SellingPlan,
+  ) => {
+    updateOptimisticCart({
+      type: "ADD_ITEM",
+      payload: { variant, product, sellingPlan },
+    });
   };
 
   return useMemo(

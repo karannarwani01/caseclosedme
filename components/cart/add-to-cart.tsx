@@ -5,7 +5,7 @@ import clsx from "clsx";
 import { addItem, buyNow } from "components/cart/actions";
 import { UnitsArrow } from "components/ui/units-arrow";
 import { UnitsFill } from "components/ui/units-fill";
-import { Product, ProductVariant } from "lib/shopify/types";
+import { Product, ProductVariant, SellingPlan } from "lib/shopify/types";
 import { useSearchParams } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -60,6 +60,86 @@ function QuantityStepper({
         <PlusIcon className="h-4" strokeWidth={3} />
       </button>
     </div>
+  );
+}
+
+// "Save 15%" / "Save AED 10" for a plan, when the discount is expressible as
+// one. Returns null for fixed-price and unrecognised adjustment types rather
+// than inventing a number.
+function planSavingsLabel(plan: SellingPlan): string | null {
+  const value = plan.priceAdjustments?.[0]?.adjustmentValue;
+  if (!value) return null;
+  if ("adjustmentPercentage" in value && value.adjustmentPercentage) {
+    return `Save ${value.adjustmentPercentage}%`;
+  }
+  if ("adjustmentAmount" in value && value.adjustmentAmount) {
+    return `Save ${value.adjustmentAmount.currencyCode} ${value.adjustmentAmount.amount}`;
+  }
+  return null;
+}
+
+// Rendered only when the product actually has selling plans attached, so a
+// store with no subscriptions sees exactly the pre-existing PDP.
+function PurchaseOptions({
+  plans,
+  selectedPlanId,
+  onSelect,
+}: {
+  plans: SellingPlan[];
+  selectedPlanId: string | undefined;
+  onSelect: (id: string | undefined) => void;
+}) {
+  const options: {
+    id: string | undefined;
+    label: string;
+    note: string | null;
+  }[] = [
+    { id: undefined, label: "One-time purchase", note: null },
+    ...plans.map((plan) => ({
+      id: plan.id,
+      label: plan.name,
+      note: planSavingsLabel(plan),
+    })),
+  ];
+
+  return (
+    <fieldset className="flex flex-col gap-2">
+      <legend className="mb-2 font-display text-sm font-extrabold uppercase tracking-wider text-anime-ink">
+        Purchase options
+      </legend>
+      <div className="flex flex-col gap-2">
+        {options.map((option) => {
+          const checked = option.id === selectedPlanId;
+          return (
+            <label
+              key={option.id ?? "one-time"}
+              className={clsx(
+                "flex cursor-pointer items-center gap-3 rounded-2xl border-[2.5px] border-anime-ink px-4 py-3 transition-all",
+                checked
+                  ? "bg-anime-yellow shadow-[3px_3px_0_0_var(--color-anime-ink)]"
+                  : "bg-white hover:-translate-y-[1px]",
+              )}
+            >
+              <input
+                type="radio"
+                name="purchase-option"
+                className="h-4 w-4 accent-anime-pink"
+                checked={checked}
+                onChange={() => onSelect(option.id)}
+              />
+              <span className="font-display text-sm font-extrabold text-anime-ink">
+                {option.label}
+              </span>
+              {option.note ? (
+                <span className="ml-auto inline-flex items-center rounded-full border-[2px] border-anime-ink bg-anime-lime px-2 py-0.5 font-display text-[11px] font-extrabold uppercase tracking-wider text-anime-ink">
+                  {option.note}
+                </span>
+              ) : null}
+            </label>
+          );
+        })}
+      </div>
+    </fieldset>
   );
 }
 
@@ -146,6 +226,16 @@ export function AddToCart({ product }: { product: Product }) {
   const [message, formAction] = useActionState(addItem, null);
   const [quantity, setQuantity] = useState(1);
 
+  // Flattened across groups: shoppers pick a cadence, not a group.
+  const sellingPlans = (product.sellingPlanGroups ?? []).flatMap(
+    (group) => group.sellingPlans,
+  );
+  // undefined = one-time purchase, which stays the default.
+  const [selectedPlanId, setSelectedPlanId] = useState<string | undefined>(
+    undefined,
+  );
+  const selectedPlan = sellingPlans.find((plan) => plan.id === selectedPlanId);
+
   // Shopify clamps adds to available stock without erroring; the action
   // reports it back ("Only N in stock…"). Say it out loud — silently turning
   // 2 into 1 reads as a glitch.
@@ -165,7 +255,11 @@ export function AddToCart({ product }: { product: Product }) {
   );
   const defaultVariantId = variants.length === 1 ? variants[0]?.id : undefined;
   const selectedVariantId = variant?.id || defaultVariantId;
-  const addItemAction = formAction.bind(null, { selectedVariantId, quantity });
+  const addItemAction = formAction.bind(null, {
+    selectedVariantId,
+    quantity,
+    sellingPlanId: selectedPlanId,
+  });
   const finalVariant = variants.find(
     (variant) => variant.id === selectedVariantId,
   )!;
@@ -186,6 +280,13 @@ export function AddToCart({ product }: { product: Product }) {
 
   return (
     <div className="flex flex-col gap-3">
+      {sellingPlans.length > 0 ? (
+        <PurchaseOptions
+          plans={sellingPlans}
+          selectedPlanId={selectedPlanId}
+          onSelect={setSelectedPlanId}
+        />
+      ) : null}
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-3">
           <span className="font-display text-sm font-extrabold uppercase tracking-wider text-anime-ink">
@@ -206,7 +307,8 @@ export function AddToCart({ product }: { product: Product }) {
       </div>
       <form
         action={async () => {
-          for (let i = 0; i < quantity; i++) addCartItem(finalVariant, product);
+          for (let i = 0; i < quantity; i++)
+            addCartItem(finalVariant, product, selectedPlan);
           addItemAction();
         }}
       >
@@ -219,7 +321,13 @@ export function AddToCart({ product }: { product: Product }) {
         </p>
       </form>
 
-      <form action={buyNow.bind(null, { selectedVariantId, quantity })}>
+      <form
+        action={buyNow.bind(null, {
+          selectedVariantId,
+          quantity,
+          sellingPlanId: selectedPlanId,
+        })}
+      >
         <BuyNowButton
           availableForSale={availableForSale}
           selectedVariantId={selectedVariantId}
