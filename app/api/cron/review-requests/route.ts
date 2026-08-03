@@ -16,7 +16,8 @@ const DELAY_DAYS = Number(process.env.REVIEW_REQUEST_DELAY_DAYS || 5);
 const MAX_PER_RUN = 40;
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY || "";
-const FROM = process.env.REVIEW_FROM_EMAIL || "caseclosed <reviews@caseclosedme.com>";
+const FROM =
+  process.env.REVIEW_FROM_EMAIL || "caseclosed <reviews@caseclosedme.com>";
 
 // Daily cron (vercel.json): email queued review requests whose delay has
 // passed. Env-gated on RESEND_API_KEY, so the queue just accumulates until

@@ -1,0 +1,9 @@
+# Generated — rewriting it would fight pnpm on every install.
+pnpm-lock.yaml
+
+# Build output.
+.next/
+
+# Google Search Console verification file. Google checks this file's exact
+# contents; reformatting it un-verifies the property in Search Console.
+public/googlea51a5251982280a0.html
