@@ -3,6 +3,7 @@ import { CartProvider } from "components/cart/cart-context";
 import { BottomTabBar } from "components/layout/bottom-tab-bar";
 import { Navbar } from "components/layout/navbar";
 import { SearchOverlay } from "components/layout/search-overlay";
+import { SignupPopup } from "components/newsletter/signup-popup";
 import { PromoStrip } from "components/promo-strip";
 import { WishlistProvider } from "components/wishlist/wishlist-context";
 import {
@@ -111,6 +112,7 @@ export default async function RootLayout({
               <SearchOverlay />
             </Suspense>
             <AccessibilityMenu />
+            <SignupPopup />
           </WishlistProvider>
         </CartProvider>
       </body>
