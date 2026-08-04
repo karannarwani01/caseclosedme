@@ -19,7 +19,7 @@ export async function submitReview(
   if (String(formData.get("website") || "").trim()) {
     return {
       ok: true,
-      message: "Thanks! Your review will appear once it's checked. ✅",
+      message: "Thanks! Your review is live. ✅",
     };
   }
 

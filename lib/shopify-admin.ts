@@ -284,9 +284,9 @@ export async function getProductReviews(
     .filter(
       (n) =>
         val(n.fields, "product_handle") === productHandle &&
-        // Moderation: only approved reviews render. New submissions are
-        // written as "pending" and flipped in Shopify Admin (Content →
-        // Metaobjects → Product Review → Status).
+        // Reviews auto-publish as "approved" (per Karan, 2026-08-04). The
+        // status field remains the kill switch: flipping one to "rejected"
+        // in Shopify Admin (Content → Metaobjects → Product Review) hides it.
         val(n.fields, "status") === "approved",
     )
     .map((n) => ({
@@ -334,7 +334,7 @@ export async function createProductReview(input: {
           { key: "author", value: input.author },
           { key: "body", value: input.body },
           { key: "created_at", value: new Date().toISOString() },
-          { key: "status", value: "pending" },
+          { key: "status", value: "approved" },
         ],
       },
     },
