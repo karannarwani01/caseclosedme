@@ -14,7 +14,8 @@ import { useActionState, useEffect, useRef, useState } from "react";
 // the welcome automation.
 const SUBSCRIBED_KEY = "cc-signup-popup:v1";
 const SESSION_KEY = "cc-signup-popup:session";
-const OPEN_DELAY_MS = 8000;
+// Near-immediate: one short beat so the page has painted underneath.
+const OPEN_DELAY_MS = 800;
 
 export function SignupPopup() {
   const [open, setOpen] = useState(false);
