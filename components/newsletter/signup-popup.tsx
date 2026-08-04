@@ -6,11 +6,14 @@ import {
 } from "components/newsletter/actions";
 import { useActionState, useEffect, useRef, useState } from "react";
 
-// One-time newsletter signup popup. Shows once per visitor (localStorage),
-// ~8s after their first page settles, and never again after a dismiss or a
-// successful signup. Submits through the same server action as the footer
-// form, so subscribers land in Shopify and get the welcome automation.
-const STORAGE_KEY = "cc-signup-popup:v1";
+// Newsletter signup popup for not-yet-subscribed visitors. Reappears on
+// every visit (dismiss only silences the current browsing session, via
+// sessionStorage) until the visitor actually subscribes — success is stored
+// in localStorage and permanently suppresses it. Submits through the same
+// server action as the footer form, so subscribers land in Shopify and get
+// the welcome automation.
+const SUBSCRIBED_KEY = "cc-signup-popup:v1";
+const SESSION_KEY = "cc-signup-popup:session";
 const OPEN_DELAY_MS = 8000;
 
 export function SignupPopup() {
@@ -23,7 +26,8 @@ export function SignupPopup() {
 
   useEffect(() => {
     try {
-      if (localStorage.getItem(STORAGE_KEY)) return;
+      if (localStorage.getItem(SUBSCRIBED_KEY) === "subscribed") return;
+      if (sessionStorage.getItem(SESSION_KEY)) return;
     } catch {
       return;
     }
@@ -35,11 +39,11 @@ export function SignupPopup() {
     if (open) emailRef.current?.focus();
   }, [open]);
 
-  // Successful signup: remember it and close shortly after the confirmation.
+  // Successful signup: suppress permanently and close after the confirmation.
   useEffect(() => {
     if (!state?.ok) return;
     try {
-      localStorage.setItem(STORAGE_KEY, "subscribed");
+      localStorage.setItem(SUBSCRIBED_KEY, "subscribed");
     } catch {}
     const t = setTimeout(() => setOpen(false), 2800);
     return () => clearTimeout(t);
@@ -55,9 +59,11 @@ export function SignupPopup() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
+  // Dismiss quiets the popup for this browsing session only — it comes back
+  // on the next visit until the visitor subscribes.
   function dismiss() {
     try {
-      localStorage.setItem(STORAGE_KEY, "dismissed");
+      sessionStorage.setItem(SESSION_KEY, "dismissed");
     } catch {}
     setOpen(false);
   }
