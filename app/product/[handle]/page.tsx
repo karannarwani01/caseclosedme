@@ -88,6 +88,8 @@ export default async function ProductPage(props: {
       highPrice: product.priceRange.maxVariantPrice.amount,
       lowPrice: product.priceRange.minVariantPrice.amount,
       // Prices are VAT-inclusive; delivery is a flat AED 20 across the UAE.
+      // Cash on Delivery costs AED 30 (a AED 10 handling fee on top), but the
+      // cheapest rate is the one to advertise in structured data.
       shippingDetails: {
         "@type": "OfferShippingDetails",
         shippingRate: {

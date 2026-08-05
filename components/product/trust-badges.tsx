@@ -2,7 +2,9 @@
 // stroke on a colour-coded ink-bordered seal). Content reflects the UAE
 // defaults (COD, flat AED 20 UAE delivery, 0% BNPL, worldwide). Keep the
 // delivery badge in step with shopify-pages/shipping.html — they are the same
-// promise shown in two places.
+// promise shown in two places. COD is charged as a AED 30 delivery rate
+// (AED 20 shipping + a AED 10 handling fee), so the badge names the surcharge
+// rather than letting checkout be the first place a buyer sees it.
 
 const INK = "var(--color-anime-ink)";
 
@@ -148,7 +150,7 @@ const TRUST = [
     Icon: CashIcon,
     bg: "bg-anime-lime",
     title: "Cash on Delivery",
-    sub: "UAE only",
+    sub: "UAE only · +AED 10",
   },
   {
     Icon: LockIcon,
