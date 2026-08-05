@@ -2,7 +2,7 @@ import { cacheLife } from "next/cache";
 import Link from "next/link";
 import LogoSquare from "components/logo-square";
 import { NewsletterForm } from "components/newsletter/newsletter-form";
-import { ACCOUNT_URL } from "lib/constants";
+import { ACCOUNT_URL, FACEBOOK_URL, INSTAGRAM_URL } from "lib/constants";
 
 const { COMPANY_NAME, SITE_NAME } = process.env;
 
@@ -160,16 +160,23 @@ export default async function Footer() {
 
             <div className="flex items-center gap-3 text-white/80">
               <a
-                href="https://instagram.com/caseclosed.me"
+                href={INSTAGRAM_URL}
                 aria-label="Instagram"
                 className="transition-colors hover:text-anime-pink"
               >
                 <SocialIcon name="instagram" />
               </a>
-              {/* Facebook/YouTube/TikTok hidden until the accounts exist —
-                  they pointed at the platforms' bare homepages. SocialIcon
-                  still supports all four names; re-add the anchors with real
-                  handles to bring them back. */}
+              <a
+                href={FACEBOOK_URL}
+                aria-label="Facebook"
+                className="transition-colors hover:text-anime-pink"
+              >
+                <SocialIcon name="facebook" />
+              </a>
+              {/* YouTube/TikTok hidden until the accounts exist — they
+                  pointed at the platforms' bare homepages. SocialIcon still
+                  supports both names; re-add the anchors with real handles
+                  to bring them back. */}
             </div>
 
             <Link

@@ -56,3 +56,10 @@ export const SHOPIFY_GRAPHQL_API_ENDPOINT = "/api/2023-01/graphql.json";
 // screen. Override per-environment with SHOPIFY_ACCOUNT_URL if the shop id changes.
 export const ACCOUNT_URL =
   process.env.SHOPIFY_ACCOUNT_URL || "https://shopify.com/71115997383/account";
+
+// Official social profiles — single source of truth for footer icons, JSON-LD
+// sameAs and any "follow us" links. The Facebook page has no vanity handle yet,
+// so it's the numeric profile URL.
+export const INSTAGRAM_URL = "https://www.instagram.com/caseclosed.me";
+export const FACEBOOK_URL =
+  "https://www.facebook.com/profile.php?id=61592783584526";
