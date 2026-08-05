@@ -6,6 +6,7 @@ import {
   type RefundFormState,
 } from "app/refund-request/actions";
 import { PhoneCountrySelect } from "components/phone-country-select";
+import { WEBSITE_PURCHASE_PLATFORM } from "lib/constants";
 
 const initialState: RefundFormState = { status: "idle" };
 
@@ -21,7 +22,7 @@ const REFUND_TYPES = [
 // Orders come in from the site plus the social channels we sell on, so each
 // one needs its own option — the value is free text on the server, not an enum.
 const PLATFORMS = [
-  "caseclosedme.com",
+  WEBSITE_PURCHASE_PLATFORM,
   "Instagram DM",
   "Facebook DM",
   "TikTok DM",
@@ -80,6 +81,11 @@ export function RefundRequestForm() {
     vals.return_method === OTHER,
   );
   const [refundTypeError, setRefundTypeError] = useState(false);
+  // DM orders never have a Shopify order number, so the field stops being
+  // required once the buyer picks a channel other than the website.
+  const [platform, setPlatform] = useState(vals.purchase_platform || "");
+  const orderNumberRequired =
+    platform === "" || platform === WEBSITE_PURCHASE_PLATFORM;
 
   // Validate on the client so the form never submits with a missing field —
   // that's what was wiping entries (React resets the form after the action).
@@ -175,16 +181,52 @@ export function RefundRequestForm() {
         </div>
       </div>
 
+      {/* Asked before the order number: the answer decides whether an order
+          number exists to ask for at all. */}
       <div>
-        <FieldLabel label="Order number" required error={err.order_number} />
+        <FieldLabel
+          label="Purchase platform"
+          required
+          error={err.purchase_platform}
+        />
+        <select
+          name="purchase_platform"
+          className={inputCls}
+          required
+          value={platform}
+          onChange={(e) => setPlatform(e.target.value)}
+        >
+          <option value="" disabled>
+            Select one
+          </option>
+          {PLATFORMS.map((p) => (
+            <option key={p} value={p}>
+              {p}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <FieldLabel
+          label="Order number"
+          required={orderNumberRequired}
+          error={err.order_number}
+        />
         <input
           name="order_number"
           type="text"
-          placeholder="#1001"
+          placeholder={orderNumberRequired ? "#1001" : "Optional"}
           className={inputCls}
           defaultValue={vals.order_number || ""}
-          required
+          required={orderNumberRequired}
         />
+        {!orderNumberRequired && (
+          <p className="mt-2 text-sm text-anime-ink/70">
+            DM orders don&apos;t get an order number — leave this blank, or add
+            the name you ordered under if you have it.
+          </p>
+        )}
       </div>
 
       <div>
@@ -200,29 +242,6 @@ export function RefundRequestForm() {
           defaultValue={vals.purchase_date || ""}
           required
         />
-      </div>
-
-      <div>
-        <FieldLabel
-          label="Purchase platform"
-          required
-          error={err.purchase_platform}
-        />
-        <select
-          name="purchase_platform"
-          className={inputCls}
-          required
-          defaultValue={vals.purchase_platform || ""}
-        >
-          <option value="" disabled>
-            Select one
-          </option>
-          {PLATFORMS.map((p) => (
-            <option key={p} value={p}>
-              {p}
-            </option>
-          ))}
-        </select>
       </div>
 
       <div>

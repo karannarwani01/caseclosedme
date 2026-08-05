@@ -1,5 +1,6 @@
 "use server";
 
+import { WEBSITE_PURCHASE_PLATFORM } from "lib/constants";
 import {
   createRefundRequestRecord,
   isAdminConfigured,
@@ -64,7 +65,13 @@ export async function submitRefundRequest(
     fieldErrors.email = "Valid email required";
   if (!fields.phone || fields.phone.replace(/\D/g, "").length < 8)
     fieldErrors.phone = "Valid phone required";
-  if (!fields.order_number) fieldErrors.order_number = "Required";
+  // Only website checkout mints an order number; DM buyers have none to give,
+  // so requiring it would lock them out of the form entirely.
+  const needsOrderNumber =
+    !fields.purchase_platform ||
+    fields.purchase_platform === WEBSITE_PURCHASE_PLATFORM;
+  if (!fields.order_number && needsOrderNumber)
+    fieldErrors.order_number = "Required";
   if (!fields.purchase_date) fieldErrors.purchase_date = "Required";
   if (!fields.purchase_platform) fieldErrors.purchase_platform = "Required";
   if (fields.refund_types.length === 0)
@@ -104,14 +111,19 @@ export async function submitRefundRequest(
     };
   }
 
+  // A blank order number would leave the email subject and the admin record's
+  // title reading "order  —", so fall back to naming the channel it came from.
+  const orderRef =
+    fields.order_number || `no number (${fields.purchase_platform})`;
+
   const payload = {
-    _subject: `Refund request — order ${fields.order_number}`,
+    _subject: `Refund request — order ${orderRef}`,
     _template: "table",
     _captcha: "false",
     Name: `${fields.first_name} ${fields.last_name}`.trim(),
     Email: fields.email,
     Phone: `${fields.phone_country} ${fields.phone}`.trim(),
-    "Order Number": fields.order_number,
+    "Order Number": orderRef,
     "Date of Purchase": fields.purchase_date,
     "Purchase Platform": fields.purchase_platform,
     "Refund Type": fields.refund_types.join(", "),
@@ -145,7 +157,7 @@ export async function submitRefundRequest(
         `Name: ${customerName}`,
         `Email: ${fields.email}`,
         `Phone: ${fields.phone_country} ${fields.phone}`.trim(),
-        `Order number: ${fields.order_number}`,
+        `Order number: ${orderRef}`,
         `Date of purchase: ${fields.purchase_date}`,
         `Purchase platform: ${fields.purchase_platform}`,
         `Refund type: ${refundType}`,
@@ -175,7 +187,7 @@ export async function submitRefundRequest(
 
       await createRefundRequestRecord(
         {
-          summary: `Order ${fields.order_number} — ${customerName}`,
+          summary: `Order ${orderRef} — ${customerName}`,
           status: "New",
           details,
         },

@@ -64,3 +64,9 @@ export const INSTAGRAM_URL = "https://www.instagram.com/caseclosed.me";
 export const FACEBOOK_URL =
   "https://www.facebook.com/profile.php?id=61592783584526";
 export const TIKTOK_URL = "https://www.tiktok.com/@caseclosedme";
+
+// Only checkout on the site mints a Shopify order number — orders taken in
+// Instagram/Facebook/TikTok/WhatsApp DMs have none, so the refund form makes
+// its order-number field optional for every other platform. Shared by the form
+// (client) and its server action so the two can't drift apart.
+export const WEBSITE_PURCHASE_PLATFORM = "caseclosedme.com";
