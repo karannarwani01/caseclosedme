@@ -2,7 +2,12 @@ import { cacheLife } from "next/cache";
 import Link from "next/link";
 import LogoSquare from "components/logo-square";
 import { NewsletterForm } from "components/newsletter/newsletter-form";
-import { ACCOUNT_URL, FACEBOOK_URL, INSTAGRAM_URL } from "lib/constants";
+import {
+  ACCOUNT_URL,
+  FACEBOOK_URL,
+  INSTAGRAM_URL,
+  TIKTOK_URL,
+} from "lib/constants";
 
 const { COMPANY_NAME, SITE_NAME } = process.env;
 
@@ -173,10 +178,17 @@ export default async function Footer() {
               >
                 <SocialIcon name="facebook" />
               </a>
-              {/* YouTube/TikTok hidden until the accounts exist — they
-                  pointed at the platforms' bare homepages. SocialIcon still
-                  supports both names; re-add the anchors with real handles
-                  to bring them back. */}
+              <a
+                href={TIKTOK_URL}
+                aria-label="TikTok"
+                className="transition-colors hover:text-anime-pink"
+              >
+                <SocialIcon name="tiktok" />
+              </a>
+              {/* YouTube hidden until the account exists — it pointed at the
+                  platform's bare homepage. SocialIcon still supports the
+                  "youtube" name; re-add the anchor with a real handle to
+                  bring it back. */}
             </div>
 
             <Link

@@ -7,7 +7,7 @@ import {
   JustArrivedRow,
   TopTenSection,
 } from "components/section-row";
-import { FACEBOOK_URL, INSTAGRAM_URL } from "lib/constants";
+import { FACEBOOK_URL, INSTAGRAM_URL, TIKTOK_URL } from "lib/constants";
 import { baseUrl } from "lib/utils";
 
 export const metadata = {
@@ -46,7 +46,7 @@ const siteJsonLd = {
         addressLocality: "Dubai",
         addressCountry: "AE",
       },
-      sameAs: [INSTAGRAM_URL, FACEBOOK_URL],
+      sameAs: [INSTAGRAM_URL, FACEBOOK_URL, TIKTOK_URL],
     },
     {
       "@type": "WebSite",

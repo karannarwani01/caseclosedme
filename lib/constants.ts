@@ -63,3 +63,4 @@ export const ACCOUNT_URL =
 export const INSTAGRAM_URL = "https://www.instagram.com/caseclosed.me";
 export const FACEBOOK_URL =
   "https://www.facebook.com/profile.php?id=61592783584526";
+export const TIKTOK_URL = "https://www.tiktok.com/@caseclosedme";

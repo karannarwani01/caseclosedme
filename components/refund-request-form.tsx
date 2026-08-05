@@ -18,7 +18,16 @@ const REFUND_TYPES = [
   "Other (please specify)",
 ];
 
-const PLATFORMS = ["caseclosedme.com", "Instagram DM", "WhatsApp", "Other"];
+// Orders come in from the site plus the social channels we sell on, so each
+// one needs its own option — the value is free text on the server, not an enum.
+const PLATFORMS = [
+  "caseclosedme.com",
+  "Instagram DM",
+  "Facebook DM",
+  "TikTok DM",
+  "WhatsApp",
+  "Other",
+];
 
 const REFUND_METHODS = ["Original payment method", "Store credit"];
 
