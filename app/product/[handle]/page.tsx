@@ -32,10 +32,11 @@ export async function generateMetadata(props: {
 
   const { url, width, height, altText: alt } = product.featuredImage || {};
   const indexable = !product.tags.includes(HIDDEN_PRODUCT_TAG);
+  const description = product.seo.description || product.description;
 
   return {
     title: seoPageTitle(product.seo.title, product.title),
-    description: product.seo.description || product.description,
+    description,
     // Gallery state is carried in ?image=N, so without this every product has
     // as many crawlable URLs as it has photos.
     alternates: { canonical: `/product/${product.handle}` },
@@ -47,18 +48,17 @@ export async function generateMetadata(props: {
         follow: indexable,
       },
     },
-    openGraph: url
-      ? {
-          images: [
-            {
-              url,
-              width,
-              height,
-              alt,
-            },
-          ],
-        }
-      : null,
+    // og:title/description/url were missing (and `openGraph: null` for
+    // imageless products even wiped the layout defaults), so shares fell back
+    // to bare page metadata. Products without a featured image inherit the
+    // root opengraph-image file as their og:image.
+    openGraph: {
+      title: product.title,
+      description,
+      url: `/product/${product.handle}`,
+      siteName: "caseclosed",
+      ...(url ? { images: [{ url, width, height, alt }] } : {}),
+    },
   };
 }
 

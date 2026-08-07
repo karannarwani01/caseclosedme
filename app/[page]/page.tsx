@@ -26,12 +26,18 @@ export async function generateMetadata(props: {
 
   if (!page) return notFound();
 
+  const description = page.seo?.description || page.bodySummary;
+
   return {
     // Same guard as products/collections: these titles come from Shopify and a
     // merchant may well type the brand into one.
     title: seoPageTitle(page.seo?.title, page.title),
-    description: page.seo?.description || page.bodySummary,
+    description,
     openGraph: {
+      title: page.title,
+      description,
+      url: `/${params.page}`,
+      siteName: "caseclosed",
       publishedTime: page.createdAt,
       modifiedTime: page.updatedAt,
       type: "article",

@@ -72,6 +72,19 @@ export const metadata = {
     default: SITE_NAME!,
     template: `%s | ${SITE_NAME}`,
   },
+  // Site-wide fallback description for routes that don't set their own.
+  description:
+    "Shop Funko Pops, Pop Mart Labubu, anime figures, blind boxes and trading cards online in the UAE — caseclosed.",
+  // Defaults inherited by every route that doesn't define its own openGraph /
+  // twitter. The og:image itself comes from the opengraph-image.tsx file
+  // conventions (root + per-segment), which take precedence over config.
+  openGraph: {
+    type: "website",
+    siteName: "caseclosed",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
   robots: {
     follow: true,
     index: true,

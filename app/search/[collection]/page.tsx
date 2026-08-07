@@ -40,12 +40,21 @@ export async function generateMetadata(props: {
 
   if (!collection) return notFound();
 
+  const description =
+    collection.seo?.description ||
+    collection.description ||
+    `${collection.title} products`;
+
   return {
     title: seoPageTitle(collection.seo?.title, collection.title),
-    description:
-      collection.seo?.description ||
-      collection.description ||
-      `${collection.title} products`,
+    description,
+    openGraph: {
+      title: collection.title,
+      description,
+      url: `/search/${params.collection}`,
+      siteName: "caseclosed",
+      type: "website",
+    },
     // Sort and filter state lives in the query string; keep one indexable URL.
     alternates: { canonical: `/search/${params.collection}` },
   };

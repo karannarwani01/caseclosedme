@@ -7,7 +7,14 @@ export const metadata: Metadata = {
   title: "Drop Alerts Membership — Coming Soon",
   description:
     "Join the caseclosed Drop Alerts club. Be first to know when new Funko Pops, Pop Mart Labubu and trading-card drops land — plus member-only early access. Coming soon.",
-  openGraph: { type: "website" },
+  openGraph: {
+    type: "website",
+    siteName: "caseclosed",
+    url: "/membership",
+    title: "Drop Alerts Membership — Coming Soon",
+    description:
+      "Join the caseclosed Drop Alerts club. Be first to know when new Funko Pops, Pop Mart Labubu and trading-card drops land — plus member-only early access. Coming soon.",
+  },
   alternates: { canonical: "/membership" },
 };
 

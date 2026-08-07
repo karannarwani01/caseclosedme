@@ -10,7 +10,16 @@ import {
 
 export const metadata = {
   title: "Search",
-  description: "Search for products in the store.",
+  description:
+    "Search the full caseclosed catalogue — Funko Pops, Pop Mart Labubu, anime figures, blind boxes and trading cards.",
+  openGraph: {
+    type: "website",
+    siteName: "caseclosed",
+    url: "/search",
+    title: "Search",
+    description:
+      "Search the full caseclosed catalogue — Funko Pops, Pop Mart Labubu, anime figures, blind boxes and trading cards.",
+  },
   // ?q= and ?sort= would otherwise spawn an unbounded set of indexable URLs.
   alternates: { canonical: "/search" },
 };

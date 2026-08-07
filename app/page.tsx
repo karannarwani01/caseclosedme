@@ -19,6 +19,12 @@ export const metadata = {
     "Shop Funko Pops, Pop Mart Labubu, anime figures, blind boxes and Pokémon & Dragon Ball trading cards online in the UAE. Officially licensed, fast delivery — caseclosed.",
   openGraph: {
     type: "website",
+    siteName: "caseclosed",
+    url: "/",
+    title:
+      "caseclosed — Funko Pops, Pop Mart, Labubu & Trading Cards Online in the UAE",
+    description:
+      "Shop Funko Pops, Pop Mart Labubu, anime figures, blind boxes and Pokémon & Dragon Ball trading cards online in the UAE. Officially licensed, fast delivery — caseclosed.",
   },
   alternates: { canonical: "/" },
 };

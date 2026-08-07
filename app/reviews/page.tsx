@@ -7,7 +7,14 @@ export const metadata: Metadata = {
   title: "Happy Collectors — Coming Soon",
   description:
     "The caseclosed wall of reviews. Real photos and ratings from UAE collectors who bought their Funko Pops, Labubu blind boxes and trading cards from us. Coming soon.",
-  openGraph: { type: "website" },
+  openGraph: {
+    type: "website",
+    siteName: "caseclosed",
+    url: "/reviews",
+    title: "Happy Collectors — Coming Soon",
+    description:
+      "The caseclosed wall of reviews. Real photos and ratings from UAE collectors who bought their Funko Pops, Labubu blind boxes and trading cards from us. Coming soon.",
+  },
   alternates: { canonical: "/reviews" },
 };
 

@@ -12,7 +12,17 @@ export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   validateEnvironmentVariables();
 
-  const routesMap = [""].map((route) => ({
+  // Static storefront routes. /account and /wishlist are personal (noindex)
+  // and /drop-alerts is a redirect to /membership, so none of those belong
+  // here.
+  const routesMap = [
+    "",
+    "/search",
+    "/reviews",
+    "/membership",
+    "/refund-request",
+    "/shop-now-pay-later",
+  ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date().toISOString(),
   }));
@@ -45,7 +55,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       await Promise.all([collectionsPromise, productsPromise, pagesPromise])
     ).flat();
   } catch (error) {
-    throw JSON.stringify(error, null, 2);
+    // Rethrow the original error — stringifying it threw a bare string,
+    // losing the stack and breaking instanceof Error handling upstream.
+    throw error;
   }
 
   return [...routesMap, ...fetchedRoutes];
