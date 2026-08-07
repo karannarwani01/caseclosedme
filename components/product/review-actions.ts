@@ -37,6 +37,6 @@ export async function submitReview(
   }
   return {
     ok: true,
-    message: "Thanks! Your review will appear once it's checked. ✅",
+    message: "Thanks! Your review is live. ✅",
   };
 }
