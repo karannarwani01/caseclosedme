@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { CategoryCirclesClient } from "components/category-circles-client";
+import { getNonEmptyCollectionHandles } from "lib/shopify";
 
 type Category = {
   /** URL-safe slug — also the filename stem used in /public/franchises/. */
@@ -206,8 +207,21 @@ function resolveAssetsUncached(slug: string): {
   return { logo, logoHover };
 }
 
-export function CategoryCircles() {
-  const items = CATEGORIES.filter((cat) => !cat.hidden).map((cat) => {
+export async function CategoryCircles() {
+  // Same guard the navbar menus use: a circle whose collection is empty or
+  // missing would 404 at /search/<slug>, so hide it. Fail open (show all) if
+  // the lookup errors or comes back empty — better a possible 404 than the
+  // whole row vanishing from the homepage on a transient API blip.
+  let nonEmpty: string[] = [];
+  try {
+    nonEmpty = await getNonEmptyCollectionHandles();
+  } catch {
+    // fail open
+  }
+  const items = CATEGORIES.filter(
+    (cat) =>
+      !cat.hidden && (nonEmpty.length === 0 || nonEmpty.includes(cat.slug)),
+  ).map((cat) => {
     const { logo, logoHover } = resolveAssets(cat.slug);
     return { ...cat, logo, logoHover };
   });

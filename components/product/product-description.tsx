@@ -17,8 +17,15 @@ export function ProductDescription({
   reviewCount?: number;
   reviewAverage?: number;
 }) {
-  const amount = product.priceRange.maxVariantPrice.amount;
-  const currencyCode = product.priceRange.maxVariantPrice.currencyCode;
+  // No product currently prices its variants differently, but if one ever
+  // does, show "From <cheapest>" rather than quoting every shopper the most
+  // expensive variant (the price here doesn't track the variant picker).
+  const minPrice = product.priceRange.minVariantPrice;
+  const hasPriceSpread =
+    parseFloat(minPrice.amount) <
+    parseFloat(product.priceRange.maxVariantPrice.amount);
+  const amount = minPrice.amount;
+  const currencyCode = minPrice.currencyCode;
   const sku = product.variants.find((v) => v.sku)?.sku;
 
   // Sum live inventory across variants when the storefront exposes it.
@@ -56,6 +63,11 @@ export function ProductDescription({
           </a>
         ) : null}
         <div className="mr-auto flex flex-col items-start gap-1">
+          {hasPriceSpread && (
+            <span className="pl-2 font-comic text-[11px] uppercase tracking-wide text-anime-ink/50">
+              From
+            </span>
+          )}
           <Price
             className="rotate-[-2deg] rounded-full border-[2.5px] border-anime-ink bg-anime-lime px-4 py-1.5 font-display text-xl font-extrabold tabular-nums text-anime-ink shadow-[3px_3px_0_0_var(--color-anime-ink)]"
             amount={amount}
