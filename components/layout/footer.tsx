@@ -7,6 +7,7 @@ import {
   FACEBOOK_URL,
   INSTAGRAM_URL,
   TIKTOK_URL,
+  WHATSAPP_URL,
 } from "lib/constants";
 
 const { COMPANY_NAME, SITE_NAME } = process.env;
@@ -41,7 +42,7 @@ const faqs = [
 function SocialIcon({
   name,
 }: {
-  name: "instagram" | "facebook" | "youtube" | "tiktok";
+  name: "instagram" | "facebook" | "youtube" | "tiktok" | "whatsapp";
 }) {
   const common = "h-5 w-5";
   if (name === "instagram") {
@@ -65,6 +66,18 @@ function SocialIcon({
         aria-hidden="true"
       >
         <path d="M13.5 21v-7.5h2.5l.4-3h-2.9V8.6c0-.87.24-1.46 1.5-1.46h1.6V4.42c-.28-.04-1.23-.12-2.34-.12-2.32 0-3.91 1.42-3.91 4.02v2.18H8v3h2.35V21h3.15Z" />
+      </svg>
+    );
+  }
+  if (name === "whatsapp") {
+    return (
+      <svg
+        className={common}
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        aria-hidden="true"
+      >
+        <path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.4-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.5 0 1.47 1.07 2.89 1.22 3.09.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.63.71.22 1.36.19 1.87.11.57-.08 1.76-.72 2-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35m-5.42 7.4h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.9-9.88a9.83 9.83 0 0 1 7 2.9 9.83 9.83 0 0 1 2.89 7c0 5.45-4.44 9.88-9.9 9.88m8.42-18.3A11.8 11.8 0 0 0 12.05 0C5.5 0 .16 5.33.16 11.89c0 2.1.55 4.14 1.59 5.94L.06 24l6.33-1.66a11.9 11.9 0 0 0 5.66 1.44h.01c6.55 0 11.89-5.33 11.89-11.89 0-3.18-1.24-6.16-3.48-8.41" />
       </svg>
     );
   }
@@ -186,6 +199,13 @@ export default async function Footer() {
               >
                 <SocialIcon name="tiktok" />
               </a>
+              <a
+                href={WHATSAPP_URL}
+                aria-label="WhatsApp"
+                className="transition-colors hover:text-anime-pink"
+              >
+                <SocialIcon name="whatsapp" />
+              </a>
               {/* YouTube hidden until the account exists — it pointed at the
                   platform's bare homepage. SocialIcon still supports the
                   "youtube" name; re-add the anchor with a real handle to
@@ -215,12 +235,8 @@ export default async function Footer() {
             <h3 className="font-display text-sm font-extrabold uppercase tracking-[0.18em] text-white/90">
               Contact Us
             </h3>
-            <a
-              href="tel:+971501269270"
-              className="text-base text-white/70 transition-colors hover:text-anime-pink"
-            >
-              +971 50 126 9270
-            </a>
+            {/* Phone number removed from display (per Karan, 2026-08-13) —
+                the line is reachable via the WhatsApp icon in the social row. */}
             <a
               href="/contact"
               className="text-base text-white/70 transition-colors hover:text-anime-pink"

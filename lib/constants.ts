@@ -67,6 +67,10 @@ export const INSTAGRAM_URL = "https://www.instagram.com/caseclosed.me";
 export const FACEBOOK_URL =
   "https://www.facebook.com/profile.php?id=61592783584526";
 export const TIKTOK_URL = "https://www.tiktok.com/@caseclosedme";
+// WhatsApp deep link for the store line (+971 50 126 9270). The number itself
+// is deliberately NOT displayed anywhere on the site — contact goes through
+// this link or /contact (per Karan, 2026-08-13).
+export const WHATSAPP_URL = "https://wa.me/971501269270";
 
 // Only checkout on the site mints a Shopify order number — orders taken in
 // Instagram/Facebook/TikTok/WhatsApp DMs have none, so the refund form makes
