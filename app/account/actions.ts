@@ -67,10 +67,18 @@ export async function savePhoneAction(
   // number shows on the customer profile and feeds Shopify SMS/WhatsApp tools.
   if (await adminCanWriteCustomers()) {
     const res = await setCustomerPhone(account.id!, phone);
-    if (!res.ok && /taken|already/i.test(res.error ?? "")) {
+    if (!res.ok) {
+      // Surface the failure instead of reporting a false "Saved" — the number
+      // otherwise never reaches the customer record Shopify's SMS tools read.
+      if (/taken|already/i.test(res.error ?? "")) {
+        return {
+          ok: false,
+          message: "That number is already on another account.",
+        };
+      }
       return {
         ok: false,
-        message: "That number is already on another account.",
+        message: "Couldn't save that number. Please try again.",
       };
     }
   }

@@ -4,7 +4,11 @@ import {
   subscribeNewsletter,
   type NewsletterState,
 } from "components/newsletter/actions";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+
+// Same flag the signup popup checks — set it here too so subscribing from the
+// footer stops the modal from nagging the visitor on their next visit.
+const SUBSCRIBED_KEY = "cc-signup-popup:v1";
 
 // Compact email capture for the dark footer. Writes a drop_alert metaobject
 // (source "footer-newsletter") and, once the write_customers scope exists,
@@ -14,6 +18,16 @@ export function NewsletterForm() {
     subscribeNewsletter,
     null,
   );
+
+  useEffect(() => {
+    if (state?.ok) {
+      try {
+        localStorage.setItem(SUBSCRIBED_KEY, "subscribed");
+      } catch {
+        /* private mode / storage disabled — non-fatal */
+      }
+    }
+  }, [state?.ok]);
 
   if (state?.ok) {
     return (

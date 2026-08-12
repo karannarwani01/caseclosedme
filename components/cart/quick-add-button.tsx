@@ -39,10 +39,12 @@ export function QuickAddButton({
       toast("😣 Out of stock");
       return;
     }
-    // Optimistic toast now; if Shopify clamps the add to stock (the action
-    // reports "Only N in stock…"), follow up with the correction.
+    // Optimistic toast now; the action returns a message string on ANY failure
+    // (stock clamp, or a generic "Error adding item to cart" when e.g. the cart
+    // cookie hasn't landed yet). Surface all of them so a failed add never
+    // leaves the shopper looking at a false "Added to cart!".
     void addItem(null, { selectedVariantId: v.id, quantity: 1 }).then((msg) => {
-      if (msg && (msg.startsWith("Only") || msg.startsWith("Out of stock"))) {
+      if (msg) {
         toast(`😣 ${msg}`);
       }
       router.refresh();

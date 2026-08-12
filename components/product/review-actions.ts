@@ -24,10 +24,17 @@ export async function submitReview(
   }
 
   if (!productHandle) return { ok: false, message: "Something went wrong." };
-  if (!(rating >= 1 && rating <= 5))
+  // Integer 1–5 only (Number("3.7") would otherwise pass the range and get
+  // silently rounded downstream).
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5)
     return { ok: false, message: "Pick a star rating." };
   if (author.length < 2) return { ok: false, message: "Add your name." };
+  if (author.length > 80) return { ok: false, message: "Name is too long." };
   if (body.length < 3) return { ok: false, message: "Write a few words." };
+  // Upper bound so a scripted POST can't flood a PDP with huge payloads;
+  // reviews auto-publish, so the only other control is the honeypot above.
+  if (body.length > 2000)
+    return { ok: false, message: "Please keep it under 2000 characters." };
 
   try {
     await createProductReview({ productHandle, rating, author, body });

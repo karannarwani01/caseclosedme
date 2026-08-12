@@ -72,16 +72,24 @@ export async function buyNow(payload: {
   const { selectedVariantId, quantity = 1, sellingPlanId } = payload;
   if (!selectedVariantId) return;
 
-  await addToCart([
-    {
-      merchandiseId: selectedVariantId,
-      quantity: Math.max(1, quantity),
-      ...(sellingPlanId ? { sellingPlanId } : {}),
-    },
-  ]);
+  try {
+    await addToCart([
+      {
+        merchandiseId: selectedVariantId,
+        quantity: Math.max(1, quantity),
+        ...(sellingPlanId ? { sellingPlanId } : {}),
+      },
+    ]);
+  } catch (e) {
+    // Don't let a failed add throw out of the form action (unhandled server
+    // rejection). The shopper stays on the PDP with the cart unchanged.
+    console.error("buyNow addToCart failed:", e);
+    return;
+  }
   updateTag(TAGS.cart);
 
   const cart = await getCart();
+  // redirect() throws NEXT_REDIRECT internally, so it sits outside the catch.
   if (cart?.checkoutUrl) redirect(cart.checkoutUrl);
 }
 
@@ -178,6 +186,16 @@ export async function redirectToCheckout() {
 export async function createCartAndSetCookie() {
   let cart = await createCart();
   if (cart.id) {
-    (await cookies()).set("cartId", cart.id);
+    // Persist the cart pointer: without explicit options this was a session
+    // cookie that vanished when the browser closed, silently emptying a
+    // returning shopper's cart (Shopify keeps the cart server-side ~10 days).
+    // Read server-side only, so httpOnly is safe.
+    (await cookies()).set("cartId", cart.id, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 10, // 10 days, matching Shopify's cart TTL
+    });
   }
 }

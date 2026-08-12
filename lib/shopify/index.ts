@@ -142,7 +142,22 @@ export async function shopifyFetch<T>({
           signal: AbortSignal.timeout(SHOPIFY_FETCH_TIMEOUT_MS),
         });
 
-        const body = await result.json();
+        // A 5xx/429 during a Shopify/Cloudflare incident often returns an HTML
+        // error page. Turn that into a retryable transient error BEFORE trying
+        // to JSON-parse it — otherwise result.json() throws a SyntaxError that
+        // isTransientNetworkError doesn't recognise, so the retry never fires
+        // and callers get a hard crash instead of one quiet retry.
+        if (!result.ok && (result.status >= 500 || result.status === 429)) {
+          throw new Error(`fetch failed: Shopify HTTP ${result.status}`);
+        }
+
+        let body: any;
+        try {
+          body = await result.json();
+        } catch (parseErr) {
+          // Non-JSON body (HTML error page, truncated response) — retryable.
+          throw new Error(`fetch failed: non-JSON response (${result.status})`);
+        }
 
         if (body.errors) {
           // quantityAvailable is requested by the product fragments but the
@@ -707,7 +722,10 @@ function menuPath(url: string): string {
 export async function getMenu(handle: string): Promise<Menu[]> {
   "use cache";
   cacheTag(TAGS.collections);
-  cacheLife("days");
+  // Shopify has no menu webhook, and revalidate() only flushes on collection/
+  // product edits — so a renamed/reordered nav item could stick for a full day.
+  // Hours bounds that staleness without a webhook we can't subscribe to.
+  cacheLife("hours");
 
   if (!endpoint) {
     console.log(`Skipping getMenu for '${handle}' - Shopify not configured`);
@@ -730,6 +748,15 @@ export async function getMenu(handle: string): Promise<Menu[]> {
 }
 
 export async function getPage(handle: string): Promise<Page> {
+  "use cache";
+  cacheTag(TAGS.collections);
+  cacheLife("hours");
+
+  // Was the only Shopify reader with no endpoint guard: with Shopify
+  // unconfigured shopifyFetch throws and every /[page] (about, FAQ, policies)
+  // 500s instead of 404ing. Undefined lets the route call notFound().
+  if (!endpoint) return undefined as unknown as Page;
+
   const res = await shopifyFetch<ShopifyPageOperation>({
     query: getPageQuery,
     variables: { handle },
@@ -739,6 +766,12 @@ export async function getPage(handle: string): Promise<Page> {
 }
 
 export async function getPages(): Promise<Page[]> {
+  "use cache";
+  cacheTag(TAGS.collections);
+  cacheLife("hours");
+
+  if (!endpoint) return [];
+
   const res = await shopifyFetch<ShopifyPagesOperation>({
     query: getPagesQuery,
   });
