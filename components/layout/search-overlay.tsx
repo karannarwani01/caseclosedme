@@ -182,6 +182,8 @@ export function SearchOverlay() {
         >
           <input
             ref={inputRef}
+            name="q"
+            aria-label="Search products"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search for figures, brands…"

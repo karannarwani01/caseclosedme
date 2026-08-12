@@ -36,7 +36,14 @@ export async function GET(req: NextRequest) {
   authUrl.searchParams.set("code_challenge", challenge);
   authUrl.searchParams.set("code_challenge_method", "S256");
 
-  const returnTo = req.nextUrl.searchParams.get("return_to") || "/wishlist";
+  // Only same-site paths. Anything else ("//host", "https://…", "@host" —
+  // which would parse as userinfo@evil-host once appended to the origin) is
+  // an open-redirect vector after a genuine login; fall back to /wishlist.
+  const rawReturnTo = req.nextUrl.searchParams.get("return_to") || "/wishlist";
+  const returnTo =
+    rawReturnTo.startsWith("/") && !rawReturnTo.startsWith("//")
+      ? rawReturnTo
+      : "/wishlist";
 
   const res = NextResponse.redirect(authUrl.toString());
   res.cookies.set("cc_pkce", verifier, TEMP_COOKIE_OPTIONS);

@@ -159,7 +159,12 @@ export default function Search() {
 export function SearchSkeleton() {
   return (
     <form className="relative w-full">
-      <input placeholder="Search drops..." className={inputClass} />
+      <input
+        name="q"
+        aria-label="Search products"
+        placeholder="Search drops..."
+        className={inputClass}
+      />
       <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-anime-ink">
         <MagnifyingGlassIcon className="h-5 w-5" strokeWidth={2.75} />
       </div>

@@ -31,7 +31,13 @@ export async function GET(req: NextRequest) {
   const jar = await cookies();
   const verifier = jar.get("cc_pkce")?.value;
   const savedState = jar.get("cc_state")?.value;
-  const returnTo = jar.get("cc_return")?.value || "/account";
+  // Same-site-path check mirrors the login route (defense in depth — the
+  // cookie is httpOnly but this guards any legacy/hand-set value).
+  const rawReturn = jar.get("cc_return")?.value || "/account";
+  const returnTo =
+    rawReturn.startsWith("/") && !rawReturn.startsWith("//")
+      ? rawReturn
+      : "/account";
 
   if (!code) return back("/wishlist?login=error&reason=no_code");
   if (!verifier) return back("/wishlist?login=error&reason=no_verifier_cookie");

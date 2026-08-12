@@ -13,8 +13,9 @@ export async function GET() {
     const items = await getRemoteWishlist(session.customerKey);
     return NextResponse.json({ items, loggedIn: true });
   } catch (e) {
+    console.error("wishlist GET failed:", e);
     return NextResponse.json(
-      { items: [], loggedIn: true, error: String(e) },
+      { items: [], loggedIn: true, error: "server_error" },
       { status: 500 },
     );
   }
@@ -40,6 +41,10 @@ export async function PUT(req: NextRequest) {
     await setRemoteWishlist(session.customerKey, session.email, items as any);
     return NextResponse.json({ ok: true });
   } catch (e) {
-    return NextResponse.json({ ok: false, error: String(e) }, { status: 500 });
+    console.error("wishlist PUT failed:", e);
+    return NextResponse.json(
+      { ok: false, error: "server_error" },
+      { status: 500 },
+    );
   }
 }

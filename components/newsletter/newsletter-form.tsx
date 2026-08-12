@@ -39,6 +39,7 @@ export function NewsletterForm() {
           type="email"
           name="email"
           required
+          autoComplete="email"
           placeholder="your@email.com"
           aria-label="Email address for the newsletter"
           className="min-w-0 flex-1 rounded-xl border-[2.5px] border-anime-ink bg-anime-paper px-4 py-2.5 text-sm font-bold text-anime-ink shadow-[3px_3px_0_0_var(--color-anime-pink)] outline-none placeholder:text-anime-ink/40 focus:shadow-[3px_3px_0_0_var(--color-anime-cyan)]"
