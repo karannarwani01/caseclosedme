@@ -91,7 +91,11 @@ export async function GET(req: NextRequest) {
   if (!customerKey) return back("/wishlist?login=identity_error");
   const email = String(claims.email || "");
 
-  const res = back(`${returnTo}?login=success`);
+  // returnTo may already carry a query string — appending "?login=success"
+  // blindly would produce a malformed double-"?" URL.
+  const res = back(
+    `${returnTo}${returnTo.includes("?") ? "&" : "?"}login=success`,
+  );
   res.cookies.set(
     SESSION_COOKIE,
     encodeSession({ customerKey, email, idToken: tok.id_token }),
