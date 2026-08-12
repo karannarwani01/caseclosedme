@@ -16,6 +16,7 @@ export const metadata = {
     type: "website",
     siteName: "caseclosed",
     url: "/search",
+    images: ["/opengraph-image"],
     title: "Search",
     description:
       "Search the full caseclosed catalogue — Funko Pops, Pop Mart Labubu, anime figures, blind boxes and trading cards.",

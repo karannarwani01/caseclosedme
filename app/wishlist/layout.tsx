@@ -11,6 +11,7 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "caseclosed",
     url: "/wishlist",
+    images: ["/opengraph-image"],
     title: "Wishlist",
     description:
       "The Funko Pops, blind boxes and trading cards you've saved on caseclosed.",

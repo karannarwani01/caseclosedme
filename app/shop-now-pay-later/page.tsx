@@ -8,6 +8,7 @@ export const metadata = {
     type: "website",
     siteName: "caseclosed",
     url: "/shop-now-pay-later",
+    images: ["/opengraph-image"],
     title: "Shop Now, Pay Later",
     description:
       "Pay in installments at caseclosed with Tabby or Tamara. Interest-free, no hidden fees, available across the UAE.",

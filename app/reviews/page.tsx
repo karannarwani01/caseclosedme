@@ -11,6 +11,7 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "caseclosed",
     url: "/reviews",
+    images: ["/opengraph-image"],
     title: "Happy Collectors — Coming Soon",
     description:
       "The caseclosed wall of reviews. Real photos and ratings from UAE collectors who bought their Funko Pops, Labubu blind boxes and trading cards from us. Coming soon.",

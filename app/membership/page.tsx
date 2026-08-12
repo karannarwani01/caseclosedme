@@ -11,6 +11,7 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "caseclosed",
     url: "/membership",
+    images: ["/opengraph-image"],
     title: "Drop Alerts Membership — Coming Soon",
     description:
       "Join the caseclosed Drop Alerts club. Be first to know when new Funko Pops, Pop Mart Labubu and trading-card drops land — plus member-only early access. Coming soon.",

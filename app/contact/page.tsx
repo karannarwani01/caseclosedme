@@ -9,6 +9,7 @@ export const metadata = {
     type: "website",
     siteName: "caseclosed",
     url: "/contact",
+    images: ["/opengraph-image"],
     title: "Contact Us",
     description:
       "Questions about an order, shipping, returns or anything else — message the caseclosed team. We reply within 1–3 business days.",

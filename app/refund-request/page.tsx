@@ -9,6 +9,7 @@ export const metadata = {
     type: "website",
     siteName: "caseclosed",
     url: "/refund-request",
+    images: ["/opengraph-image"],
     title: "Refund Request Form",
     description:
       "Submit a refund request for your caseclosed order. We reply to all requests within 1–3 business days.",
