@@ -1,6 +1,11 @@
 "use client";
 
-import { type FormEvent, useActionState, useState } from "react";
+import {
+  type ChangeEvent,
+  type FormEvent,
+  useActionState,
+  useState,
+} from "react";
 import {
   submitRefundRequest,
   type RefundFormState,
@@ -64,6 +69,40 @@ function FieldLabel({
   );
 }
 
+// Photos travel inside the Server Action body, which is capped at 4 MB
+// (next.config.ts) with Vercel hard-rejecting ~4.5 MB — a single phone photo
+// can blow that alone. Downscale to ≤1600px JPEG in the browser before submit;
+// keep the original when it's already small or the browser can't decode it.
+const MAX_PHOTOS = 5;
+const MAX_EDGE = 1600;
+const SKIP_COMPRESS_UNDER = 600 * 1024;
+const PER_PHOTO_CAP = 2 * 1024 * 1024;
+const TOTAL_CAP = 3.5 * 1024 * 1024;
+
+async function compressPhoto(file: File): Promise<File> {
+  if (file.size <= SKIP_COMPRESS_UNDER) return file;
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, MAX_EDGE / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+    canvas
+      .getContext("2d")!
+      .drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, "image/jpeg", 0.8),
+    );
+    if (!blob || blob.size >= file.size) return file;
+    return new File([blob], file.name.replace(/\.\w+$/, "") + ".jpg", {
+      type: "image/jpeg",
+    });
+  } catch {
+    return file;
+  }
+}
+
 const inputCls =
   "w-full rounded-md border-[2.5px] border-anime-ink bg-white px-4 py-3 text-base text-anime-ink placeholder:text-anime-ink/40 focus:outline-none focus:ring-2 focus:ring-anime-pink focus:ring-offset-2 focus:ring-offset-anime-paper";
 
@@ -77,6 +116,35 @@ export function RefundRequestForm() {
   const [showOther, setShowOther] = useState(
     (vals.refund_types || []).includes(OTHER),
   );
+  const [photoNote, setPhotoNote] = useState("");
+
+  async function onPhotosChange(e: ChangeEvent<HTMLInputElement>) {
+    const input = e.currentTarget;
+    const files = Array.from(input.files ?? []);
+    if (!files.length) {
+      setPhotoNote("");
+      return;
+    }
+    const dt = new DataTransfer();
+    let dropped = files.length > MAX_PHOTOS ? files.length - MAX_PHOTOS : 0;
+    let total = 0;
+    for (const f of files.slice(0, MAX_PHOTOS)) {
+      const c = await compressPhoto(f);
+      if (c.size > PER_PHOTO_CAP || total + c.size > TOTAL_CAP) {
+        dropped++;
+        continue;
+      }
+      total += c.size;
+      dt.items.add(c);
+    }
+    input.files = dt.files;
+    setPhotoNote(
+      dropped
+        ? `${dropped} photo${dropped > 1 ? "s were" : " was"} too large to attach and ${dropped > 1 ? "were" : "was"} removed.`
+        : "",
+    );
+  }
+
   const [showReturnOther, setShowReturnOther] = useState(
     vals.return_method === OTHER,
   );
@@ -277,6 +345,7 @@ export function RefundRequestForm() {
             name="refund_other"
             type="text"
             placeholder="Tell us more"
+            required
             className={`${inputCls} mt-3`}
             defaultValue={vals.refund_other || ""}
           />
@@ -318,6 +387,7 @@ export function RefundRequestForm() {
             name="return_other"
             type="text"
             placeholder="Tell us more"
+            required
             className={`${inputCls} mt-3`}
             defaultValue={vals.return_other || ""}
           />
@@ -342,11 +412,15 @@ export function RefundRequestForm() {
           type="file"
           accept="image/*"
           multiple
+          onChange={onPhotosChange}
           className="block w-full rounded-md border-[2.5px] border-anime-ink bg-white px-4 py-3 text-base text-anime-ink file:mr-4 file:rounded-md file:border-[2px] file:border-anime-ink file:bg-anime-lime file:px-4 file:py-2 file:font-display file:text-sm file:font-extrabold file:uppercase file:tracking-wider file:text-anime-ink hover:file:cursor-pointer"
         />
         <p className="mt-2 text-sm text-anime-ink/60 sm:text-base">
           Attach photos of the item or packaging (up to 5).
         </p>
+        {photoNote && (
+          <p className="mt-1 text-sm font-bold text-anime-pink">{photoNote}</p>
+        )}
       </div>
 
       <div>

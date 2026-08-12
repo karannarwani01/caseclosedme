@@ -51,12 +51,15 @@ export default async function OpengraphImage(
         <div
           style={{
             marginTop: 56,
-            fontSize: 96,
+            // Collection/page titles can be long — shrink so they stay on-card.
+            fontSize: !title || title.length <= 16 ? 96 : 56,
             fontWeight: 800,
             color: "#0d0a1a",
+            maxWidth: 1000,
+            textAlign: "center",
           }}
         >
-          caseclosed
+          {title || "caseclosed"}
         </div>
         <p
           style={{

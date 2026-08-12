@@ -33,6 +33,11 @@ export async function adminGraphQL<T = any>(
     },
     body: JSON.stringify({ query, variables }),
   });
+  // Shopify 5xx/rate-limit pages are HTML — surface a readable error instead
+  // of a JSON parse failure.
+  if (!res.ok) {
+    throw new Error(`Admin GraphQL HTTP ${res.status}`);
+  }
   const json = await res.json();
   if (json.errors) {
     throw new Error(`Admin GraphQL error: ${JSON.stringify(json.errors)}`);
@@ -305,22 +310,35 @@ export async function getProductReviews(
   cacheLife("hours");
   if (!ADMIN_TOKEN) return { reviews: [], count: 0, average: 0 };
 
-  const data = await adminGraphQL<{
-    metaobjects: {
-      nodes: { id: string; fields: { key: string; value: string }[] }[];
-    };
-  }>(
-    `query {
-      metaobjects(type: "cc_review", first: 250) {
-        nodes { id fields { key value } }
-      }
-    }`,
-  );
+  // Reviews are filtered client-side by product_handle, so fetch every page —
+  // a single first:250 page would silently drop reviews once the store passes
+  // 250 total. Capped at 8 pages (2000 reviews) as a runaway guard.
+  const nodes: { id: string; fields: { key: string; value: string }[] }[] = [];
+  let cursor: string | null = null;
+  for (let page = 0; page < 8; page++) {
+    const data: {
+      metaobjects: {
+        nodes: { id: string; fields: { key: string; value: string }[] }[];
+        pageInfo: { hasNextPage: boolean; endCursor: string | null };
+      };
+    } = await adminGraphQL(
+      `query Reviews($after: String) {
+        metaobjects(type: "cc_review", first: 250, after: $after) {
+          nodes { id fields { key value } }
+          pageInfo { hasNextPage endCursor }
+        }
+      }`,
+      { after: cursor },
+    );
+    nodes.push(...data.metaobjects.nodes);
+    if (!data.metaobjects.pageInfo.hasNextPage) break;
+    cursor = data.metaobjects.pageInfo.endCursor;
+  }
 
   const val = (fields: { key: string; value: string }[], key: string) =>
     fields.find((f) => f.key === key)?.value ?? "";
 
-  const reviews: ProductReview[] = data.metaobjects.nodes
+  const reviews: ProductReview[] = nodes
     .filter(
       (n) =>
         val(n.fields, "product_handle") === productHandle &&

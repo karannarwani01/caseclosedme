@@ -48,7 +48,10 @@ export const TAGS = {
 
 export const HIDDEN_PRODUCT_TAG = "nextjs-frontend-hidden";
 export const DEFAULT_OPTION = "Default Title";
-export const SHOPIFY_GRAPHQL_API_ENDPOINT = "/api/2023-01/graphql.json";
+// 2023-01 was retired long ago; Shopify silently routed those calls to the
+// oldest *supported* version, so behavior could shift under us on Shopify's
+// schedule. Pin the version we were already effectively running.
+export const SHOPIFY_GRAPHQL_API_ENDPOINT = "/api/2025-07/graphql.json";
 
 // Single source of truth for customer login/account. Points at Shopify's hosted
 // "New Customer Accounts" (login, order history, profile) — confirmed live as the

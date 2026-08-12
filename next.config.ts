@@ -10,6 +10,15 @@ export default {
   // /terms-conditions -> /media/… = 404) instead of /_next/static/media/….
   // That makes every webfont fail to load site-wide.
   cacheComponents: true,
+  experimental: {
+    serverActions: {
+      // Refund-request photo uploads travel inside the Server Action body.
+      // Vercel rejects bodies over ~4.5 MB at the platform layer, so this cap
+      // (default 1 MB) is raised to just under it; the form compresses photos
+      // client-side to stay within the budget.
+      bodySizeLimit: "4mb",
+    },
+  },
   images: {
     // Serve images via a custom loader (lib/shopify-image-loader) that resizes
     // through Shopify's own CDN, bypassing Vercel's /_next/image optimizer.

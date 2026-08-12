@@ -76,11 +76,15 @@ export async function ArrivingSoonRow() {
     first: 6,
   })) as MaybeMockProduct[];
 
+  // When the fallback fires, /search/pre-order is empty or missing (it would
+  // 404) — send the CTA to the full catalog instead.
+  let ctaHref = "/search/pre-order";
   if (!products.length) {
     products = (await getProducts({
       sortKey: "CREATED_AT",
       reverse: false,
     })) as MaybeMockProduct[];
+    ctaHref = "/search";
   }
 
   if (!products.length) return null;
@@ -90,7 +94,7 @@ export async function ArrivingSoonRow() {
       eyebrow="⏳ Dropping soon"
       title="Arriving soon"
       ctaText="See what's coming →"
-      ctaHref="/search/pre-order"
+      ctaHref={ctaHref}
     >
       <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 lg:gap-5">
         {products.slice(0, 6).map((p) => (

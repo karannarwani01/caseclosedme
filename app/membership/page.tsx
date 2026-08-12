@@ -32,7 +32,8 @@ const PERKS = [
 export default function MembershipPage() {
   return (
     <>
-      <main className="relative overflow-hidden bg-anime-paper">
+      {/* div, not <main> — the root layout already renders the page inside <main> */}
+      <div className="relative overflow-hidden bg-anime-paper">
         {/* halftone dot texture */}
         <div
           aria-hidden
@@ -84,7 +85,7 @@ export default function MembershipPage() {
             ))}
           </ul>
         </section>
-      </main>
+      </div>
       <Footer />
     </>
   );

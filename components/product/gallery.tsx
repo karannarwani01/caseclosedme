@@ -25,7 +25,10 @@ export function Gallery({
   // The 3D view, when available, lives at one index past the last image.
   const slideCount = images.length + (model3dUrl ? 1 : 0);
   const imageIndex = searchParams.has("image")
-    ? Math.min(parseInt(searchParams.get("image")!) || 0, slideCount - 1)
+    ? Math.max(
+        0,
+        Math.min(parseInt(searchParams.get("image")!) || 0, slideCount - 1),
+      )
     : 0;
   const is3d = !!model3dUrl && imageIndex === images.length;
 

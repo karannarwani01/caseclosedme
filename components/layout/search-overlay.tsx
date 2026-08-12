@@ -158,6 +158,9 @@ export function SearchOverlay() {
       role="dialog"
       aria-modal="true"
       aria-label="Search"
+      // While closed the overlay is only translated offscreen — inert keeps its
+      // input/links out of the tab order and the accessibility tree.
+      inert={!open}
       className={clsx(
         "fixed inset-0 z-[60] flex flex-col bg-white transition-transform duration-300 ease-out lg:hidden",
         open ? "translate-y-0" : "pointer-events-none translate-y-full",

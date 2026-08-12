@@ -167,7 +167,12 @@ export async function updateItemQuantity(
 
 export async function redirectToCheckout() {
   let cart = await getCart();
-  redirect(cart!.checkoutUrl);
+  // The cart cookie can be stale (Shopify nulls carts after checkout) while
+  // the optimistic client cart still shows lines — degrade instead of throwing.
+  if (!cart?.checkoutUrl) {
+    redirect("/");
+  }
+  redirect(cart.checkoutUrl);
 }
 
 export async function createCartAndSetCookie() {

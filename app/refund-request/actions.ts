@@ -76,6 +76,13 @@ export async function submitRefundRequest(
   if (!fields.purchase_platform) fieldErrors.purchase_platform = "Required";
   if (fields.refund_types.length === 0)
     fieldErrors.refund_type = "Select at least one";
+  if (
+    fields.refund_types.includes("Other (please specify)") &&
+    !fields.refund_other
+  )
+    fieldErrors.refund_type = "Please describe the issue";
+  if (fields.return_method === "Other (please specify)" && !fields.return_other)
+    fieldErrors.return_method = "Please tell us more";
   if (!fields.item_names) fieldErrors.item_names = "Required";
   if (!fields.return_method) fieldErrors.return_method = "Required";
   if (!fields.refund_method) fieldErrors.refund_method = "Required";

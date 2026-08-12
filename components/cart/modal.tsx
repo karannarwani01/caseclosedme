@@ -116,7 +116,7 @@ export default function CartModal() {
               ) : (
                 <div className="flex h-full flex-col justify-between overflow-hidden p-1">
                   <ul className="grow overflow-auto py-4">
-                    {cart.lines
+                    {[...cart.lines]
                       .sort((a, b) =>
                         a.merchandise.product.title.localeCompare(
                           b.merchandise.product.title,
@@ -154,19 +154,24 @@ export default function CartModal() {
                               </div>
                               <div className="flex flex-row">
                                 <div className="relative h-16 w-16 overflow-hidden rounded-2xl border border-brand-ink/10 bg-white">
-                                  <Image
-                                    className="h-full w-full object-contain p-1"
-                                    width={64}
-                                    height={64}
-                                    alt={
-                                      item.merchandise.product.featuredImage
-                                        .altText ||
-                                      item.merchandise.product.title
-                                    }
-                                    src={
-                                      item.merchandise.product.featuredImage.url
-                                    }
-                                  />
+                                  {/* featuredImage is null for imageless products despite the type */}
+                                  {item.merchandise.product.featuredImage
+                                    ?.url && (
+                                    <Image
+                                      className="h-full w-full object-contain p-1"
+                                      width={64}
+                                      height={64}
+                                      alt={
+                                        item.merchandise.product.featuredImage
+                                          .altText ||
+                                        item.merchandise.product.title
+                                      }
+                                      src={
+                                        item.merchandise.product.featuredImage
+                                          .url
+                                      }
+                                    />
+                                  )}
                                 </div>
                                 <Link
                                   href={merchandiseUrl}

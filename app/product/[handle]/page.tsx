@@ -70,7 +70,14 @@ export default async function ProductPage(props: {
 
   if (!product) return notFound();
 
-  const reviewData = await getProductReviews(product.handle);
+  // An Admin API blip must degrade to "no reviews", not 500 the whole PDP.
+  // Caught here (outside getProductReviews' "use cache") so the failure isn't
+  // cached for hours as an empty result.
+  const reviewData = await getProductReviews(product.handle).catch(() => ({
+    reviews: [],
+    count: 0,
+    average: 0,
+  }));
 
   const productJsonLd = {
     "@context": "https://schema.org",
