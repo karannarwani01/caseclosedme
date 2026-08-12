@@ -149,6 +149,46 @@ export async function createRefundRequestRecord(
   }
 }
 
+// Create one Contact Us message in the Shopify admin (metaobject
+// "contact_message" — store-owned like cc_review, since this app's token can't
+// create $app: definitions). Mirrors the refund-request record shape so both
+// queues read the same way under Content → Metaobjects.
+export async function createContactMessageRecord(record: {
+  summary: string;
+  status: string;
+  details: string;
+}): Promise<void> {
+  if (!ADMIN_TOKEN) throw new Error("SHOPIFY_ADMIN_ACCESS_TOKEN is not set");
+
+  const data = await adminGraphQL<{
+    metaobjectCreate: {
+      metaobject: { id: string } | null;
+      userErrors: { field: string[]; message: string }[];
+    };
+  }>(
+    `mutation($metaobject: MetaobjectCreateInput!) {
+      metaobjectCreate(metaobject: $metaobject) {
+        metaobject { id handle }
+        userErrors { field message code }
+      }
+    }`,
+    {
+      metaobject: {
+        type: "contact_message",
+        fields: [
+          { key: "summary", value: record.summary },
+          { key: "status", value: record.status },
+          { key: "details", value: record.details },
+        ],
+      },
+    },
+  );
+  const errs = data.metaobjectCreate.userErrors;
+  if (errs?.length) {
+    throw new Error(`metaobjectCreate failed: ${JSON.stringify(errs)}`);
+  }
+}
+
 // Record a Drop Alerts membership signup as a `drop_alert` metaobject. The
 // handle is derived from the email so duplicate signups collide (HANDLE_TAKEN)
 // rather than pile up — the caller treats that as "already subscribed".

@@ -14,6 +14,7 @@ const { COMPANY_NAME, SITE_NAME } = process.env;
 const customerService = [
   { title: "About", path: "/about" },
   { title: "Our Locations", path: "/locations" },
+  { title: "Contact Us", path: "/contact" },
   { title: "Refund Request Form", path: "/refund-request" },
   { title: "Drop Alerts Membership", path: "/drop-alerts" },
   { title: "My Account", path: ACCOUNT_URL },
@@ -221,10 +222,10 @@ export default async function Footer() {
               +971 50 126 9270
             </a>
             <a
-              href="mailto:caseclosed.me@gmail.com"
+              href="/contact"
               className="text-base text-white/70 transition-colors hover:text-anime-pink"
             >
-              caseclosed.me@gmail.com
+              Send us a message
             </a>
           </div>
 

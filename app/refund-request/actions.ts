@@ -229,6 +229,6 @@ export async function submitRefundRequest(
   return {
     status: "error",
     message:
-      "We couldn't send your request. Please email caseclosed.me@gmail.com directly.",
+      "We couldn't send your request. Please try again in a minute, or DM us on Instagram @caseclosed.me.",
   };
 }

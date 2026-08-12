@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
 function page(ok: boolean): NextResponse {
   const body = ok
     ? "<h1>You're unsubscribed ✅</h1><p>We won't email you asking for reviews again.</p>"
-    : "<h1>Link didn't work</h1><p>This unsubscribe link is invalid or expired. Email caseclosed.me@gmail.com and we'll sort it.</p>";
+    : "<h1>Link didn't work</h1><p>This unsubscribe link is invalid or expired. <a href=\"https://caseclosedme.com/contact\" style=\"color:#ff2e93;font-weight:bold;\">Message us</a> and we'll sort it.</p>";
   return new NextResponse(
     `<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>caseclosed</title></head>
 <body style="margin:0;display:grid;place-items:center;min-height:100vh;background:#fff8f0;font-family:Arial,Helvetica,sans-serif;color:#0d0a1a;text-align:center;padding:24px;">

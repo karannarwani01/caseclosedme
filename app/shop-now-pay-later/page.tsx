@@ -248,12 +248,12 @@ export default function ShopNowPayLaterPage() {
 
         {/* Footer help line */}
         <p className="mt-12 text-center text-base text-anime-ink/70 sm:text-lg">
-          Question about BNPL on a specific order? Email{" "}
+          Question about BNPL on a specific order?{" "}
           <a
-            href="mailto:caseclosed.me@gmail.com"
+            href="/contact"
             className="font-semibold text-anime-pink underline-offset-2 hover:underline"
           >
-            caseclosed.me@gmail.com
+            Send us a message
           </a>
           .
         </p>

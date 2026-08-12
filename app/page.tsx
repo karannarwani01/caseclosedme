@@ -43,7 +43,12 @@ const siteJsonLd = {
       legalName: "Pumpy General Trading LLC",
       url: baseUrl,
       logo: `${baseUrl}/logo-mark.png`,
-      email: "caseclosed.me@gmail.com",
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "customer service",
+        url: `${baseUrl}/contact`,
+        telephone: "+971501269270",
+      },
       telephone: "+971501269270",
       areaServed: "AE",
       currenciesAccepted: "AED",
