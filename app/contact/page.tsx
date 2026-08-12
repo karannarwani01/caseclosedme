@@ -1,5 +1,6 @@
 import Footer from "components/layout/footer";
 import { ContactForm } from "components/contact-form";
+import { baseUrl } from "lib/utils";
 
 export const metadata = {
   title: "Contact Us",
@@ -17,9 +18,24 @@ export const metadata = {
   alternates: { canonical: "/contact" },
 };
 
+// Ties this page to the Organization entity declared on the homepage, so
+// search/AI engines know this is THE contact channel for the caseclosed brand.
+const contactJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "@id": `${baseUrl}/contact#webpage`,
+  url: `${baseUrl}/contact`,
+  name: "Contact caseclosed",
+  about: { "@id": `${baseUrl}/#organization` },
+};
+
 export default function ContactPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactJsonLd) }}
+      />
       <section className="mx-auto w-full max-w-2xl px-6 py-16 sm:py-24">
         <div className="mb-12 text-center">
           <span className="inline-flex items-center rounded-md border-[2.5px] border-anime-ink bg-anime-pink px-3.5 py-1.5 font-display text-sm font-extrabold uppercase tracking-widest text-white shadow-[3px_3px_0_0_var(--color-anime-ink)]">

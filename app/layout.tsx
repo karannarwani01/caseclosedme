@@ -1,5 +1,6 @@
 import { AccessibilityMenu } from "components/a11y/accessibility-menu";
 import { CartProvider } from "components/cart/cart-context";
+import { GoogleAnalytics } from "components/google-analytics";
 import { BottomTabBar } from "components/layout/bottom-tab-bar";
 import { Navbar } from "components/layout/navbar";
 import { SearchOverlay } from "components/layout/search-overlay";
@@ -107,6 +108,7 @@ export default async function RootLayout({
       <body className="flex min-h-screen flex-col overflow-x-clip bg-brand-bg text-brand-ink antialiased">
         <script dangerouslySetInnerHTML={{ __html: a11yInitScript }} />
         <script dangerouslySetInnerHTML={{ __html: unitsHoverScript }} />
+        <GoogleAnalytics />
         <CartProvider cartPromise={cart}>
           <WishlistProvider>
             <PromoStrip />

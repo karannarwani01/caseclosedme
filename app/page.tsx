@@ -7,7 +7,12 @@ import {
   JustArrivedRow,
   TopTenSection,
 } from "components/section-row";
-import { FACEBOOK_URL, INSTAGRAM_URL, TIKTOK_URL } from "lib/constants";
+import {
+  FACEBOOK_URL,
+  INSTAGRAM_URL,
+  TIKTOK_URL,
+  WHATSAPP_URL,
+} from "lib/constants";
 import { baseUrl } from "lib/utils";
 
 export const metadata = {
@@ -43,12 +48,20 @@ const siteJsonLd = {
       legalName: "Pumpy General Trading LLC",
       url: baseUrl,
       logo: `${baseUrl}/logo-mark.png`,
-      contactPoint: {
-        "@type": "ContactPoint",
-        contactType: "customer service",
-        url: `${baseUrl}/contact`,
-        telephone: "+971501269270",
-      },
+      contactPoint: [
+        {
+          "@type": "ContactPoint",
+          contactType: "customer service",
+          url: `${baseUrl}/contact`,
+          telephone: "+971501269270",
+        },
+        {
+          "@type": "ContactPoint",
+          contactType: "customer service",
+          name: "WhatsApp",
+          url: WHATSAPP_URL,
+        },
+      ],
       telephone: "+971501269270",
       areaServed: "AE",
       currenciesAccepted: "AED",

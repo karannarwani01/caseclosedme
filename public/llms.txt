@@ -1,16 +1,21 @@
 # caseclosed
 
 > caseclosed (caseclosedme.com) is a UAE-based online store for anime figures,
-> Funko Pops, collectibles, and acrylic phone-case protectors. Prices are in AED
-> and include VAT. Flat-rate delivery of AED 20 across the UAE. Payments and
-> checkout run on Shopify.
+> Funko Pops, Pop Mart blind boxes, trading cards, Hot Wheels, and acrylic
+> protectors for collectibles. Prices are in AED and include VAT. Flat-rate
+> delivery of AED 20 across the UAE. Payments and checkout run on Shopify.
 
 ## What we sell
 
-- Anime figures (One Piece, Naruto, Dragon Ball, Jujutsu Kaisen, Demon Slayer, Bleach, and more): https://caseclosedme.com/search
-- Funko Pops (anime, Marvel, WWE, Harry Potter): https://caseclosedme.com/search/funko-pop
-- Acrylic protectors for Funko Pops: https://caseclosedme.com/search/protectors
+- Funko Pops (anime, Marvel, DC, WWE, movies, exclusives): https://caseclosedme.com/search/funko
+- Anime figures (One Piece, Naruto, Dragon Ball, Demon Slayer, Bleach, and more): https://caseclosedme.com/search/figures
+- Pop Mart & blind boxes (Labubu and more): https://caseclosedme.com/search/blind-box
+- Trading cards (Pokemon TCG, One Piece Card Game, Dragon Ball, Riftbound): https://caseclosedme.com/search/trading-cards
+- Hot Wheels (mainline, premium, F1, Fast & Furious): https://caseclosedme.com/search/hot-wheels
+- Acrylic & soft protectors (Funko, Hot Wheels, TCG): https://caseclosedme.com/search/protectors
 - Best sellers: https://caseclosedme.com/search/best-sellers
+- New arrivals: https://caseclosedme.com/search/new-arrivals
+- Under AED 100: https://caseclosedme.com/search/under-100
 
 ## Key pages
 
@@ -22,13 +27,15 @@
 - Pre-order policy: https://caseclosedme.com/pre-order-policy
 - About: https://caseclosedme.com/about
 - Reviews: https://caseclosedme.com/reviews
+- Contact form: https://caseclosedme.com/contact
 
 ## Facts
 
-- Region served: United Arab Emirates (Dubai, Abu Dhabi, Sharjah, and all Emirates)
-- Currency: AED (prices VAT-inclusive)
-- Delivery: flat AED 20 across the UAE (Cash on Delivery: AED 30 — AED 20 delivery plus a AED 10 handling fee)
-- Contact: https://caseclosedme.com/contact
+- Region served: United Arab Emirates (Dubai, Abu Dhabi, Sharjah, and all Emirates); international shipping available
+- Currency: AED (all prices VAT-inclusive)
+- Delivery: flat AED 20 across the UAE; express AED 35 before the 11:00 AM cut-off; Cash on Delivery AED 30 total (AED 20 delivery + AED 10 handling)
+- Payments: Visa and Mastercard debit/credit cards in AED, plus Cash on Delivery across the UAE
+- Contact: https://caseclosedme.com/contact or WhatsApp https://wa.me/971501269270
 - Instagram: https://www.instagram.com/caseclosed.me
 - Facebook: https://www.facebook.com/profile.php?id=61592783584526
 - TikTok: https://www.tiktok.com/@caseclosedme
