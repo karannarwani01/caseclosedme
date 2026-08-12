@@ -71,6 +71,30 @@ with projectId `prj_o6UnZBEbNIj7nfb7b7MwYats4Uc5`, orgId
 - **The Gmail address must never appear on the site.** Everything points to
   `/contact`. The address lives only server-side (FormSubmit endpoint).
 
+## 4b. Social icons in emails (added 2026-08-12)
+
+Every template shows Instagram + Facebook + TikTok (white glyphs on the
+black strip; CDN files `email-icon-{instagram,facebook,tiktok}-white.png`).
+- Notification templates: icon row baked into the Liquid footer.
+- Shopify Email automations: a Custom Liquid section right above the
+  footer (the canvas has no native Social section on this plan). When
+  building a NEW campaign/template, copy that Custom Liquid section or
+  re-paste the snippet from any existing automation.
+- URLs are the ones in `lib/constants.ts` — if a handle ever changes,
+  update BOTH the site constants and the email blocks.
+
+## 4c. Shipping with Jeebly (primary courier)
+
+When fulfilling an order (Orders → Mark as fulfilled):
+1. Enter the Jeebly tracking number.
+2. Carrier: pick **Jeebly** if it appears in the dropdown; otherwise
+   choose **Other** and paste the Jeebly tracking link as the tracking
+   URL (from the Jeebly client portal).
+3. Keep "Send shipment details to your customer" ON — that fires the
+   "On its way!" email. Its TRACK YOUR PACKAGE button uses the tracking
+   URL when present, else the order status page, so always attach the
+   Jeebly URL when the dropdown lacks the carrier.
+
 ## 5. Order lifecycle (verified live 2026-08-12, order #1003)
 
 1. Checkout (COD or Ziina) → Order confirmation email (comic template).
@@ -80,6 +104,20 @@ with projectId `prj_o6UnZBEbNIj7nfb7b7MwYats4Uc5`, orgId
    yellow "NOTHING TO PAY" branch. Inventory restocks automatically.
 4. Post-purchase automations fire on their own schedule (How's the haul?
    after 1 day, etc.).
+
+## 5b. Email send timings (when each automation fires)
+
+| Email | Trigger | Delay |
+|---|---|---|
+| Order confirmation | Order placed | Instant |
+| On its way! (tracking) | Fulfillment created w/ notify | Instant |
+| Order cancelled | Order cancelled w/ notify | Instant |
+| Complete your order | Checkout abandoned | 30 minutes |
+| You're in! (welcome) | Newsletter signup | Instant |
+| How's the haul? (review ask) | 1st order placed | 1 day |
+| Back for more? Legend. | 2nd order placed | 1 day |
+| FRESH PICKS | Scheduled task (this PC) | Mondays 18:07 Dubai, auto-send |
+| NEW DROP | Daily product-watch task | Checked 19:37 daily; sends only if new products in last 26h (3-day cooldown) |
 
 ## 6. Known state / blockers (as of 2026-08-12)
 
