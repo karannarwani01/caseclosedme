@@ -25,6 +25,11 @@ export type WishlistItem = {
 };
 
 const STORAGE_KEY = "caseclosed:wishlist:v1";
+// Handles the user has explicitly removed. Without this, the login/merge in
+// step 4 unions the local list with the server list, so an item removed while
+// its write-through PUT was still in flight (or after the tab closed) gets
+// pulled back from the account on the next load and can't be deleted.
+const TOMBSTONE_KEY = "caseclosed:wishlist:removed:v1";
 
 export function toWishlistItem(product: Product): WishlistItem {
   return {
@@ -37,8 +42,11 @@ export function toWishlistItem(product: Product): WishlistItem {
         }
       : undefined,
     price: {
-      amount: product.priceRange.maxVariantPrice.amount,
-      currencyCode: product.priceRange.maxVariantPrice.currencyCode,
+      // Use the cheapest variant to match the PDP (which leads with
+      // minVariantPrice); maxVariantPrice showed a higher figure than the
+      // product page on any multi-variant item.
+      amount: product.priceRange.minVariantPrice.amount,
+      currencyCode: product.priceRange.minVariantPrice.currencyCode,
     },
     availableForSale: product.availableForSale,
   };
@@ -73,10 +81,44 @@ function readStorage(): WishlistItem[] {
   }
 }
 
-// Union by handle, keeping `a`'s order first then `b`'s extras.
+function readTombstones(): Set<string> {
+  if (typeof window === "undefined") return new Set();
+  try {
+    const raw = window.localStorage.getItem(TOMBSTONE_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return new Set(Array.isArray(parsed) ? (parsed as string[]) : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function writeTombstones(set: Set<string>) {
+  try {
+    window.localStorage.setItem(TOMBSTONE_KEY, JSON.stringify([...set]));
+  } catch {
+    /* ignore quota / private-mode errors */
+  }
+}
+
+function addTombstone(handle: string) {
+  const set = readTombstones();
+  set.add(handle);
+  writeTombstones(set);
+}
+
+function clearTombstone(handle: string) {
+  const set = readTombstones();
+  if (set.delete(handle)) writeTombstones(set);
+}
+
+// Union by handle, keeping `a`'s order first then `b`'s extras, minus any
+// handle the user has tombstoned (removed) so deletions survive a merge.
 function mergeByHandle(a: WishlistItem[], b: WishlistItem[]): WishlistItem[] {
+  const removed = readTombstones();
   const seen = new Set(a.map((i) => i.handle));
-  return [...a, ...b.filter((i) => !seen.has(i.handle))];
+  return [...a, ...b.filter((i) => !seen.has(i.handle))].filter(
+    (i) => !removed.has(i.handle),
+  );
 }
 
 export function WishlistProvider({ children }: { children: React.ReactNode }) {
@@ -178,18 +220,30 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   );
 
   const toggle = useCallback((item: WishlistItem) => {
-    setItems((prev) =>
-      prev.some((i) => i.handle === item.handle)
-        ? prev.filter((i) => i.handle !== item.handle)
-        : [item, ...prev],
-    );
+    setItems((prev) => {
+      if (prev.some((i) => i.handle === item.handle)) {
+        addTombstone(item.handle);
+        return prev.filter((i) => i.handle !== item.handle);
+      }
+      // Re-adding clears any prior tombstone so it can sync back.
+      clearTombstone(item.handle);
+      return [item, ...prev];
+    });
   }, []);
 
   const remove = useCallback((handle: string) => {
+    addTombstone(handle);
     setItems((prev) => prev.filter((i) => i.handle !== handle));
   }, []);
 
-  const clear = useCallback(() => setItems([]), []);
+  const clear = useCallback(() => {
+    setItems((prev) => {
+      const set = readTombstones();
+      prev.forEach((i) => set.add(i.handle));
+      writeTombstones(set);
+      return [];
+    });
+  }, []);
 
   const value = useMemo(
     () => ({

@@ -56,7 +56,16 @@ export function SignupPopup() {
       if (e.key === "Escape") dismiss();
     };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    // Lock body scroll and move focus into the modal so the page behind the
+    // overlay can't scroll and keyboard focus doesn't start outside the dialog.
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const focusTimer = setTimeout(() => emailRef.current?.focus(), 50);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+      clearTimeout(focusTimer);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 

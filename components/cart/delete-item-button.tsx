@@ -24,7 +24,9 @@ export function DeleteItemButton({
     <form
       action={async () => {
         optimisticUpdate(merchandiseId, "delete", sellingPlanId);
-        removeItemAction();
+        // Await so the optimistic removal isn't reconciled away before the
+        // server round-trip completes.
+        await removeItemAction();
       }}
     >
       <button

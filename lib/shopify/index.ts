@@ -212,8 +212,10 @@ export async function shopifyFetch<T>({
   }
 }
 
-const removeEdgesAndNodes = <T>(array: Connection<T>): T[] => {
-  return array.edges.map((edge) => edge?.node);
+const removeEdgesAndNodes = <T>(array: Connection<T> | null | undefined): T[] => {
+  // Degrade to [] instead of throwing "Cannot read properties of undefined
+  // (reading 'edges')" when a malformed 200 arrives with a null connection.
+  return array?.edges?.map((edge) => edge?.node) ?? [];
 };
 
 const reshapeCart = (cart: ShopifyCart): Cart => {

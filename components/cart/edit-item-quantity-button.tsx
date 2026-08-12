@@ -50,7 +50,10 @@ export function EditItemQuantityButton({
     <form
       action={async () => {
         optimisticUpdate(payload.merchandiseId, type, payload.sellingPlanId);
-        updateItemQuantityAction();
+        // Await so the form action stays pending until the server responds —
+        // otherwise React can reconcile the optimistic quantity away before the
+        // round-trip finishes, making the count snap back then jump forward.
+        await updateItemQuantityAction();
       }}
     >
       <SubmitButton type={type} />

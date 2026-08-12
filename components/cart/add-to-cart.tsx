@@ -309,7 +309,9 @@ export function AddToCart({ product }: { product: Product }) {
         action={async () => {
           for (let i = 0; i < quantity; i++)
             addCartItem(finalVariant, product, selectedPlan);
-          addItemAction();
+          // Await so the form action stays pending through the server
+          // round-trip and the optimistic add isn't reverted early.
+          await addItemAction();
         }}
       >
         <SubmitButton
