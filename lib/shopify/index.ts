@@ -677,12 +677,15 @@ export async function getCollections(): Promise<Collection[]> {
 }
 
 // Handles of every collection that currently has at least one published
-// product. Used by the nav to hide empty collections/menus. Cached for hours
-// so newly-stocked collections surface without a deploy.
+// product. Used by the nav to hide empty collections/menus. Tagged with both
+// collections and products, so the Shopify webhook flushes it the moment stock
+// changes; the "days" lifetime is only a backstop. (Was "hours": because the
+// navbar is on every page, that pinned the whole homepage — ~600 KB per ISR
+// write — to an hourly rewrite and burned most of the ISR write budget.)
 export async function getNonEmptyCollectionHandles(): Promise<string[]> {
   "use cache";
   cacheTag(TAGS.collections, TAGS.products);
-  cacheLife("hours");
+  cacheLife("days");
 
   if (!endpoint) return [];
 
@@ -725,9 +728,11 @@ export async function getMenu(handle: string): Promise<Menu[]> {
   "use cache";
   cacheTag(TAGS.collections);
   // Shopify has no menu webhook, and revalidate() only flushes on collection/
-  // product edits — so a renamed/reordered nav item could stick for a full day.
-  // Hours bounds that staleness without a webhook we can't subscribe to.
-  cacheLife("hours");
+  // product edits — so a renamed/reordered nav item can stick for up to a day
+  // (or until the next deploy). That's accepted: the menu is on every page, so
+  // an "hours" lifetime forced an hourly ISR rewrite of the ~600 KB homepage
+  // and drove the team towards the free-tier ISR write cap.
+  cacheLife("days");
 
   if (!endpoint) {
     console.log(`Skipping getMenu for '${handle}' - Shopify not configured`);
@@ -752,7 +757,9 @@ export async function getMenu(handle: string): Promise<Menu[]> {
 export async function getPage(handle: string): Promise<Page> {
   "use cache";
   cacheTag(TAGS.collections);
-  cacheLife("hours");
+  // Content pages change rarely; a day of staleness (or a redeploy) is fine and
+  // avoids re-rendering every /[page] each hour.
+  cacheLife("days");
 
   // Was the only Shopify reader with no endpoint guard: with Shopify
   // unconfigured shopifyFetch throws and every /[page] (about, FAQ, policies)
@@ -770,7 +777,7 @@ export async function getPage(handle: string): Promise<Page> {
 export async function getPages(): Promise<Page[]> {
   "use cache";
   cacheTag(TAGS.collections);
-  cacheLife("hours");
+  cacheLife("days");
 
   if (!endpoint) return [];
 
