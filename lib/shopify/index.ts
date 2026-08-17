@@ -32,6 +32,7 @@ import { getPageQuery, getPagesQuery } from "./queries/page";
 import {
   getProductQuery,
   getProductRecommendationsQuery,
+  getProductHandlesQuery,
   getProductsQuery,
 } from "./queries/product";
 import {
@@ -59,6 +60,7 @@ import {
   ShopifyProduct,
   ShopifyProductOperation,
   ShopifyProductRecommendationsOperation,
+  ShopifyProductHandlesOperation,
   ShopifyProductsOperation,
   ShopifyRemoveFromCartOperation,
   ShopifyUpdateCartOperation,
@@ -862,6 +864,31 @@ export async function getProducts({
   });
 
   return reshapeProducts(removeEdgesAndNodes(res.body.data.products));
+}
+
+// Sitemap helper: walks every product page so stores with >250 products are
+// fully listed. Only fetches handle + updatedAt, so it stays cheap.
+export async function getAllProductHandles(): Promise<
+  { handle: string; updatedAt: string }[]
+> {
+  "use cache";
+  cacheTag(TAGS.products);
+  cacheLife("days");
+
+  const out: { handle: string; updatedAt: string }[] = [];
+  let after: string | null = null;
+  for (let i = 0; i < 40; i++) {
+    const res: { body: ShopifyProductHandlesOperation } =
+      await shopifyFetch<ShopifyProductHandlesOperation>({
+        query: getProductHandlesQuery,
+        variables: after ? { after } : {},
+      });
+    const conn = res.body.data.products;
+    out.push(...conn.edges.map((e) => e.node));
+    if (!conn.pageInfo.hasNextPage) break;
+    after = conn.pageInfo.endCursor;
+  }
+  return out;
 }
 
 // This is called from `app/api/revalidate.ts` so providers can control revalidation logic.

@@ -45,3 +45,21 @@ export const getProductRecommendationsQuery = /* GraphQL */ `
   }
   ${productFragment}
 `;
+
+// Sitemap-only: every product handle + updatedAt, paginated past the 250 cap.
+export const getProductHandlesQuery = /* GraphQL */ `
+  query getProductHandles($after: String) {
+    products(first: 250, after: $after) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        node {
+          handle
+          updatedAt
+        }
+      }
+    }
+  }
+`;

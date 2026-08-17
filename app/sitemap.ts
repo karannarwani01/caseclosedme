@@ -1,10 +1,10 @@
-import { getCollections, getPages, getProducts } from "lib/shopify";
+import { getAllProductHandles, getCollections, getPages } from "lib/shopify";
 import { baseUrl, validateEnvironmentVariables } from "lib/utils";
 import { MetadataRoute } from "next";
 
 type Route = {
   url: string;
-  lastModified: string;
+  lastModified?: string;
 };
 
 export const dynamic = "force-dynamic";
@@ -15,9 +15,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static storefront routes. /account and /wishlist are personal (noindex)
   // and /drop-alerts is a redirect to /membership, so none of those belong
   // here.
+  // No lastModified on static routes: stamping "now" on every crawl teaches
+  // Google to ignore our lastmod values. /search is emitted via collections.
   const routesMap = [
     "",
-    "/search",
     "/reviews",
     "/membership",
     "/refund-request",
@@ -25,7 +26,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/shop-now-pay-later",
   ].map((route) => ({
     url: `${baseUrl}${route}`,
-    lastModified: new Date().toISOString(),
   }));
 
   const collectionsPromise = getCollections().then((collections) =>
@@ -35,7 +35,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   );
 
-  const productsPromise = getProducts({}).then((products) =>
+  const productsPromise = getAllProductHandles().then((products) =>
     products.map((product) => ({
       url: `${baseUrl}/product/${product.handle}`,
       lastModified: product.updatedAt,
