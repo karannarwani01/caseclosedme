@@ -434,6 +434,12 @@ export async function updateCart(
 }
 
 export async function getCart(): Promise<Cart | undefined> {
+  // "use cache: private" is load-bearing, not a data cache: it is the Next 16
+  // cacheComponents mechanism that lets the layout create this cookie-reading
+  // promise without blocking the static shell (see bottom-tab-bar.tsx). With
+  // cacheLife("seconds") the cart is re-read from Shopify effectively every
+  // request; private entries are per-user and are not the shared ISR store
+  // that the removed product/collection caches were writing to.
   "use cache: private";
   cacheTag(TAGS.cart);
   cacheLife("seconds");
@@ -464,9 +470,6 @@ export async function getCart(): Promise<Cart | undefined> {
 export async function getCollection(
   handle: string,
 ): Promise<Collection | undefined> {
-  "use cache";
-  cacheTag(TAGS.collections);
-  cacheLife("days");
 
   const res = await shopifyFetch<ShopifyCollectionOperation>({
     query: getCollectionQuery,
@@ -492,9 +495,6 @@ export async function getCollectionProducts({
   // whole collection just to render a handful of tiles.
   first?: number;
 }): Promise<Product[]> {
-  "use cache";
-  cacheTag(TAGS.collections, TAGS.products);
-  cacheLife("days");
 
   if (!endpoint) {
     return USE_DEMO_PRODUCTS ? getMockProductsForCollection(collection) : [];
@@ -543,9 +543,6 @@ export async function getCollectionProductsPage({
   endCursor: string | null;
   hasNextPage: boolean;
 }> {
-  "use cache";
-  cacheTag(TAGS.collections, TAGS.products);
-  cacheLife("days");
 
   const empty = { products: [], endCursor: null, hasNextPage: false };
 
@@ -590,9 +587,6 @@ export async function getCollectionFeaturedImageUrls(
   collection: string,
   { first = 8, take = 4 }: { first?: number; take?: number } = {},
 ): Promise<string[]> {
-  "use cache";
-  cacheTag(TAGS.collections, TAGS.products);
-  cacheLife("days");
 
   const fromProducts = (products: Product[]) =>
     products
@@ -625,9 +619,6 @@ export async function getCollectionFeaturedImageUrls(
 }
 
 export async function getCollections(): Promise<Collection[]> {
-  "use cache";
-  cacheTag(TAGS.collections);
-  cacheLife("days");
 
   if (!endpoint) {
     console.log("Skipping getCollections - Shopify not configured");
@@ -680,9 +671,6 @@ export async function getCollections(): Promise<Collection[]> {
 // product. Used by the nav to hide empty collections/menus. Cached for hours
 // so newly-stocked collections surface without a deploy.
 export async function getNonEmptyCollectionHandles(): Promise<string[]> {
-  "use cache";
-  cacheTag(TAGS.collections, TAGS.products);
-  cacheLife("hours");
 
   if (!endpoint) return [];
 
@@ -722,12 +710,6 @@ function menuPath(url: string): string {
 }
 
 export async function getMenu(handle: string): Promise<Menu[]> {
-  "use cache";
-  cacheTag(TAGS.collections);
-  // Shopify has no menu webhook, and revalidate() only flushes on collection/
-  // product edits — so a renamed/reordered nav item could stick for a full day.
-  // Hours bounds that staleness without a webhook we can't subscribe to.
-  cacheLife("hours");
 
   if (!endpoint) {
     console.log(`Skipping getMenu for '${handle}' - Shopify not configured`);
@@ -750,9 +732,6 @@ export async function getMenu(handle: string): Promise<Menu[]> {
 }
 
 export async function getPage(handle: string): Promise<Page> {
-  "use cache";
-  cacheTag(TAGS.collections);
-  cacheLife("hours");
 
   // Was the only Shopify reader with no endpoint guard: with Shopify
   // unconfigured shopifyFetch throws and every /[page] (about, FAQ, policies)
@@ -768,9 +747,6 @@ export async function getPage(handle: string): Promise<Page> {
 }
 
 export async function getPages(): Promise<Page[]> {
-  "use cache";
-  cacheTag(TAGS.collections);
-  cacheLife("hours");
 
   if (!endpoint) return [];
 
@@ -782,9 +758,6 @@ export async function getPages(): Promise<Page[]> {
 }
 
 export async function getProduct(handle: string): Promise<Product | undefined> {
-  "use cache";
-  cacheTag(TAGS.products);
-  cacheLife("days");
 
   if (!endpoint) {
     return USE_DEMO_PRODUCTS ? getMockProductByHandle(handle) : undefined;
@@ -812,9 +785,6 @@ export async function getProduct(handle: string): Promise<Product | undefined> {
 export async function getProductRecommendations(
   productId: string,
 ): Promise<Product[]> {
-  "use cache";
-  cacheTag(TAGS.products);
-  cacheLife("days");
 
   // Mock products (id "mock/…") and demo stores won't resolve recommendations;
   // never let that 500 the product page — just show no related row.
@@ -841,9 +811,6 @@ export async function getProducts({
   reverse?: boolean;
   sortKey?: string;
 }): Promise<Product[]> {
-  "use cache";
-  cacheTag(TAGS.products);
-  cacheLife("days");
 
   const res = await shopifyFetch<ShopifyProductsOperation>({
     query: getProductsQuery,

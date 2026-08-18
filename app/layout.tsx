@@ -2,7 +2,7 @@ import { AccessibilityMenu } from "components/a11y/accessibility-menu";
 import { CartProvider } from "components/cart/cart-context";
 import { GoogleAnalytics } from "components/google-analytics";
 import { BottomTabBar } from "components/layout/bottom-tab-bar";
-import { Navbar } from "components/layout/navbar";
+import { Navbar, NavbarSkeleton } from "components/layout/navbar";
 import { SearchOverlay } from "components/layout/search-overlay";
 import { SignupPopup } from "components/newsletter/signup-popup";
 import { PromoStrip } from "components/promo-strip";
@@ -112,7 +112,12 @@ export default async function RootLayout({
         <CartProvider cartPromise={cart}>
           <WishlistProvider>
             <PromoStrip />
-            <Navbar />
+            {/* Navbar reads Shopify live (menu, mega-menu images, protector
+                cards) since the data-cache removal; stream it behind a
+                same-height skeleton so the shell stays static. */}
+            <Suspense fallback={<NavbarSkeleton />}>
+              <Navbar />
+            </Suspense>
             <main className="flex flex-1 flex-col pb-[calc(64px+env(safe-area-inset-bottom))] lg:pb-0">
               {children}
               <Toaster closeButton />

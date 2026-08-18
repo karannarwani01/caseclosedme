@@ -18,6 +18,20 @@ import { NavMenu } from "./nav-menu";
 import Search, { SearchSkeleton } from "./search";
 import { WishlistNavLink } from "./wishlist-nav-link";
 
+// Same sticky bar as the real navbar, empty. Rendered while the navbar's
+// Shopify reads stream in (menu, featured images, protector products) so the
+// shell paints without layout shift. Heights mirror the real nav content:
+// py-6 wrapper around the h-10 logo row (h-11 from lg up).
+export function NavbarSkeleton() {
+  return (
+    <div className="sticky top-0 z-50 w-full border-b-[2.5px] border-anime-ink bg-white">
+      <div className="mx-auto w-full max-w-[1800px] px-4 py-6 lg:px-6">
+        <div className="h-10 lg:h-11" />
+      </div>
+    </div>
+  );
+}
+
 export async function Navbar() {
   const [menu, nonEmpty] = await Promise.all([
     getMenu("next-js-frontend-header-menu"),

@@ -14,6 +14,7 @@ import {
   WHATSAPP_URL,
 } from "lib/constants";
 import { baseUrl } from "lib/utils";
+import { Suspense } from "react";
 
 export const metadata = {
   title: {
@@ -105,10 +106,23 @@ export default function HomePage() {
         cards in the UAE
       </h1>
       <HeroCarousel />
-      <CategoryCircles />
-      <TopTenSection />
-      <JustArrivedRow />
-      <ArrivingSoonRow />
+      {/* Everything below the hero reads Shopify live (data cache removed) —
+          each section streams in under its own boundary so the shell and
+          carousel paint immediately. Sections render nothing meaningful while
+          loading, so null fallbacks keep the page calm rather than flashing
+          skeleton rows. */}
+      <Suspense fallback={null}>
+        <CategoryCircles />
+      </Suspense>
+      <Suspense fallback={null}>
+        <TopTenSection />
+      </Suspense>
+      <Suspense fallback={null}>
+        <JustArrivedRow />
+      </Suspense>
+      <Suspense fallback={null}>
+        <ArrivingSoonRow />
+      </Suspense>
       <PromoBannersRow />
       <Footer />
     </>

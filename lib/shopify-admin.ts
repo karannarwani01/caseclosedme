@@ -3,7 +3,6 @@
 // uploads to Shopify Files. Server-only; never import into a client component.
 
 import { createHash } from "crypto";
-import { cacheLife, cacheTag } from "next/cache";
 
 const ADMIN_API_VERSION = "2026-04";
 const STORE_DOMAIN =
@@ -298,16 +297,12 @@ export type ProductReview = {
 };
 
 // All reviews for a product (read from `cc_review` metaobjects), newest first,
-// with the aggregate average + count. Cached and tagged "reviews": submitting a
-// review (review-actions.ts) calls updateTag("reviews"), so new reviews show
-// immediately; cacheLife("hours") bounds staleness for direct-admin edits. This
-// removes a blocking 250-metaobject Admin round-trip from every PDP render.
+// with the aggregate average + count. Read live from Shopify on every render —
+// the Vercel data cache was removed (ISR Writes quota), Shopify is the sole
+// backend. New reviews therefore show immediately with no tag plumbing.
 export async function getProductReviews(
   productHandle: string,
 ): Promise<{ reviews: ProductReview[]; count: number; average: number }> {
-  "use cache";
-  cacheTag("reviews", `reviews-${productHandle}`);
-  cacheLife("hours");
   if (!ADMIN_TOKEN) return { reviews: [], count: 0, average: 0 };
 
   // Reviews are filtered client-side by product_handle, so fetch every page —
