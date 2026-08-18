@@ -11,7 +11,7 @@ import {
 } from "./mock-data";
 import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 import { cookies, headers } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import { after, NextRequest, NextResponse } from "next/server";
 import {
   addToCartMutation,
   createCartMutation,
@@ -891,7 +891,57 @@ export async function getAllProductHandles(): Promise<
   return out;
 }
 
-// This is called from `app/api/revalidate.ts` so providers can control revalidation logic.
+// ---------------------------------------------------------------------------
+// Webhook revalidation, debounced.
+//
+// A bulk edit in Shopify fires one products/update (and, via smart collections,
+// one collections/update) webhook per product — 40+ within a minute. Each
+// revalidateTag() used to mark the homepage stale, and every homepage rewrite
+// costs ~60–80 ISR write units on Vercel (see the 17 Aug 2026 ISR-cap incident).
+//
+// Coalescing without a database: a "use cache" slot per tag acts as a lock with
+// a hard expiry. The first webhook of a window populates the slot (it sees a
+// fresh timestamp) and becomes the LEADER: it responds 200 to Shopify at once,
+// then — via after() — sleeps past the slot's expiry and revalidates the tag
+// once. Every later webhook in the window reads the cached slot, sees it is not
+// the author, and returns 200 without revalidating; its edit is covered by the
+// leader's trailing revalidate because that fires only after the slot expired
+// (i.e. after the last possible follower was admitted). Freshness lag ≤ ~1 min.
+//
+// The route exports maxDuration = 60 so the leader survives its sleep on Hobby.
+// Keep REVALIDATE_SLOT_SECONDS < REVALIDATE_DELAY_MS < maxDuration.
+// ---------------------------------------------------------------------------
+const REVALIDATE_SLOT_SECONDS = 45;
+const REVALIDATE_DELAY_MS = 50_000;
+async function claimRevalidateSlot(tag: string): Promise<{ at: number }> {
+  "use cache";
+  cacheTag(`revalidate-slot:${tag}`);
+  // revalidate === expire so the entry is never served stale-while-revalidate:
+  // a background refresh would mint a leader timestamp nobody acts on.
+  cacheLife({
+    stale: 0,
+    revalidate: REVALIDATE_SLOT_SECONDS,
+    expire: REVALIDATE_SLOT_SECONDS,
+  });
+  return { at: Date.now() };
+}
+
+// Returns true when this request became the leader and scheduled the revalidate.
+async function scheduleRevalidate(tag: string): Promise<boolean> {
+  const startedAt = Date.now();
+  const slot = await claimRevalidateSlot(tag);
+  // Cache miss ⇒ the slot was minted during this call (at >= startedAt) ⇒ leader.
+  // Cache hit ⇒ minted by an earlier webhook (at < startedAt) ⇒ follower.
+  if (slot.at < startedAt) return false;
+  after(async () => {
+    await new Promise((r) => setTimeout(r, REVALIDATE_DELAY_MS));
+    revalidateTag(tag, "seconds");
+    console.log(`[revalidate] flushed tag "${tag}" after debounce window`);
+  });
+  return true;
+}
+
+// This is called from `app/api/revalidate/route.ts` so providers can control revalidation logic.
 export async function revalidate(req: NextRequest): Promise<NextResponse> {
   // We always need to respond with a 200 status code to Shopify,
   // otherwise it will continue to retry the request.
@@ -920,13 +970,16 @@ export async function revalidate(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ status: 200 });
   }
 
-  if (isCollectionUpdate) {
-    revalidateTag(TAGS.collections, "seconds");
-  }
+  const scheduled: string[] = [];
+  const coalesced: string[] = [];
+  const tag = isCollectionUpdate ? TAGS.collections : TAGS.products;
+  ((await scheduleRevalidate(tag)) ? scheduled : coalesced).push(tag);
 
-  if (isProductUpdate) {
-    revalidateTag(TAGS.products, "seconds");
-  }
-
-  return NextResponse.json({ status: 200, revalidated: true, now: Date.now() });
+  return NextResponse.json({
+    status: 200,
+    revalidated: true,
+    scheduled,
+    coalesced,
+    now: Date.now(),
+  });
 }
