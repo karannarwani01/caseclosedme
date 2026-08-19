@@ -1,4 +1,5 @@
 import productFragment from "../fragments/product";
+import productListingFragment from "../fragments/product-listing";
 import sellingPlanGroupFragment from "../fragments/selling-plan";
 
 // Only the PDP asks for selling plan groups — see the note in
@@ -20,6 +21,10 @@ export const getProductQuery = /* GraphQL */ `
   ${sellingPlanGroupFragment}
 `;
 
+// Listing fragment, not the full product: every getProducts consumer renders
+// cards (feed, search, upsell fill), and the full-catalogue payload has to fit
+// Vercel's per-item data-cache cap or it silently degrades to per-instance
+// memory — every cold lambda then re-pays the ~1–2s Shopify query.
 export const getProductsQuery = /* GraphQL */ `
   query getProducts(
     $sortKey: ProductSortKeys
@@ -29,12 +34,12 @@ export const getProductsQuery = /* GraphQL */ `
     products(sortKey: $sortKey, reverse: $reverse, query: $query, first: 250) {
       edges {
         node {
-          ...product
+          ...productListing
         }
       }
     }
   }
-  ${productFragment}
+  ${productListingFragment}
 `;
 
 export const getProductRecommendationsQuery = /* GraphQL */ `

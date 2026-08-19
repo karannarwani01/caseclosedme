@@ -1,4 +1,5 @@
 import {
+  defaultSort,
   HIDDEN_PRODUCT_TAG,
   SHOPIFY_GRAPHQL_API_ENDPOINT,
   TAGS,
@@ -863,7 +864,9 @@ export async function getProducts({
     },
   });
 
-  return reshapeProducts(removeEdgesAndNodes(res.body.data.products));
+  return removeEdgesAndNodes(res.body.data.products)
+    .map(reshapeListingProduct)
+    .filter((p): p is Product => Boolean(p));
 }
 
 // Sitemap helper: walks every product page so stores with >250 products are
@@ -935,8 +938,21 @@ async function scheduleRevalidate(tag: string): Promise<boolean> {
   if (slot.at < startedAt) return false;
   after(async () => {
     await new Promise((r) => setTimeout(r, REVALIDATE_DELAY_MS));
-    revalidateTag(tag, "seconds");
+    // "max": visitors keep getting the stale catalogue instantly while the
+    // refresh runs in the background — "seconds" made every flush block the
+    // next visitor on 1–2s Shopify round-trips (the "site is slow" reports).
+    revalidateTag(tag, "max");
     console.log(`[revalidate] flushed tag "${tag}" after debounce window`);
+    // Re-prime the hottest entries so the refresh happens on our dime, not a
+    // shopper's: these cover search/browse feeds, the search overlay and the
+    // PDP upsell fill. Failures are fine — the next request self-heals.
+    await Promise.all([
+      getProducts({}),
+      getProducts({ sortKey: defaultSort.sortKey, reverse: defaultSort.reverse }),
+      getProducts({ sortKey: "BEST_SELLING" }),
+      getCollections(),
+      getNonEmptyCollectionHandles(),
+    ]).catch((e) => console.error("[revalidate] cache re-prime failed:", e));
   });
   return true;
 }

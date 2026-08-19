@@ -33,9 +33,15 @@ export default async function SearchPage(props: {
   const { sortKey, reverse } =
     sorting.find((item) => item.slug === sort) || defaultSort;
 
-  const allProducts = USE_DEMO_PRODUCTS
-    ? DEMO_PRODUCTS
-    : await getProducts({ sortKey, reverse });
+  // The three Shopify reads are independent — fetch them concurrently so a
+  // cold cache costs one round-trip, not three back to back.
+  const [allProducts, allCollections, availableHandles] = USE_DEMO_PRODUCTS
+    ? [DEMO_PRODUCTS, [], []]
+    : await Promise.all([
+        getProducts({ sortKey, reverse }),
+        searchValue ? getCollections() : [],
+        getNonEmptyCollectionHandles(),
+      ]);
 
   // Match the query against title, type, vendor, handle AND every tag/keyword,
   // so products are findable by any tag (character, franchise, colour,
@@ -58,15 +64,11 @@ export default async function SearchPage(props: {
   let categoryMatches: Awaited<ReturnType<typeof getCollections>> = [];
   if (searchValue) {
     const q = searchValue.toLowerCase();
-    categoryMatches = (await getCollections())
+    categoryMatches = allCollections
       .filter((c) => c.handle && c.handle !== "frontpage")
       .filter((c) => c.title.toLowerCase().includes(q) || c.handle.includes(q))
       .slice(0, 12);
   }
-
-  const availableHandles = USE_DEMO_PRODUCTS
-    ? []
-    : await getNonEmptyCollectionHandles();
 
   return (
     <>

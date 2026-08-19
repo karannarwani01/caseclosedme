@@ -406,7 +406,7 @@ export type ShopifyProductHandlesOperation = {
 
 export type ShopifyProductsOperation = {
   data: {
-    products: Connection<ShopifyProduct>;
+    products: Connection<ShopifyListingProduct>;
   };
   variables: {
     query?: string;
