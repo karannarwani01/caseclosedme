@@ -24,10 +24,17 @@ export default {
     // through Shopify's own CDN, bypassing Vercel's /_next/image optimizer.
     // The optimizer is quota-capped on the Hobby plan and returns HTTP 402 once
     // exhausted, which breaks every image site-wide; Shopify CDN resizing is
-    // free + unlimited. The settings below only matter for the built-in
-    // optimizer and are ignored under a custom loader, but are kept for clarity.
+    // free + unlimited.
     loader: "custom",
     loaderFile: "./lib/shopify-image-loader.ts",
+    // deviceSizes/imageSizes DO apply under a custom loader: next/image builds
+    // each <img srcSet> from them. The defaults produced up to 16 candidates
+    // per image (…2048w, 3840w) — with 190-char Shopify CDN URLs that was
+    // ~2.5 KB per image, ~47 KB on the homepage alone, and every byte is
+    // stored again on each ISR write. Shopify source images are ~1000 px, so
+    // widths above 1920 are pure upscales. Trimmed to 9 candidates.
+    deviceSizes: [640, 828, 1080, 1440, 1920],
+    imageSizes: [64, 128, 256, 384],
     formats: ["image/avif", "image/webp"],
     qualities: [75, 100],
     // Allow all local images, including those with a cache-busting `?v=` query

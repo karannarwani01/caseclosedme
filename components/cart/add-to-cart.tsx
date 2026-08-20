@@ -15,17 +15,11 @@ function QuantityStepper({
   quantity,
   setQuantity,
   disabled,
-  max,
 }: {
   quantity: number;
   setQuantity: (fn: (q: number) => number) => void;
   disabled: boolean;
-  // Available stock when the Storefront token can read it; null = unknown
-  // (inventory scope not granted), in which case the stepper is uncapped and
-  // the server-side clamp toast is the safety net.
-  max: number | null;
 }) {
-  const atMax = max !== null && quantity >= max;
   return (
     <div className="inline-flex w-fit items-center self-start rounded-full border-[2.5px] border-anime-ink bg-white shadow-[2px_2px_0_0_var(--color-anime-ink)]">
       <button
@@ -42,20 +36,10 @@ function QuantityStepper({
       </span>
       <button
         type="button"
-        onClick={() => {
-          if (atMax) {
-            toast(`😣 Only ${max} in stock`);
-            return;
-          }
-          setQuantity((q) => (max !== null ? Math.min(max, q + 1) : q + 1));
-        }}
+        onClick={() => setQuantity((q) => q + 1)}
         disabled={disabled}
-        aria-disabled={atMax}
         aria-label="Increase quantity"
-        className={clsx(
-          "grid h-10 w-10 place-items-center text-anime-ink transition-colors hover:text-anime-pink disabled:opacity-40",
-          atMax && "opacity-40",
-        )}
+        className="grid h-10 w-10 place-items-center text-anime-ink transition-colors hover:text-anime-pink disabled:opacity-40"
       >
         <PlusIcon className="h-4" strokeWidth={3} />
       </button>
@@ -267,16 +251,13 @@ export function AddToCart({ product }: { product: Product }) {
   // Stock for the selected variant, when the Storefront token can read it
   // (self-activates once the inventory scope is ticked on the Headless
   // channel; until then quantityAvailable is null and nothing changes).
+  // Informational only — the stepper is deliberately uncapped, and Shopify's
+  // own inventory policy is the source of truth for what an add can hold.
   const stock =
     typeof finalVariant?.quantityAvailable === "number" &&
     finalVariant.quantityAvailable > 0
       ? finalVariant.quantityAvailable
       : null;
-
-  // Variant switches can lower the ceiling; pull the chosen quantity down.
-  useEffect(() => {
-    if (stock !== null) setQuantity((q) => Math.min(q, stock));
-  }, [stock]);
 
   return (
     <div className="flex flex-col gap-3">
@@ -302,7 +283,6 @@ export function AddToCart({ product }: { product: Product }) {
           quantity={quantity}
           setQuantity={setQuantity}
           disabled={!availableForSale}
-          max={stock}
         />
       </div>
       <form

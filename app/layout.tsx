@@ -14,6 +14,7 @@ import {
   Inter,
   Space_Grotesk,
 } from "next/font/google";
+import { DirhamSprite } from "components/dirham-sign";
 import { getCart } from "lib/shopify";
 import { ReactNode, Suspense } from "react";
 import { Toaster } from "sonner";
@@ -108,6 +109,7 @@ export default async function RootLayout({
       <body className="flex min-h-screen flex-col overflow-x-clip bg-brand-bg text-brand-ink antialiased">
         <script dangerouslySetInnerHTML={{ __html: a11yInitScript }} />
         <script dangerouslySetInnerHTML={{ __html: unitsHoverScript }} />
+        <DirhamSprite />
         <GoogleAnalytics />
         <CartProvider cartPromise={cart}>
           <WishlistProvider>

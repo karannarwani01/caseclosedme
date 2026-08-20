@@ -1,4 +1,5 @@
 import {
+  defaultSort,
   HIDDEN_PRODUCT_TAG,
   SHOPIFY_GRAPHQL_API_ENDPOINT,
   TAGS,
@@ -11,7 +12,7 @@ import {
 } from "./mock-data";
 import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 import { cookies, headers } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import { after, NextRequest, NextResponse } from "next/server";
 import {
   addToCartMutation,
   createCartMutation,
@@ -32,6 +33,7 @@ import { getPageQuery, getPagesQuery } from "./queries/page";
 import {
   getProductQuery,
   getProductRecommendationsQuery,
+  getProductHandlesQuery,
   getProductsQuery,
 } from "./queries/product";
 import {
@@ -59,6 +61,7 @@ import {
   ShopifyProduct,
   ShopifyProductOperation,
   ShopifyProductRecommendationsOperation,
+  ShopifyProductHandlesOperation,
   ShopifyProductsOperation,
   ShopifyRemoveFromCartOperation,
   ShopifyUpdateCartOperation,
@@ -668,9 +671,18 @@ export async function getCollections(): Promise<Collection[]> {
 }
 
 // Handles of every collection that currently has at least one published
-// product. Used by the nav to hide empty collections/menus. Cached for hours
-// so newly-stocked collections surface without a deploy.
+// product. Used by the nav to hide empty collections/menus. Tagged with both
+// collections and products, so the Shopify webhook flushes it the moment stock
+// changes; the "days" lifetime is only a backstop. (Was "hours": because the
+// navbar is on every page, that pinned the whole homepage — ~600 KB per ISR
+// write — to an hourly rewrite and burned most of the ISR write budget.)
 export async function getNonEmptyCollectionHandles(): Promise<string[]> {
+<<<<<<< HEAD
+=======
+  "use cache";
+  cacheTag(TAGS.collections, TAGS.products);
+  cacheLife("days");
+>>>>>>> 094d6929df11b9ca65ba155450b9d706c0309e93
 
   if (!endpoint) return [];
 
@@ -710,6 +722,17 @@ function menuPath(url: string): string {
 }
 
 export async function getMenu(handle: string): Promise<Menu[]> {
+<<<<<<< HEAD
+=======
+  "use cache";
+  cacheTag(TAGS.collections);
+  // Shopify has no menu webhook, and revalidate() only flushes on collection/
+  // product edits — so a renamed/reordered nav item can stick for up to a day
+  // (or until the next deploy). That's accepted: the menu is on every page, so
+  // an "hours" lifetime forced an hourly ISR rewrite of the ~600 KB homepage
+  // and drove the team towards the free-tier ISR write cap.
+  cacheLife("days");
+>>>>>>> 094d6929df11b9ca65ba155450b9d706c0309e93
 
   if (!endpoint) {
     console.log(`Skipping getMenu for '${handle}' - Shopify not configured`);
@@ -732,6 +755,14 @@ export async function getMenu(handle: string): Promise<Menu[]> {
 }
 
 export async function getPage(handle: string): Promise<Page> {
+<<<<<<< HEAD
+=======
+  "use cache";
+  cacheTag(TAGS.collections);
+  // Content pages change rarely; a day of staleness (or a redeploy) is fine and
+  // avoids re-rendering every /[page] each hour.
+  cacheLife("days");
+>>>>>>> 094d6929df11b9ca65ba155450b9d706c0309e93
 
   // Was the only Shopify reader with no endpoint guard: with Shopify
   // unconfigured shopifyFetch throws and every /[page] (about, FAQ, policies)
@@ -747,6 +778,12 @@ export async function getPage(handle: string): Promise<Page> {
 }
 
 export async function getPages(): Promise<Page[]> {
+<<<<<<< HEAD
+=======
+  "use cache";
+  cacheTag(TAGS.collections);
+  cacheLife("days");
+>>>>>>> 094d6929df11b9ca65ba155450b9d706c0309e93
 
   if (!endpoint) return [];
 
@@ -821,10 +858,108 @@ export async function getProducts({
     },
   });
 
-  return reshapeProducts(removeEdgesAndNodes(res.body.data.products));
+  return removeEdgesAndNodes(res.body.data.products)
+    .map(reshapeListingProduct)
+    .filter((p): p is Product => Boolean(p));
 }
 
-// This is called from `app/api/revalidate.ts` so providers can control revalidation logic.
+// Sitemap helper: walks every product page so stores with >250 products are
+// fully listed. Only fetches handle + updatedAt, so it stays cheap.
+export async function getAllProductHandles(): Promise<
+  { handle: string; updatedAt: string }[]
+> {
+  "use cache";
+  cacheTag(TAGS.products);
+  cacheLife("days");
+
+  const out: { handle: string; updatedAt: string }[] = [];
+  let after: string | null = null;
+  for (let i = 0; i < 40; i++) {
+    const res: { body: ShopifyProductHandlesOperation } =
+      await shopifyFetch<ShopifyProductHandlesOperation>({
+        query: getProductHandlesQuery,
+        variables: after ? { after } : {},
+      });
+    const conn = res.body.data.products;
+    out.push(...conn.edges.map((e) => e.node));
+    if (!conn.pageInfo.hasNextPage) break;
+    after = conn.pageInfo.endCursor;
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------------------
+// Webhook revalidation, debounced.
+//
+// A bulk edit in Shopify fires one products/update (and, via smart collections,
+// one collections/update) webhook per product — 40+ within a minute. Each
+// revalidateTag() used to mark the homepage stale, and every homepage rewrite
+// costs ~60–80 ISR write units on Vercel (see the 17 Aug 2026 ISR-cap incident).
+//
+// Coalescing without a database: a "use cache" slot per tag acts as a lock with
+// a hard expiry. The first webhook of a window populates the slot (it sees a
+// fresh timestamp) and becomes the LEADER: it responds 200 to Shopify at once,
+// then — via after() — sleeps REVALIDATE_DELAY_MS and revalidates the tag
+// once. Every later webhook in the window reads the cached slot, sees it is
+// not the author, and returns 200 without revalidating; edits arriving within
+// the leader's 50s delay are covered by its flush, later ones wait for the
+// window to expire (see trade-off below).
+//
+// The route exports maxDuration = 60 so the leader survives its sleep on Hobby.
+// Keep REVALIDATE_DELAY_MS < maxDuration.
+//
+// The slot (300s) is deliberately much longer than the leader's 50s flush
+// delay: it rate-limits flush waves to one per 5 minutes, because every wave
+// costs ISR writes (re-primed catalogue entries + each page shell rewritten on
+// its next visit) — the Aug 2026 Hobby-quota crunch. Trade-off: an edit that
+// lands AFTER the leader's flush but inside the slot stays stale until the
+// first webhook after the slot expires; sale/edit webhooks arrive all day, so
+// gaps self-heal within minutes in practice.
+// ---------------------------------------------------------------------------
+const REVALIDATE_SLOT_SECONDS = 300;
+const REVALIDATE_DELAY_MS = 50_000;
+async function claimRevalidateSlot(tag: string): Promise<{ at: number }> {
+  "use cache";
+  cacheTag(`revalidate-slot:${tag}`);
+  // revalidate === expire so the entry is never served stale-while-revalidate:
+  // a background refresh would mint a leader timestamp nobody acts on.
+  cacheLife({
+    stale: 0,
+    revalidate: REVALIDATE_SLOT_SECONDS,
+    expire: REVALIDATE_SLOT_SECONDS,
+  });
+  return { at: Date.now() };
+}
+
+// Returns true when this request became the leader and scheduled the revalidate.
+async function scheduleRevalidate(tag: string): Promise<boolean> {
+  const startedAt = Date.now();
+  const slot = await claimRevalidateSlot(tag);
+  // Cache miss ⇒ the slot was minted during this call (at >= startedAt) ⇒ leader.
+  // Cache hit ⇒ minted by an earlier webhook (at < startedAt) ⇒ follower.
+  if (slot.at < startedAt) return false;
+  after(async () => {
+    await new Promise((r) => setTimeout(r, REVALIDATE_DELAY_MS));
+    // "max": visitors keep getting the stale catalogue instantly while the
+    // refresh runs in the background — "seconds" made every flush block the
+    // next visitor on 1–2s Shopify round-trips (the "site is slow" reports).
+    revalidateTag(tag, "max");
+    console.log(`[revalidate] flushed tag "${tag}" after debounce window`);
+    // Re-prime the hottest entries so the refresh happens on our dime, not a
+    // shopper's: these cover search/browse feeds, the search overlay and the
+    // PDP upsell fill. Failures are fine — the next request self-heals.
+    await Promise.all([
+      getProducts({}),
+      getProducts({ sortKey: defaultSort.sortKey, reverse: defaultSort.reverse }),
+      getProducts({ sortKey: "BEST_SELLING" }),
+      getCollections(),
+      getNonEmptyCollectionHandles(),
+    ]).catch((e) => console.error("[revalidate] cache re-prime failed:", e));
+  });
+  return true;
+}
+
+// This is called from `app/api/revalidate/route.ts` so providers can control revalidation logic.
 export async function revalidate(req: NextRequest): Promise<NextResponse> {
   // We always need to respond with a 200 status code to Shopify,
   // otherwise it will continue to retry the request.
@@ -853,13 +988,16 @@ export async function revalidate(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ status: 200 });
   }
 
-  if (isCollectionUpdate) {
-    revalidateTag(TAGS.collections, "seconds");
-  }
+  const scheduled: string[] = [];
+  const coalesced: string[] = [];
+  const tag = isCollectionUpdate ? TAGS.collections : TAGS.products;
+  ((await scheduleRevalidate(tag)) ? scheduled : coalesced).push(tag);
 
-  if (isProductUpdate) {
-    revalidateTag(TAGS.products, "seconds");
-  }
-
-  return NextResponse.json({ status: 200, revalidated: true, now: Date.now() });
+  return NextResponse.json({
+    status: 200,
+    revalidated: true,
+    scheduled,
+    coalesced,
+    now: Date.now(),
+  });
 }

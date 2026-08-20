@@ -392,9 +392,21 @@ export type ShopifyProductRecommendationsOperation = {
   };
 };
 
+export type ShopifyProductHandlesOperation = {
+  data: {
+    products: {
+      pageInfo: { hasNextPage: boolean; endCursor: string | null };
+      edges: { node: { handle: string; updatedAt: string } }[];
+    };
+  };
+  variables: {
+    after?: string;
+  };
+};
+
 export type ShopifyProductsOperation = {
   data: {
-    products: Connection<ShopifyProduct>;
+    products: Connection<ShopifyListingProduct>;
   };
   variables: {
     query?: string;
