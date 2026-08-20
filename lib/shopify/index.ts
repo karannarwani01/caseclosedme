@@ -905,16 +905,24 @@ export async function getAllProductHandles(): Promise<
 // Coalescing without a database: a "use cache" slot per tag acts as a lock with
 // a hard expiry. The first webhook of a window populates the slot (it sees a
 // fresh timestamp) and becomes the LEADER: it responds 200 to Shopify at once,
-// then — via after() — sleeps past the slot's expiry and revalidates the tag
-// once. Every later webhook in the window reads the cached slot, sees it is not
-// the author, and returns 200 without revalidating; its edit is covered by the
-// leader's trailing revalidate because that fires only after the slot expired
-// (i.e. after the last possible follower was admitted). Freshness lag ≤ ~1 min.
+// then — via after() — sleeps REVALIDATE_DELAY_MS and revalidates the tag
+// once. Every later webhook in the window reads the cached slot, sees it is
+// not the author, and returns 200 without revalidating; edits arriving within
+// the leader's 50s delay are covered by its flush, later ones wait for the
+// window to expire (see trade-off below).
 //
 // The route exports maxDuration = 60 so the leader survives its sleep on Hobby.
-// Keep REVALIDATE_SLOT_SECONDS < REVALIDATE_DELAY_MS < maxDuration.
+// Keep REVALIDATE_DELAY_MS < maxDuration.
+//
+// The slot (300s) is deliberately much longer than the leader's 50s flush
+// delay: it rate-limits flush waves to one per 5 minutes, because every wave
+// costs ISR writes (re-primed catalogue entries + each page shell rewritten on
+// its next visit) — the Aug 2026 Hobby-quota crunch. Trade-off: an edit that
+// lands AFTER the leader's flush but inside the slot stays stale until the
+// first webhook after the slot expires; sale/edit webhooks arrive all day, so
+// gaps self-heal within minutes in practice.
 // ---------------------------------------------------------------------------
-const REVALIDATE_SLOT_SECONDS = 45;
+const REVALIDATE_SLOT_SECONDS = 300;
 const REVALIDATE_DELAY_MS = 50_000;
 async function claimRevalidateSlot(tag: string): Promise<{ at: number }> {
   "use cache";

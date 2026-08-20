@@ -6,8 +6,18 @@ export default function robots() {
       {
         userAgent: "*",
         // API endpoints and the login-only account dashboard have no place in
-        // a crawl. Everything else stays open.
-        disallow: ["/api/", "/account"],
+        // a crawl, and neither do per-visitor pages (cart, wishlist) or the
+        // infinite space of query'd search URLs — every crawl of those is a
+        // dynamic render that burns Vercel CPU/origin-transfer quota. The
+        // canonical /search page and /search/[collection] pages stay open.
+        disallow: [
+          "/api/",
+          "/account",
+          "/cart",
+          "/wishlist",
+          "/*?q=",
+          "/*?sort=",
+        ],
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

@@ -18,6 +18,14 @@ const toHit = (p: {
   price: p.priceRange.maxVariantPrice.amount,
 });
 
+// Responses carry nothing visitor-specific, so let Vercel's edge cache serve
+// repeats (keyed by full URL incl. ?q=): the overlay fires per keystroke for
+// every visitor, and without this each keystroke was a function invocation —
+// pure Active-CPU + Fast-Origin-Transfer burn.
+const EDGE_CACHE = {
+  "Cache-Control": "public, s-maxage=600, stale-while-revalidate=86400",
+};
+
 export async function GET(req: NextRequest) {
   const q = (req.nextUrl.searchParams.get("q") || "").toLowerCase().trim();
 
@@ -28,11 +36,14 @@ export async function GET(req: NextRequest) {
       getProducts({ sortKey: "BEST_SELLING" }),
       getTrendingSearchTerms(),
     ]);
-    return NextResponse.json({
-      results: [],
-      trending: top.slice(0, 6).map(toHit),
-      terms,
-    });
+    return NextResponse.json(
+      {
+        results: [],
+        trending: top.slice(0, 6).map(toHit),
+        terms,
+      },
+      { headers: EDGE_CACHE },
+    );
   }
 
   // Normalize away hyphens so "die-cast" matches the "diecast" tag, etc.
@@ -50,5 +61,5 @@ export async function GET(req: NextRequest) {
     .slice(0, 7)
     .map(toHit);
 
-  return NextResponse.json({ results, trending: [] });
+  return NextResponse.json({ results, trending: [] }, { headers: EDGE_CACHE });
 }
