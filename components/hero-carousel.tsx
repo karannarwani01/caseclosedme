@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment, useEffect, useState } from "react";
@@ -25,10 +26,13 @@ type Promo = {
   gradient: string;
   rays: string;
   badge: string;
+  /** Optional line under the badge — event dates and the like. */
+  dates?: string;
   headline: string;
   // Body copy shown under the headline. Edit freely per slide.
   subtitle: string;
-  cta: string;
+  /** Omit to render the slide without a button. */
+  cta?: string;
   figures: Figure[];
   /**
    * Background treatment. Default is the comic sunburst + halftone. "pitch"
@@ -42,6 +46,11 @@ type Promo = {
    * where illustration beats anything CSS can draw (the lab interior).
    */
   sceneImage?: string;
+  /**
+   * Phone-shaped crop of `sceneImage`. Desktop slides are ~3:1 while phones are
+   * nearly portrait, so a single image object-covers badly at one end.
+   */
+  sceneImageMobile?: string;
 };
 
 // Shared figure base classes — anchored to the bottom, never intercept the
@@ -165,6 +174,23 @@ const PROMOS: Promo[] = [
         className: `${FIG_FREE} bottom-[5%] left-[31%] z-20 h-[46%] sm:bottom-[8%] sm:left-[17%] sm:h-[54%] lg:h-[61%]`,
       },
     ],
+  },
+  {
+    id: "mefcc",
+    href: "/search",
+    ariaLabel:
+      "Caseclosed will be at MEFCC 2026, Middle East Film and Comic Con, September 11 to 13.",
+    gradient:
+      "linear-gradient(180deg, #1a1230 0%, #2a1a52 55%, #3a1e5c 100%)",
+    rays: "rgba(255,120,200,0.30)",
+    sceneImage: "/banners/mefcc-queue-desktop.webp",
+    sceneImageMobile: "/banners/mefcc-queue-mobile.webp",
+    badge: "Save The Date",
+    dates: "September 11\u201313",
+    headline: "Caseclosed will be at MEFCC 2026",
+    subtitle:
+      "Stay tuned for our sneak peek of amazing drops at the Comic Con.",
+    figures: [],
   },
 ];
 
@@ -677,15 +703,31 @@ function PromoSlide({ promo, eager }: { promo: Promo; eager: boolean }) {
 
       {/* Painted backdrop, where the slide uses artwork instead of CSS */}
       {promo.sceneImage && (
-        <Image
-          src={promo.sceneImage}
-          alt=""
-          width={1600}
-          height={534}
-          priority={eager}
-          aria-hidden
-          className="pointer-events-none absolute inset-0 z-[5] h-full w-full object-cover"
-        />
+        <>
+          <Image
+            src={promo.sceneImage}
+            alt=""
+            width={1600}
+            height={534}
+            priority={eager}
+            aria-hidden
+            className={clsx(
+              "pointer-events-none absolute inset-0 z-[5] h-full w-full object-cover",
+              promo.sceneImageMobile && "hidden md:block",
+            )}
+          />
+          {promo.sceneImageMobile && (
+            <Image
+              src={promo.sceneImageMobile}
+              alt=""
+              width={900}
+              height={1050}
+              priority={eager}
+              aria-hidden
+              className="pointer-events-none absolute inset-0 z-[5] h-full w-full object-cover md:hidden"
+            />
+          )}
+        </>
       )}
       {/* Figures bursting from the left */}
       {promo.figures.map((f) => {
@@ -726,6 +768,18 @@ function PromoSlide({ promo, eager }: { promo: Promo; eager: boolean }) {
         <span className="-rotate-2 rounded-[3px] border-2 border-anime-ink bg-anime-yellow px-2 py-0.5 font-display text-[10px] font-extrabold uppercase tracking-tight text-anime-ink shadow-[2px_2px_0_0_rgba(13,10,26,0.55)] sm:border-[2.5px] sm:px-2.5 sm:py-1 sm:text-base sm:shadow-[3px_3px_0_0_rgba(13,10,26,0.55)] md:text-xl">
           {promo.badge}
         </span>
+        {promo.dates && (
+          <span
+            className="font-display font-extrabold uppercase italic leading-none text-white [-webkit-text-stroke:1px_#0d0a1a] sm:[-webkit-text-stroke:1.5px_#0d0a1a]"
+            style={{
+              fontSize: "clamp(0.85rem, 2.6vw, 2rem)",
+              transform: "skewX(-7deg)",
+              textShadow: "2px 3px 0 rgba(13,10,26,0.55)",
+            }}
+          >
+            {promo.dates}
+          </span>
+        )}
         <h2
           className="font-display font-extrabold uppercase italic leading-[0.82] text-white [-webkit-text-stroke:1.5px_#0d0a1a] sm:[-webkit-text-stroke:2.5px_#0d0a1a]"
           style={{
@@ -740,9 +794,11 @@ function PromoSlide({ promo, eager }: { promo: Promo; eager: boolean }) {
         <p className="hidden max-w-[36ch] text-right text-sm font-semibold leading-snug text-white drop-shadow-[2px_2px_0_rgba(13,10,26,0.6)] sm:block md:text-base lg:text-lg">
           {promo.subtitle}
         </p>
+        {promo.cta && (
         <span className="mt-0.5 inline-flex items-center rounded-full border-2 border-anime-ink bg-gradient-to-b from-[#ff5151] to-[#c21212] px-4 py-1.5 font-display text-[11px] font-extrabold uppercase tracking-wider text-white shadow-[3px_3px_0_0_rgba(13,10,26,0.6)] transition-transform group-hover:-translate-y-[2px] sm:mt-1 sm:border-[2.5px] sm:px-8 sm:py-2.5 sm:text-sm sm:tracking-widest sm:shadow-[4px_4px_0_0_rgba(13,10,26,0.6)] md:text-xl">
           {promo.cta} →
         </span>
+        )}
       </div>
     </Link>
   );
@@ -762,6 +818,7 @@ export function HeroCarousel() {
       for (const p of PROMOS) {
         const srcs = p.figures.map((f) => f.src);
         if (p.sceneImage) srcs.push(p.sceneImage);
+        if (p.sceneImageMobile) srcs.push(p.sceneImageMobile);
         for (const src of srcs) {
           const img = new window.Image();
           img.decoding = "async";
