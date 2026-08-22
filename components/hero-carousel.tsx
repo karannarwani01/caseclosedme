@@ -73,6 +73,23 @@ const SM_BREAKPOINT = "(min-width: 640px)";
 
 const PROMOS: Promo[] = [
   {
+    id: "mefcc",
+    href: "/search",
+    ariaLabel:
+      "Caseclosed will be at MEFCC 2026, Middle East Film and Comic Con, September 11 to 13.",
+    gradient:
+      "linear-gradient(180deg, #1a1230 0%, #2a1a52 55%, #3a1e5c 100%)",
+    rays: "rgba(255,120,200,0.30)",
+    sceneImage: "/banners/mefcc-queue-desktop.webp",
+    sceneImageMobile: "/banners/mefcc-queue-mobile.webp",
+    badge: "Save The Date",
+    dates: "September 11–13",
+    headline: "Caseclosed will be at MEFCC 2026",
+    subtitle:
+      "Stay tuned for our sneak peek of amazing drops at the Comic Con.",
+    figures: [],
+  },
+  {
     id: "op13",
     href: "/search/trading-cards",
     ariaLabel:
@@ -174,23 +191,6 @@ const PROMOS: Promo[] = [
         className: `${FIG_FREE} bottom-[5%] left-[31%] z-20 h-[46%] sm:bottom-[8%] sm:left-[17%] sm:h-[54%] lg:h-[61%]`,
       },
     ],
-  },
-  {
-    id: "mefcc",
-    href: "/search",
-    ariaLabel:
-      "Caseclosed will be at MEFCC 2026, Middle East Film and Comic Con, September 11 to 13.",
-    gradient:
-      "linear-gradient(180deg, #1a1230 0%, #2a1a52 55%, #3a1e5c 100%)",
-    rays: "rgba(255,120,200,0.30)",
-    sceneImage: "/banners/mefcc-queue-desktop.webp",
-    sceneImageMobile: "/banners/mefcc-queue-mobile.webp",
-    badge: "Save The Date",
-    dates: "September 11\u201313",
-    headline: "Caseclosed will be at MEFCC 2026",
-    subtitle:
-      "Stay tuned for our sneak peek of amazing drops at the Comic Con.",
-    figures: [],
   },
 ];
 

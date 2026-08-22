@@ -677,12 +677,9 @@ export async function getCollections(): Promise<Collection[]> {
 // navbar is on every page, that pinned the whole homepage — ~600 KB per ISR
 // write — to an hourly rewrite and burned most of the ISR write budget.)
 export async function getNonEmptyCollectionHandles(): Promise<string[]> {
-<<<<<<< HEAD
-=======
   "use cache";
   cacheTag(TAGS.collections, TAGS.products);
   cacheLife("days");
->>>>>>> 094d6929df11b9ca65ba155450b9d706c0309e93
 
   if (!endpoint) return [];
 
@@ -722,8 +719,6 @@ function menuPath(url: string): string {
 }
 
 export async function getMenu(handle: string): Promise<Menu[]> {
-<<<<<<< HEAD
-=======
   "use cache";
   cacheTag(TAGS.collections);
   // Shopify has no menu webhook, and revalidate() only flushes on collection/
@@ -732,7 +727,6 @@ export async function getMenu(handle: string): Promise<Menu[]> {
   // an "hours" lifetime forced an hourly ISR rewrite of the ~600 KB homepage
   // and drove the team towards the free-tier ISR write cap.
   cacheLife("days");
->>>>>>> 094d6929df11b9ca65ba155450b9d706c0309e93
 
   if (!endpoint) {
     console.log(`Skipping getMenu for '${handle}' - Shopify not configured`);
@@ -755,14 +749,11 @@ export async function getMenu(handle: string): Promise<Menu[]> {
 }
 
 export async function getPage(handle: string): Promise<Page> {
-<<<<<<< HEAD
-=======
   "use cache";
   cacheTag(TAGS.collections);
   // Content pages change rarely; a day of staleness (or a redeploy) is fine and
   // avoids re-rendering every /[page] each hour.
   cacheLife("days");
->>>>>>> 094d6929df11b9ca65ba155450b9d706c0309e93
 
   // Was the only Shopify reader with no endpoint guard: with Shopify
   // unconfigured shopifyFetch throws and every /[page] (about, FAQ, policies)
@@ -778,12 +769,9 @@ export async function getPage(handle: string): Promise<Page> {
 }
 
 export async function getPages(): Promise<Page[]> {
-<<<<<<< HEAD
-=======
   "use cache";
   cacheTag(TAGS.collections);
   cacheLife("days");
->>>>>>> 094d6929df11b9ca65ba155450b9d706c0309e93
 
   if (!endpoint) return [];
 
